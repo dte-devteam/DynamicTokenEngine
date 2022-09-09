@@ -43,7 +43,7 @@ namespace tokenfunction {
 			std::vector<argument> filldefaultvalues(std::vector<argument> args);
 	};
 	struct function : basicfunction {
-		std::vector<functioncaller> subfunctions;	//вектор с информацией о вызовах других функций
+		std::vector<functioncaller> subfunctions;	//вектор с указателями на функции
 		bool isreliable;							//булевое значение для полиморфизма
 		void execute(std::vector<argument> args);
 	};

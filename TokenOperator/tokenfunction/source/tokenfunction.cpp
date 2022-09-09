@@ -2,10 +2,10 @@
 
 std::vector<tokenfunction::argument> tokenfunction::basicfunction::filldefaultvalues(std::vector<tokenfunction::argument> args) {
 	std::vector<argument> values(defaultvalues);
-	for (argument value : values) {
-		std::vector<argument>::iterator iterator = std::find_if(args.begin(), args.end(), [value](argument arg) { return value.name == arg.name; });
+	for (argument arg : args) {
+		std::vector<argument>::iterator iterator = std::find_if(values.begin(), values.end(), [arg](argument value) { return value.name == arg.fieldtarget; });
 		if (iterator != args.end()) {
-			value.valuepointer = iterator->valuepointer;
+			iterator->valuepointer = arg.valuepointer;
 		}
 	}
 	return values;
@@ -13,16 +13,18 @@ std::vector<tokenfunction::argument> tokenfunction::basicfunction::filldefaultva
 void tokenfunction::function::execute(std::vector<tokenfunction::argument> args) {
 	std::vector<argument> values = filldefaultvalues(args);
 	std::vector<argument> subfunctionvalues;
-	for (argument value : values) {
-		value.name = value.fieldtarget;
-		value.fieldtarget = 0;
-	}
+	std::vector<argument>::iterator arg_iter_begin = args.begin();
+	std::vector<argument>::iterator arg_iter_end = args.end();
+	std::vector<uint64_t>::iterator name_iter_end;
 	for (functioncaller function : subfunctions) {
 		subfunctionvalues.clear();
-		for (uint64_t arg : function.args_name) {
-			std::vector<argument>::iterator end = args.end();
-			for (std::vector<argument>::iterator iterator = args.begin(); iterator != end; ++iterator) {
-				if (iterator->name == name) subfunctionvalues.push_back(*iterator);
+		name_iter_end = function.args_name.end();
+		for (uint64_t name_iter : function.args_name) {
+			for (std::vector<argument>::iterator arg_iter = arg_iter_begin; arg_iter != arg_iter_end; ++arg_iter) {
+				if (name_iter == arg_iter->name) {
+					subfunctionvalues.push_back(*arg_iter);
+					break;
+				}
 			}
 		}
 		function.functionpointer->execute(subfunctionvalues);
