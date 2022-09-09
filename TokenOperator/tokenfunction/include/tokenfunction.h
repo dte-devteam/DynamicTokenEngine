@@ -18,29 +18,26 @@ function = {										//объявляем функцию
 	}
 }
 */
-
 namespace tokenfunction {
-	struct functionfield {
-		uint64_t name;								//имя поля
-		std::vector<uint64_t> types;				//типы данных, которое может принять поле
-	};
 	struct argument {
-		uint64_t name;								//имя аргумента
-		uint64_t type;								//тип данных
+		uint64_t name = 0;							//имя аргумента
+		uint64_t type = 0;							//тип данных
 		uint64_t fieldtarget = 0;					//имя поля функции, куда применится аргумент
-		void* valuepointer;							//указатель на значение
-	};
-	struct functioncaller {
-		basicfunction* functionpointer;				//указатель на функцию
-		std::vector<uint64_t> args_name;			//имена аргументов, которые приментся к функции
+		void* valuepointer = nullptr;				//указатель на значение
 	};
 	struct basicfunction {
-		uint64_t name;								//имя функции
-		bool isbasic;								//булевое значение для полиморфизма
+		virtual ~basicfunction(){}
+		uint64_t name = 0;							//имя функции
+		bool isbasic = false;						//булевое значение для полиморфизма
 		std::vector<argument> defaultvalues;		//вектор с указателями на значения по умолчанию
+		std::vector<std::vector<uint64_t>> types;	//типы данных, которые момогу принять поля
 		virtual void execute(std::vector<argument> args) = 0;
 		protected:
 			std::vector<argument> filldefaultvalues(std::vector<argument> args);
+	};
+	struct functioncaller {
+		basicfunction* functionpointer = nullptr;	//указатель на функцию
+		std::vector<uint64_t> args_name;			//имена аргументов, которые приментся к функции
 	};
 	struct function : basicfunction {
 		std::vector<functioncaller> subfunctions;	//вектор с указателями на функции

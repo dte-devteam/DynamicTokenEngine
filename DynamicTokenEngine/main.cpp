@@ -10,7 +10,21 @@
 
 #include "hard_api/include/vulkan_api.h"
 
+
+#include "tokenfunction/include/algebra.h"
 int main() {
+    tokenfunction::argument A, B, C, D, E;
+    int a = 2, b = 2, c = 8, d = 0, e = 0;
+    A.valuepointer = &a;
+    B.valuepointer = &b;
+    C.valuepointer = &c;
+    D.valuepointer = &d;
+    E.valuepointer = &e;
+    tokenfunction::algebra::addinstance.execute({ A, B, D });
+    return *(int*)D.valuepointer;
+
+
+
     glfwInit();
     glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
     glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
