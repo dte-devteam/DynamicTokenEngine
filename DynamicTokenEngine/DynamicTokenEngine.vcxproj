@@ -132,11 +132,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="hard_api\source\vulkan_api.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="hard_api\include\vulkan_api.h" />
+    <ProjectReference Include="..\TokenOperator\TokenOperator.vcxproj">
+      <Project>{0007904b-0187-456f-b355-c552e1bb6c2d}</Project>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
