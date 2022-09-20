@@ -10,9 +10,8 @@ namespace functionfactory {
 	int test();
 	struct basicfunction {
 		uint64_t name;
-		bool succeed;
 		std::vector<void*> defaultvalues;
-		virtual bool execute(std::vector<void*>* argumentspointer, bool errorpossible = true) = 0;
+		virtual void execute(std::vector<void*>* argumentspointer, uint64_t* errorcodepointer) = 0;
 		protected:
 			virtual std::vector<void*> filldefaultvalues(std::vector<void*>* argumentspointer);
 	};
@@ -22,16 +21,16 @@ namespace functionfactory {
 	};
 	struct function : basicfunction {
 		std::vector<functioncaller> callings;
-		bool execute(std::vector<void*>* argumentspointer, bool errorhandeled);
+		void execute(std::vector<void*>* argumentspointer, uint64_t* errorcodepointer);
 	};
 	struct typedfunction : function {
 		std::vector<std::vector<void*>> valuetypes;
-		bool execute(std::vector<void*>* argumentspointer, bool errorhandeled);
+		void execute(std::vector<void*>* argumentspointer, uint64_t* errorcodepointer);
 		protected:
 			bool checktypecompability(std::vector<void*>* types);
 	};
 	struct muxfunction : typedfunction {
-		bool execute(std::vector<void*>* argumentspointer, bool errorhandeled);
+		void execute(std::vector<void*>* argumentspointer, uint64_t* errorcodepointer);
 		protected:
 			virtual size_t mux(std::vector<void*>* valuespointer, std::vector<void*>* typespointer) = 0;
 	};

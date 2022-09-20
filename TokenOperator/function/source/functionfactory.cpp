@@ -5,7 +5,9 @@ namespace functionfactory {
 	}
 	std::vector<void*> basicfunction::filldefaultvalues(std::vector<void*>* argumentspointer) {
 		std::vector<void*> values(defaultvalues);
-		if (values.empty()) return values;
+		if (values.empty() || !argumentspointer) {
+			return values;
+		}
 		size_t i = 0;
 		size_t s = values.size();
 		for (void* arg : *argumentspointer) {
@@ -15,35 +17,49 @@ namespace functionfactory {
 		}
 		return values;
 	}
-	bool function::execute(std::vector<void*>* argumentspointer, bool errorpossible) {
-		if (errorpossible) {
-			return true;	//error handler: crash preventing
-		}
+	void function::execute(std::vector<void*>* argumentspointer, uint64_t* errorcodepointer) {
 		std::vector<void*> values = filldefaultvalues(argumentspointer);
 		for (functioncaller func : callings) {
 			std::vector<void*> args;
 			for (size_t i : func.args_indices) {
 				args.push_back(values[i]);
 			}
-			func.functionpointer->execute(&args, false);
+			func.functionpointer->execute(&args, errorcodepointer);
+			if (errorcodepointer) {
+				if (*errorcodepointer) {
+					break;
+				}
+			}
 		}
-		return false;
 	}
-	bool typedfunction::execute(std::vector<void*>* argumentspointer, bool errorpossible) {
+	void typedfunction::execute(std::vector<void*>* argumentspointer, uint64_t* errorcodepointer) {
 		size_t size = defaultvalues.size();
 		size_t argssize = argumentspointer->size();
-		if (argssize < size) {
-			return true;	//error: all values must be given
-		}
-		else if (argssize < size * 2) {
-			return true;	//error: all values must have type
-		}
-		std::vector<void*> values = filldefaultvalues(argumentspointer);
-		std::vector<void*> types(argumentspointer->begin() + size, argumentspointer->begin() + size * 2);
-		if (errorpossible) {
-			if (checktypecompability(&types)) {
-				return true;	//error: wrong arg types given
+		std::vector<void*> values;
+		std::vector<void*> types;
+		if (errorcodepointer) {
+			if (argssize < size) {
+				*errorcodepointer = 0;//errorcode, change
+				return;	//error: all values must be given
 			}
+			else if (argssize < size * 2) {
+				*errorcodepointer = 0;//errorcode, change
+				return;	//error: all values must have type
+			}
+			values = filldefaultvalues(argumentspointer);
+			types = std::vector(argumentspointer->begin() + size, argumentspointer->begin() + size * 2);
+			if (checktypecompability(&types)) {
+				if (errorcodepointer) {
+					*errorcodepointer = 0;//errorcode, change
+				}
+				else {
+					//add error log: error: wrong arg types given
+				}
+			}
+		}
+		else {
+			values = filldefaultvalues(argumentspointer);
+			types = std::vector(argumentspointer->begin() + size, argumentspointer->begin() + size * 2);
 		}
 		for (functioncaller func : callings) {
 			std::vector<void*> args;
@@ -53,27 +69,42 @@ namespace functionfactory {
 			for (size_t i : func.args_indices) {
 				args.push_back(types[i]);
 			}
-			if (func.functionpointer->execute(&args, false)) {
-				return true;	//error: subfunction error
+			func.functionpointer->execute(&args, errorcodepointer);
+			if (errorcodepointer) {
+				if (*errorcodepointer) {
+					break;
+				}
 			}
 		}
-		return false;
 	}
-	bool muxfunction::execute(std::vector<void*>* argumentspointer, bool errorpossible) {
+	void muxfunction::execute(std::vector<void*>* argumentspointer, uint64_t* errorcodepointer) {
 		size_t size = defaultvalues.size();
 		size_t argssize = argumentspointer->size();
-		if (argssize < size) {
-			return true;	//error: all values must be given
-		}
-		else if (argssize < size * 2) {
-			return true;	//error: all values must have type
-		}
-		std::vector<void*> values = filldefaultvalues(argumentspointer);
-		std::vector<void*> types(argumentspointer->begin() + size, argumentspointer->begin() + size * 2);
-		if (errorpossible) {
-			if (checktypecompability(&types)) {
-				return true;	//error: wrong arg types given
+		std::vector<void*> values;
+		std::vector<void*> types;
+		if (errorcodepointer) {
+			if (argssize < size) {
+				*errorcodepointer = 0;//errorcode, change
+				return;	//error: all values must be given
 			}
+			else if (argssize < size * 2) {
+				*errorcodepointer = 0;//errorcode, change
+				return;	//error: all values must have type
+			}
+			values = filldefaultvalues(argumentspointer);
+			types = std::vector(argumentspointer->begin() + size, argumentspointer->begin() + size * 2);
+			if (checktypecompability(&types)) {
+				if (errorcodepointer) {
+					*errorcodepointer = 0;//errorcode, change
+				}
+				else {
+					//add error log: error: wrong arg types given
+				}
+			}
+		}
+		else {
+			values = filldefaultvalues(argumentspointer);
+			types = std::vector(argumentspointer->begin() + size, argumentspointer->begin() + size * 2);
 		}
 		size_t index = mux(&values, &types);
 		if (index < callings.size()) {
@@ -84,10 +115,7 @@ namespace functionfactory {
 			for (size_t i : callings[index].args_indices) {
 				args.push_back(types[i]);
 			}
-			return callings[index].functionpointer->execute(&args, false);	//if true: error: subfunction error
-		}
-		else {
-			return true;	//error: can`t find case for execution 
+			callings[index].functionpointer->execute(&args, errorcodepointer);
 		}
 	}
 	bool typedfunction::checktypecompability(std::vector<void*>* argumentspointer) {

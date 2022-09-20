@@ -20,6 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="function\include\algebra.h" />
+    <ClInclude Include="function\include\defaultvalues.h" />
     <ClInclude Include="function\include\functionfactory.h" />
   </ItemGroup>
   <ItemGroup>

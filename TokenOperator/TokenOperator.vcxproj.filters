@@ -21,6 +21,9 @@
     <ClInclude Include="function\include\algebra.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
+    <ClInclude Include="function\include\defaultvalues.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="function\source\functionfactory.cpp">
