@@ -1,49 +1,177 @@
-#include "function/include/algebra.h"
+#include "function/primitiveoperations/include/algebra.h"
 #include <iostream>
+#include <ctime>
+struct int_addadd : function { using function::function; };
+struct add_funtion : muxfunction { using muxfunction::muxfunction; };
+struct setter : basicfunction { //temp
+    using basicfunction::basicfunction;
+    void __fastcall execute(std::vector<void*>* argumentspointer, uint64_t* errorcodepointer, bool forced) {
+        *(size_t*)(*argumentspointer)[1] = (size_t)(*argumentspointer)[0];
+    }
+};
 int main() {
-    functions::algebra::init();
-    //functions::algebra::int_add_function add;
-    functions::algebra::int_addadd addadd;
-    /*add.defaultvalues = {
-        nullptr,
-        nullptr,
-        nullptr
-    };*/
-    addadd.defaultvalues = {
-        nullptr,
-        nullptr,
-        nullptr,
-        nullptr,
-        nullptr
-    };
-    addadd.callings = {
-        {
-            &functions::algebra::int_add,
-            {
-                0,
-                1,
-                3
-            }
+    int_addadd addadd {
+        0,  //name
+        {   //defaultvalues
+            nullptr,
+            nullptr,
+            nullptr,
+            nullptr,
+            nullptr
         },
-        {
-            &functions::algebra::int_add,
+        {   //callings
             {
-                0,
-                2,
-                4
+                &functions::algebra::int_add,
+                {
+                    {0, false},
+                    {1, false},
+                    {3, false}
+                }
+            },
+            {
+                &functions::algebra::int_add,
+                {
+                    {0, false},
+                    {2, false},
+                    {4, false}
+                }
             }
         }
     };
+    setter set {
+        0  //name
+    };
+    function mux {
+        0,  //name
+        {   //defaultvalues
+            nullptr,
+            nullptr,
+            nullptr,
+            nullptr,
+            nullptr,
+            nullptr,
+            nullptr
+        },
+        {   //callings
+            {
+                &set,
+                {
+                    {5, false},
+                    {6, false}
+                }
+            }
+        }
+    };
+    add_funtion add {
+        0,  //name
+        {   //defaultvalues
+            nullptr,
+            nullptr,
+            nullptr
+        },
+        {   //callings
+            {
+                &functions::algebra::int_add,
+                {
+                    {0, false},
+                    {1, false},
+                    {2, false}
+                }
+            },
+            {
+                &functions::algebra::float_add,
+                {
+                    {0, false},
+                    {1, false},
+                    {2, false}
+                }
+            },
+            
+        },
+        {   //valuetypes
+            {
+                (void*)0,
+                (void*)1,
+                (void*)2,
+                (void*)3
+            },
+            {
+                (void*)0,
+                (void*)1,
+                (void*)2,
+                (void*)3
+            },
+            {
+                (void*)0,
+                (void*)1,
+                (void*)2,
+                (void*)3
+            }
+        },
+        &mux    //mux
+    };
+
+
+
+
+
     int a = 2, b = 8, c = 5, r1 = 0, r2 = 0;
     float fa = 20.5f, fb = 80.3f, fr = 0.1f;
     std::vector<void*> args({ &a, &b, &c, &r1, &r2 });
-    addadd.execute(&args, nullptr);
-    std::cout << r1 <<"&"<< r2 << std::endl;
+    addadd.execute(&args, nullptr, false);
+    std::cout << r1 << "(2+8)" << std::endl;
+    std::cout << r2 << "(2+5)" << std::endl;
     std::vector<void*> args2({ &b, &c, &r1, (void*)0, (void*)0, (void*)0 });
-    functions::algebra::add.execute(&args2, nullptr);
-    std::cout << r1 << std::endl;
+    add.execute(&args2, nullptr, false);
+    std::cout << r1 << "(8+5)" << std::endl;
     std::vector<void*> args3({ &fa, &fb, &fr, (void*)1, (void*)1, (void*)1 });
-    functions::algebra::add.execute(&args3, nullptr);
-    std::cout << fr << std::endl;
+    add.execute(&args3, nullptr, false);
+    std::cout << fr << "(20.5f+80.3f)" << std::endl;
+    std::vector<void*> args4({ &r1, &b, &r2 });
+    functions::algebra::int_div.execute(&args4, nullptr, false);
+    std::cout << r2 << "(10/8)" << std::endl;
+    
+    std::cout << "exec time: " << clock() / 1000.0 << "ms" << std::endl;
+    int ta = 2;
+    int tb = 8;
+    int tr = 0;
+    int* tap = &ta;
+    int* tbp = &tb;
+    int* trp = &tr;
+    *trp = *tap + *tbp;
+    std::cout << tr << "(2+8)" << std::endl;
+    ta = 7;
+    tb = 3;
+    tr = 0;
+    tap = &ta;
+    tbp = &tb;
+    trp = &tr;
+    *trp = *tap + *tbp;
+    std::cout << tr << "(7+3)" << std::endl;
+    ta = 9;
+    tb = 1;
+    tr = 0;
+    tap = &ta;
+    tbp = &tb;
+    trp = &tr;
+    *trp = *tap + *tbp;
+    std::cout << tr << "(9+1)" << std::endl;
+    float tfa = 2.0f;
+    float tfb = 8.0f;
+    float tfr = 0.0f;
+    float* tfap = &tfa;
+    float* tfbp = &tfb;
+    float* tfrp = &tfr;
+    *tfrp = *tfap + *tfbp;
+    std::cout << tr << "(2.0f+8.0f)" << std::endl;
+    ta = 6;
+    tb = 4;
+    tr = 0;
+    tap = &ta;
+    tbp = &tb;
+    trp = &tr;
+    *trp = *tap / *tbp;
+    std::cout << tr << "(6/4)" << std::endl;
+    std::cout << "exec time: " << clock() / 1000.0 << "ms" << std::endl;
     return functionfactory::test();
 }
