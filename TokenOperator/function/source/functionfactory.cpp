@@ -7,19 +7,22 @@ namespace functionfactory {
 	function::function(uint64_t name, std::vector<void*> defaultvalues, std::vector<functioncaller> callings) : basicfunction(name, defaultvalues), callings(callings) {}
 	typedfunction::typedfunction(uint64_t name, std::vector<void*> defaultvalues, std::vector<functioncaller> callings, std::vector<std::vector<void*>> valuetypes) : function(name, defaultvalues, callings), valuetypes(valuetypes) {}
 	muxfunction::muxfunction(uint64_t name, std::vector<void*> defaultvalues, std::vector<functioncaller> callings, std::vector<std::vector<void*>> valuetypes, basicfunction* mux) : typedfunction(name, defaultvalues, callings, valuetypes), mux(mux) {}
-	std::vector<void*> basicfunction::filldefaultvalues(std::vector<void*>* argumentspointer) {
+	void basicfunction::filldefaultvalues(std::vector<void*>* argumentspointer, std::vector<void*>* target) {
 		std::vector<void*> values(defaultvalues);
-		if (values.empty() || !argumentspointer) {
-			return values;
-		}
 		size_t i = 0;
 		size_t s = values.size();
-		for (void* arg : *argumentspointer) {
-			values[i] = arg;
+		size_t argsize = argumentspointer->size();
+		while (i < s && i < argsize) {
+			values[i] = (*argumentspointer)[i];
 			i++;
-			if (!(i < s)) break;
 		}
-		return values;
+		//values.push_back(argumentspointer);
+		*target = values;
+	}
+	void typedfunction::filltypes(std::vector<void*>::iterator start, std::vector<void*>::iterator end, std::vector<void*>* target) {
+		std::vector<void*> types(start, end);
+		//types.push_back((void*)0);	//тип std::vector<void*>, изменить значение (to do)
+		*target = types;
 	}
 	bool function::callfunctions(std::vector<void*>* values, uint64_t* errorcodepointer, bool forced) {
 		size_t values_size = values->size();
@@ -42,8 +45,9 @@ namespace functionfactory {
 		}
 		return false;
 	}
-	void __fastcall function::execute(std::vector<void*>* argumentspointer, uint64_t* errorcodepointer, bool forced) {
-		std::vector<void*> values = filldefaultvalues(argumentspointer);
+	void function::execute(std::vector<void*>* argumentspointer, uint64_t* errorcodepointer, bool forced) {
+		std::vector<void*> values;
+		filldefaultvalues(argumentspointer, &values);
 		callfunctions(&values, errorcodepointer, forced);
 	}
 	void typedfunction::execute(std::vector<void*>* argumentspointer, uint64_t* errorcodepointer, bool forced) {
@@ -52,28 +56,29 @@ namespace functionfactory {
 		std::vector<void*> values;
 		std::vector<void*> types;
 		if (errorcodepointer) {
-			if (argssize < size) {
-				*errorcodepointer = 0;//errorcode, change
-				return;	//error: all values must be given
-			}
-			else if (argssize < size * 2) {
-				*errorcodepointer = 0;//errorcode, change
+			if (argssize < size * 2) {
+				*errorcodepointer = 21;//errorcode, change
 				return;	//error: all values must have type
 			}
-			values = filldefaultvalues(argumentspointer);
-			types = std::vector(argumentspointer->begin() + size, argumentspointer->begin() + size * 2);
+			else if (argssize < size) {
+				*errorcodepointer = 20;//errorcode, change
+				return;	//error: all values must be given
+			}
+			filldefaultvalues(argumentspointer, &values);
+			filltypes(argumentspointer->begin() + size, argumentspointer->end(), &types);
 			if (checktypecompability(&types)) {
 				if (errorcodepointer) {
-					*errorcodepointer = 0;//errorcode, change
+					*errorcodepointer = 22; //errorcode, change
 				}
 				else {
 					//add error log: error: wrong arg types given
 				}
+				return;
 			}
 		}
 		else {
-			values = filldefaultvalues(argumentspointer);
-			types = std::vector(argumentspointer->begin() + size, argumentspointer->begin() + size * 2);
+			filldefaultvalues(argumentspointer, &values);
+			filltypes(argumentspointer->begin() + size, argumentspointer->end(), &types);
 		}
 		for (functioncaller func : callings) {
 			std::vector<void*> args;
@@ -84,7 +89,6 @@ namespace functionfactory {
 				else {
 					args.push_back(values[i.first]);
 				}
-				
 			}
 			for (std::pair<size_t, bool> i : func.args_indices) {
 				if (i.second) {
@@ -122,8 +126,8 @@ namespace functionfactory {
 				*errorcodepointer = 0;//errorcode, change
 				return;	//error: all values must have type
 			}
-			values = filldefaultvalues(argumentspointer);
-			types = std::vector(argumentspointer->begin() + size, argumentspointer->begin() + size * 2);
+			filldefaultvalues(argumentspointer, &values);
+			filltypes(argumentspointer->begin() + size, argumentspointer->end(), &types);
 			if (checktypecompability(&types)) {
 				if (errorcodepointer) {
 					*errorcodepointer = 0;//errorcode, change
@@ -132,8 +136,8 @@ namespace functionfactory {
 			}
 		}
 		else {
-			values = filldefaultvalues(argumentspointer);
-			types = std::vector(argumentspointer->begin() + size, argumentspointer->begin() + size * 2);
+			filldefaultvalues(argumentspointer, &values);
+			filltypes(argumentspointer->begin() + size, argumentspointer->end(), &types);
 		}
 		size_t index = callings.size();
 		argumentspointer->push_back(&index);
@@ -167,7 +171,8 @@ namespace functionfactory {
 		}
 	}
 	void unreliablefunction::execute(std::vector<void*>* argumentspointer, uint64_t* errorcodepointer, bool forced) {
-		std::vector<void*> values = filldefaultvalues(argumentspointer);
+		std::vector<void*> values;
+		filldefaultvalues(argumentspointer, &values);
 		if (errorcodepointer) {
 			if (*errorcodepointer == 1) {
 				callfunctions(&values, errorcodepointer, true);
@@ -188,7 +193,8 @@ namespace functionfactory {
 	void triggeredfunction::execute(std::vector<void*>* argumentspointer, uint64_t* errorcodepointer, bool forced) {
 		//note: values.back() will be read as bool*, so overriding it to noncastable for bool* type will cause crash
 		if (check(argumentspointer, errorcodepointer)) {
-			std::vector<void*> values = filldefaultvalues(argumentspointer);
+			std::vector<void*> values;
+			filldefaultvalues(argumentspointer, &values);
 			if (*(bool*)values.back()) {
 				callfunctions(&values, errorcodepointer, forced);
 			}
@@ -200,7 +206,8 @@ namespace functionfactory {
 		//note: to stop cycle set cycletrigger to false or raise error, cycle will be executing forever if this condition is false
 		//advice: for preventing eternal cycles, make threads or raise error in cycle (by iteration number or delta time)
 		bool cycletrigger = true;
-		std::vector<void*> values = filldefaultvalues(argumentspointer);
+		std::vector<void*> values;
+		filldefaultvalues(argumentspointer, &values);
 		values.push_back(&cycletrigger);
 		while (*(bool*)values.back()) {
 			if (callfunctions(&values, errorcodepointer, forced)) {
@@ -209,7 +216,6 @@ namespace functionfactory {
 		}
 	}
 	bool typedfunction::checktypecompability(std::vector<void*>* argumentspointer) {
-		if (argumentspointer->empty()) return false;
 		size_t i = 0;
 		for (void* arg : *argumentspointer) {
 			if (std::find_if(valuetypes[i].begin(), valuetypes[i].end(), [arg](void* value) { return value == arg; }) == valuetypes[i].end()) {

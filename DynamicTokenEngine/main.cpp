@@ -1,6 +1,18 @@
-#include "function/primitiveoperations/include/algebra.h"
 #include <iostream>
+
+#include "utils/include/hash.h"
+#include "memory/include/function.h"
+
+#define ALGEBRA_EXPORTS
+#include "add.h"
+
+#include <chrono>
+#include <thread>
 #include <ctime>
+
+
+typedef UINT(CALLBACK* LPFNDLLFUNC1)(DWORD, UINT);
+
 struct int_addadd : function { using function::function; };
 struct add_funtion : muxfunction { using muxfunction::muxfunction; };
 struct setter : basicfunction { //temp
@@ -112,8 +124,7 @@ int main() {
     };
 
 
-
-
+    clock_t t = clock();
 
     int a = 2, b = 8, c = 5, r1 = 0, r2 = 0;
     float fa = 20.5f, fb = 80.3f, fr = 0.1f;
@@ -131,7 +142,39 @@ int main() {
     functions::algebra::int_div.execute(&args4, nullptr, false);
     std::cout << r2 << "(10/8)" << std::endl;
     
-    std::cout << "exec time: " << clock() / 1000.0 << "ms" << std::endl;
+    std::cout << "exec time: " <<  (clock() - t) / 1000.0 << "ms" << std::endl;
+    t = clock();
+
+    int temp1 = -4;
+    int temp2 = 14;
+    int tempr = 0;
+    std::vector<void*> args5({ &temp1, &temp2, &tempr });
+    functions::algebra::int_add.execute(&args5, nullptr, false);
+    std::cout << tempr << "(-4+14)" << std::endl;
+    temp1 = -8;
+    temp2 = 18;
+    functions::algebra::int_add.execute(&args5, nullptr, false);
+    std::cout << tempr << "(-8+18)" << std::endl;
+    temp1 = -7;
+    temp2 = 17;
+    functions::algebra::int_add.execute(&args5, nullptr, false);
+    std::cout << tempr << "(-7+17)" << std::endl;
+    temp1 = -6;
+    temp2 = 16;
+    functions::algebra::int_add.execute(&args5, nullptr, false);
+    std::cout << tempr << "(-6+16)" << std::endl;
+    temp1 = -5;
+    temp2 = 15;
+    functions::algebra::int_add.execute(&args5, nullptr, false);
+    std::cout << tempr << "(-5+15)" << std::endl;
+    temp1 = -1;
+    temp2 = 11;
+    functions::algebra::int_add.execute(&args5, nullptr, false);
+    std::cout << tempr << "(-1+11)" << std::endl;
+
+    std::cout << "exec time: " << (clock() - t) / 1000.0 << "ms" << std::endl;
+    t = clock();
+
     int ta = 2;
     int tb = 8;
     int tr = 0;
@@ -172,6 +215,17 @@ int main() {
     trp = &tr;
     *trp = *tap / *tbp;
     std::cout << tr << "(6/4)" << std::endl;
-    std::cout << "exec time: " << clock() / 1000.0 << "ms" << std::endl;
+
+    std::cout << "exec time: " << (clock() - t) / 1000.0 << "ms" << std::endl;
+    t = clock();
+
+    int64_t intic = 10;
+    uint64_t e = 0;
+    std::vector<void*> vec({(void*)L"algebra.dll", (void*)&intic, 0, 0});
+    memory::function::importfunction.execute(&vec, &e, false);
+    std::cout << intic << e << std::endl;
+
+    std::chrono::milliseconds timespan(10000);
+    std::this_thread::sleep_for(timespan);
     return functionfactory::test();
 }

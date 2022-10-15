@@ -1,6 +1,5 @@
 #pragma once
 #include "function.h"
-#include "modulecollector.h"
 namespace memory {
 	namespace init {
 		struct initbasefuncionstruct : basicfunction {
@@ -13,14 +12,9 @@ namespace memory {
 		static initbasefuncionstruct initbasefuncion {
 			0,	//name (change)
 			{	//default values
-				(void*)new functions::algebra::int_add_function(
-					0,	//name (change)
-					{	//default values
-						nullptr,	//A
-						nullptr,	//B
-						nullptr		//R (R=A+B <int>)
-					}
-				)
+				(void*)&function::importfunction,
+				(void*)&function::createfunction,
+				(void*)&function::functionloader
 			}
 		};
 	}

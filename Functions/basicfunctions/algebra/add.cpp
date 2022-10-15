@@ -1,9 +1,10 @@
-#include "../include/algebra.h"
+#include "pch.h"
+#include "add.h"
 namespace functions {
 	namespace algebra {
-		//(+)
 		void int_add_function::execute(std::vector<void*>* argumentspointer, uint64_t* errorcodepointer, bool forced) {
-			std::vector<void*> values = filldefaultvalues(argumentspointer);
+			std::vector<void*> values;
+			filldefaultvalues(argumentspointer, &values);
 			if (values[2] && values[1] && values[0]) {
 				if (!errorcodepointer || forced) {
 					*(int*)values[2] = *(int*)values[0] + *(int*)values[1];
@@ -14,7 +15,8 @@ namespace functions {
 			}
 		}
 		void float_add_function::execute(std::vector<void*>* argumentspointer, uint64_t* errorcodepointer, bool forced) {
-			std::vector<void*> values = filldefaultvalues(argumentspointer);
+			std::vector<void*> values;
+			filldefaultvalues(argumentspointer, &values);
 			if (values[2] && values[1] && values[0]) {
 				if (!errorcodepointer || forced) {
 					*(float*)values[2] = *(float*)values[0] + *(float*)values[1];
@@ -26,7 +28,8 @@ namespace functions {
 		}
 		//(-)
 		void int_sub_function::execute(std::vector<void*>* argumentspointer, uint64_t* errorcodepointer, bool forced) {
-			std::vector<void*> values = filldefaultvalues(argumentspointer);
+			std::vector<void*> values;
+			filldefaultvalues(argumentspointer, &values);
 			if (values[2] && values[1] && values[0]) {
 				if (!errorcodepointer || forced) {
 					*(int*)values[2] = *(int*)values[0] - *(int*)values[1];
@@ -37,7 +40,8 @@ namespace functions {
 			}
 		}
 		void float_sub_function::execute(std::vector<void*>* argumentspointer, uint64_t* errorcodepointer, bool forced) {
-			std::vector<void*> values = filldefaultvalues(argumentspointer);
+			std::vector<void*> values;
+			filldefaultvalues(argumentspointer, &values);
 			if (values[2] && values[1] && values[0]) {
 				if (!errorcodepointer || forced) {
 					*(float*)values[2] = *(float*)values[0] - *(float*)values[1];
@@ -49,7 +53,8 @@ namespace functions {
 		}
 		//(*)
 		void int_mul_function::execute(std::vector<void*>* argumentspointer, uint64_t* errorcodepointer, bool forced) {
-			std::vector<void*> values = filldefaultvalues(argumentspointer);
+			std::vector<void*> values;
+			filldefaultvalues(argumentspointer, &values);
 			if (values[2] && values[1] && values[0]) {
 				if (!errorcodepointer || forced) {
 					*(int*)values[2] = *(int*)values[0] * *(int*)values[1];
@@ -60,7 +65,8 @@ namespace functions {
 			}
 		}
 		void float_mul_function::execute(std::vector<void*>* argumentspointer, uint64_t* errorcodepointer, bool forced) {
-			std::vector<void*> values = filldefaultvalues(argumentspointer);
+			std::vector<void*> values;
+			filldefaultvalues(argumentspointer, &values);
 			if (values[2] && values[1] && values[0]) {
 				if (!errorcodepointer || forced) {
 					*(float*)values[2] = *(float*)values[0] * *(float*)values[1];
@@ -72,7 +78,8 @@ namespace functions {
 		}
 		//(/)
 		void int_div_function::execute(std::vector<void*>* argumentspointer, uint64_t* errorcodepointer, bool forced) {
-			std::vector<void*> values = filldefaultvalues(argumentspointer);
+			std::vector<void*> values;
+			filldefaultvalues(argumentspointer, &values);
 			if (values[2] && values[1] && values[0]) {
 				if (*(int*)values[1] == 0) {
 					if (errorcodepointer) {
@@ -89,7 +96,8 @@ namespace functions {
 			}
 		}
 		void float_div_function::execute(std::vector<void*>* argumentspointer, uint64_t* errorcodepointer, bool forced) {
-			std::vector<void*> values = filldefaultvalues(argumentspointer);
+			std::vector<void*> values;
+			filldefaultvalues(argumentspointer, &values);
 			if (values[2] && values[1] && values[0]) {
 				if (!errorcodepointer || forced) {
 					*(float*)values[2] = *(float*)values[0] / *(float*)values[1];

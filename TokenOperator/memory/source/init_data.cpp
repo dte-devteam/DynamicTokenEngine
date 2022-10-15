@@ -3,6 +3,9 @@
 namespace memory {
 	namespace init {
 		void initbasefuncionstruct::execute(std::vector<void*>* argumentspointer, uint64_t* errorcodepointer, bool forced) {
+			if (errorcodepointer && !forced) {
+				return;
+			}
 			for (void* value : defaultvalues) {
 				std::vector<basicfunction*>::iterator iter = std::find_if(memory::function::functions.begin(), memory::function::functions.end(), [value](basicfunction* v) { return ((basicfunction*)value)->name == v->name; });
 				if (iter == memory::function::functions.end()) {

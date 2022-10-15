@@ -20,21 +20,19 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="function\primitiveoperations\include\algebra.h" />
-    <ClInclude Include="function\primitiveoperations\include\cast.h" />
     <ClInclude Include="function\include\defaultvalues.h" />
     <ClInclude Include="function\include\functionfactory.h" />
-    <ClInclude Include="function\primitiveoperations\include\logic.h" />
-    <ClInclude Include="function\primitiveoperations\include\pointer.h" />
+    <ClInclude Include="memory\include\external_interaction.h" />
     <ClInclude Include="memory\include\function.h" />
     <ClInclude Include="memory\include\init_data.h" />
-    <ClInclude Include="memory\include\modulecollector.h" />
     <ClInclude Include="memory\include\object.h" />
+    <ClInclude Include="object\include\pointer.h" />
+    <ClInclude Include="target_architecture.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="function\primitiveoperations\source\algebra.cpp" />
-    <ClCompile Include="function\primitiveoperations\source\pointer.cpp" />
     <ClCompile Include="function\source\functionfactory.cpp" />
+    <ClCompile Include="memory\source\external_interaction.cpp" />
+    <ClCompile Include="memory\source\function.cpp" />
     <ClCompile Include="memory\source\init_data.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
@@ -124,6 +122,7 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
+      <AdditionalIncludeDirectories>$(SolutionDir)TokenOperator</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -139,6 +138,7 @@
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
+      <AdditionalIncludeDirectories>$(SolutionDir)TokenOperator</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
