@@ -169,7 +169,7 @@ namespace functions {
 		//function vector
 		extern ALGEBRA_API std::vector<basicfunction*> getfunctions() {
 			return std::vector<basicfunction*>(
-				{
+				/*{
 					&int_add,
 					&float_add,
 					&add,
@@ -179,8 +179,13 @@ namespace functions {
 					&float_mul,
 					&int_div,
 					&float_div
-				}
+				}*/
+				{}
 			);
 		}
+		
 	}
+}
+extern _declspec(dllexport) int getftemp() {
+	return -2000;
 }

@@ -26,7 +26,7 @@
     <ClInclude Include="memory\include\function.h" />
     <ClInclude Include="memory\include\init_data.h" />
     <ClInclude Include="memory\include\object.h" />
-    <ClInclude Include="object\include\pointer.h" />
+    <ClInclude Include="memory\include\thread.h" />
     <ClInclude Include="target_architecture.h" />
   </ItemGroup>
   <ItemGroup>
@@ -34,6 +34,10 @@
     <ClCompile Include="memory\source\external_interaction.cpp" />
     <ClCompile Include="memory\source\function.cpp" />
     <ClCompile Include="memory\source\init_data.cpp" />
+    <ClCompile Include="memory\source\object.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

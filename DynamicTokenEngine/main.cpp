@@ -3,6 +3,8 @@
 #include "utils/include/hash.h"
 #include "memory/include/function.h"
 
+#include "memory/include/init_data.h"
+
 #define ALGEBRA_EXPORTS
 #include "add.h"
 
@@ -11,7 +13,8 @@
 #include <ctime>
 
 
-typedef UINT(CALLBACK* LPFNDLLFUNC1)(DWORD, UINT);
+typedef int(*DLLPROC)();
+DLLPROC dllf = nullptr;
 
 struct int_addadd : function { using function::function; };
 struct add_funtion : muxfunction { using muxfunction::muxfunction; };
@@ -21,6 +24,9 @@ struct setter : basicfunction { //temp
         *(size_t*)(*argumentspointer)[1] = (size_t)(*argumentspointer)[0];
     }
 };
+
+
+
 int main() {
     int_addadd addadd {
         0,  //name
@@ -219,11 +225,50 @@ int main() {
     std::cout << "exec time: " << (clock() - t) / 1000.0 << "ms" << std::endl;
     t = clock();
 
-    int64_t intic = 10;
     uint64_t e = 0;
-    std::vector<void*> vec({(void*)L"algebra.dll", (void*)&intic, 0, 0});
+    std::vector<void*> vec({(void*)L"algebra.dll", (void*)&dllf, 0, 0});
     memory::function::importfunction.execute(&vec, &e, false);
-    std::cout << intic << e << std::endl;
+    std::cout << e << std::endl;
+    std::cout << dllf << std::endl;
+    dllf = (DLLPROC)GetProcAddress(LoadLibrary(L"algebra.dll"), "getftemp");
+    std::cout << dllf << std::endl;
+    std::cout << dllf() << std::endl;
+
+    std::cout << "exec time: " << (clock() - t) / 1000.0 << "ms" << std::endl;
+    t = clock();
+
+    memory::init::initobjmemory();
+    for (memory::object::typeallocator* typealloc : memory::object::memorycontroller::instance()->objects) {
+        std::cout << std::left << std::setw(6) << "size: ";
+        std::cout << std::left << std::setw(7) << typealloc->gettypesize();
+        std::cout << std::left << std::setw(8) << "length: ";
+        std::cout << typealloc->getlistsize() << std::endl;
+    }
+
+    memory::object::memorycontroller::instance()->objects[2]->addobject(1, 12, nullptr);
+    memory::object::memorycontroller::instance()->objects[2]->addobject(2, 12, nullptr);
+    memory::object::memorycontroller::instance()->objects[2]->log_data();
+
+    std::cout << "exec time: " << (clock() - t) / 1000.0 << "ms" << std::endl;
+    t = clock();
+
+
+    long long* mbi1 = (long long*)(memory::object::memorycontroller::instance()->objects[2]->getobject(1, false, nullptr)->pointer);
+    *mbi1 = -25;
+    mbi1 = (long long*)(memory::object::memorycontroller::instance()->objects[2]->getobject(2, false, nullptr)->pointer);
+    *mbi1 = -50;
+    std::cout << *(long long*)memory::object::memorycontroller::instance()->objects[2]->getobject(1, false, nullptr)->pointer << std::endl; //вот так будет, если мы посмотри на эти данные как на __int64
+    std::cout << *(int*)memory::object::memorycontroller::instance()->objects[2]->getobject(1, false, nullptr)->pointer << std::endl;       //вот так будет, если мы посмотри на эти данные как на int
+    std::cout << *(long long*)memory::object::memorycontroller::instance()->objects[2]->getobject(2, false, nullptr)->pointer << std::endl; //вот так будет, если мы посмотри на эти данные как на __int64
+    std::cout << *(int*)memory::object::memorycontroller::instance()->objects[2]->getobject(2, false, nullptr)->pointer << std::endl;       //вот так будет, если мы посмотри на эти данные как на int
+
+    std::cout << "exec time: " << (clock() - t) / 1000.0 << "ms" << std::endl;
+    t = clock();
+
+    memory::object::memorycontroller::instance()->objects[2]->log_data();
+
+    std::cout << "exec time: " << (clock() - t) / 1000.0 << "ms" << std::endl;
+    t = clock();
 
     std::chrono::milliseconds timespan(10000);
     std::this_thread::sleep_for(timespan);

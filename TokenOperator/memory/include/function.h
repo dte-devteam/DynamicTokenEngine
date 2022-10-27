@@ -1,5 +1,4 @@
 #pragma once
-#include <vector>
 #include "../../function/include/functionfactory.h"
 #include "external_interaction.h"
 using namespace functionfactory;
@@ -17,7 +16,7 @@ namespace memory {
 			void execute(std::vector<void*>* argumentspointer, uint64_t* errorcodepointer, bool forced) {}
 		};
 		//constances
-		static LPCSTR dllfunctionloadername = "getfunctions";
+		static LPCSTR dllfunctionloadername = "getftemp";
 		//instances
 		static importfunctionstruct importfunction {
 			0,	//name (change)
@@ -36,7 +35,7 @@ namespace memory {
 				{
 					&external::getprocaddress,
 					{
-						{0, false},
+						{1, false},
 						{1, false},
 						{(size_t)dllfunctionloadername, true}
 					}

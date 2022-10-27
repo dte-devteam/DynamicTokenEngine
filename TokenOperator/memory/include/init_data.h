@@ -1,12 +1,12 @@
 #pragma once
 #include "function.h"
+#include "object.h"
 namespace memory {
 	namespace init {
 		struct initbasefuncionstruct : basicfunction {
 			using basicfunction::basicfunction;
 			void execute(std::vector<void*>* argumentspointer, uint64_t* errorcodepointer, bool forced);
 		};
-
 
 		//need call initbasefuncion.execute(nullptr, nullptr, false) at start
 		static initbasefuncionstruct initbasefuncion {
@@ -17,5 +17,7 @@ namespace memory {
 				(void*)&function::functionloader
 			}
 		};
+		
+		void initobjmemory();
 	}
 }
