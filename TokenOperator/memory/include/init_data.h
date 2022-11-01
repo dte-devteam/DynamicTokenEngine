@@ -1,6 +1,7 @@
 #pragma once
 #include "function.h"
 #include "object.h"
+#include "metatable.h"
 namespace memory {
 	namespace init {
 		struct initbasefuncionstruct : basicfunction {
@@ -17,7 +18,5 @@ namespace memory {
 				(void*)&function::functionloader
 			}
 		};
-		
-		void initobjmemory();
 	}
 }

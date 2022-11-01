@@ -36,7 +36,10 @@
     <ClInclude Include="target_architecture.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="memory\include\thread.h">
+    <ClInclude Include="memory\include\stream.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="memory\include\metatable.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
   </ItemGroup>

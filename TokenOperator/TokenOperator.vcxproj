@@ -25,8 +25,9 @@
     <ClInclude Include="memory\include\external_interaction.h" />
     <ClInclude Include="memory\include\function.h" />
     <ClInclude Include="memory\include\init_data.h" />
+    <ClInclude Include="memory\include\metatable.h" />
     <ClInclude Include="memory\include\object.h" />
-    <ClInclude Include="memory\include\thread.h" />
+    <ClInclude Include="memory\include\stream.h" />
     <ClInclude Include="target_architecture.h" />
   </ItemGroup>
   <ItemGroup>

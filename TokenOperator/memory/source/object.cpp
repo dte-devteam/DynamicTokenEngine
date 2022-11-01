@@ -1,105 +1,85 @@
 #include "../include/object.h"
 namespace memory {
 	namespace object {
-		typeallocator::typeallocator(size_t typesize, size_t listsize) : typesize(typesize), listsize(listsize) {
-			memoryblock = malloc(typesize * listsize);
-			objdesc = new iterator[listsize];
-			iterator* end = objdesc + listsize;
-			size_t addr = (size_t)memoryblock;
-			for (iterator* i = objdesc; i < end; i++) {
-				i->pointer = (void*)addr;
-				addr += typesize;
+		iterator::iterator(size_t typesize) : pointer(malloc(1* typesize)){}
+		iterator::~iterator() {
+			for (stream::stream* s : usedbystreams) {
+				s->killstream(0);
+			}
+			free(pointer);
+			usedbystreams.clear();
+		}
+
+		typeallocator::typeallocator(size_t typesize, size_t listsize) : typesize(typesize) {
+			while (listsize > 0) {
+				iters.push_back(new iterator(typesize));
+				listsize--;
+				//if (!iters.back()->pointer) {
+				//	в случае ошибки - уничтожить
+				//}
 			}
 		}
 		typeallocator::~typeallocator() {
-			delete memoryblock;
-			iterator* end = objdesc + listsize;
-			for (iterator* i = objdesc; i < end; i++) {
-				for (stream::stream* s : i->usedbystreams) {
-					s->killstream(0);	//id нужно найти
-				}
+			for (iterator* i : iters) {
+				i->isblocked = true;
+				delete i;
 			}
-			delete objdesc;
+			iters.clear();
 		}
 		int typeallocator::setlistsize(size_t listsize, bool forced) {
-			//not done, memory unbounding error
-			//суть алгоритма:
-			//останавливаем все потоки, которые имеют данные в этом блоке
-			//перемещаем память
-			//обновляем на нее указатели
-			//возвращаем потоки к жизни
-			if (listsize < this->listsize) {
-				if (!forced) {
-					return -1;	//fail to resize, because it will delete some objects
-				}
-			}
-			iterator* end = objdesc + this->listsize;
-			for (iterator* i = objdesc; i < end; i++) {
-				for (stream::stream* s : i->usedbystreams) {
-					if (s) {
-						s->interrupt(0);
+			if (listsize < iters.size()) {
+				if (forced) {
+					for (size_t i = iters.size(); i > listsize; i--) {
+						delete iters.back();
+						iters.pop_back();
 					}
+					return 0;
 				}
+				return -1;	//fail to resize, no memory losses alowed
 			}
-			void* mem = realloc(memoryblock, typesize * listsize);
-			if (mem) {
-				//создать новый массив iterator
-				iterator* iters = (iterator*)realloc(objdesc, sizeof(iterator*) * listsize);
-				if (!iters) {
-					return -3;	//fail to resize, no available memory for this type desc
-				}
-				memoryblock = mem;
-				//установить в 0 все новые элементы
-				end = iters + listsize;
-				for (iterator* i = iters + this->listsize; i < end; i++) {
-					i->id = 0;
-					i->type = 0;
-					i->isblocked = false;	//make atomic
-					i->pointer = 0;
-					i->usedbystreams = vector<stream::stream*>();
-				}
-				//оживить потоки
-				for (iterator* i = objdesc; i < end; i++) {
-					for (stream::stream* s : i->usedbystreams) {
-						//stack потока нужно обновить (TO DO!!!)
-						s->proceed(0);
-					}
-				}
-				//удалить старый массив и указать новый
-				delete objdesc;
-				objdesc = iters;
-				return 0;
+			for (size_t i = iters.size(); i < listsize; i++) {
+				iters.push_back(new iterator(typesize));
+				//if (!iters.back()->pointer) {
+				//	в случае ошибки - уничтожить
+				//	return -2;	//fail to create memory
+				//}
 			}
-			return -2;	//fail to resize, no available memory for this type
+			return 0;
 		}
-		void typeallocator::unregisterobject(iterator* iter) {
-			size_t count = 0;
-			iterator* end = objdesc + listsize;
-			for (iterator* i = objdesc; i < end; i++) {
-				if (i->type == iter->type) {
-					count++;
-				}
+		void typeallocator::unregisterobject(iterator* iter, stream::stream* caller) {
+			if (caller) {
+				iter->usedbystreams.erase(
+					find_if(
+						iter->usedbystreams.begin(), 
+						iter->usedbystreams.end(), 
+						[caller](stream::stream* stream) { 
+							return caller->getid() == stream->getid(); 
+						}
+					)
+				);
 			}
-			if (count < 2) {
-				delgeneraltype(iter->type);
+			if (iter->usedbystreams.empty()) {
+				iter->id = 0;
+				iter->type = 0;
+				iter->isblocked = false;
 			}
-			iter->id = 0;
 		}
-		iterator* typeallocator::addobject(uint64_t id, uint64_t type, stream::stream* caller) {
-			iterator* end = objdesc + listsize;
-			for (iterator* i = objdesc; i < end; i++) {
+		iterator* typeallocator::addobject(uint64_t type, stream::stream* caller) {
+			for (iterator* i : iters) {
 				if (!i->id) {
-					i->id = id;
+					//i->id = id;	//to do
 					i->type = type;
 					i->isblocked = true;
+					if (caller) {
+						i->usedbystreams.push_back(caller);
+					}
 					return i;
 				}
 			}
 			return nullptr;
 		}
 		iterator* typeallocator::getobject(uint64_t id, bool maywrite, stream::stream* caller) {
-			iterator* end = objdesc + listsize;
-			for (iterator* i = objdesc; i < end; i++) {
+			for (iterator* i : iters) {
 				if (i->id == id) {
 					if (i->isblocked && maywrite) {
 						return nullptr;
@@ -116,43 +96,33 @@ namespace memory {
 			return typesize;
 		}
 		size_t typeallocator::getlistsize() {
-			return listsize;
-		}
-		void typeallocator::addgeneraltype(uint64_t type) {
-			uint32_t gentype = typemasker(type);
-			if (std::find_if(generaltypes.begin(), generaltypes.end(), [gentype](uint32_t t) { return t == gentype; }) == generaltypes.end()) {
-				generaltypes.push_back(gentype);
-			}
-		}
-		void typeallocator::delgeneraltype(uint64_t type) {
-			uint32_t gentype = typemasker(type);
-			generaltypes.erase(std::find_if(generaltypes.begin(), generaltypes.end(), [gentype](uint32_t t) { return t == gentype; }));
-		}
-		uint32_t typeallocator::typemasker(uint64_t type) {
-			type &= typemask;
-			type = type >> 32;
-			return (uint32_t)type;
+			return iters.size();
 		}
 
-		void typeallocator::log_data() {
+		void typeallocator::log_data(bool extended) {
+			std::cout << "---start of memory block---" << typesize << std::endl;
 			std::cout << "size of type:" << typesize << std::endl;
+			std::cout << "size of list:" << getlistsize() << std::endl;
 			size_t l = 0;
-			iterator* iter = objdesc;
-			while (l < 100) {
+			for (iterator* i : iters) {
 				std::cout << std::left << std::setw(8) << "index: ";
 				std::cout << std::left << std::setw(8) << l;
 				std::cout << std::left << std::setw(5) << "id: ";
-				std::cout << std::left << std::setw(10) << iter->id;
+				std::cout << std::left << std::setw(10) << i->id;
 				std::cout << std::left << std::setw(7) << "type: ";
-				std::cout << std::left << std::setw(10) << iter->type;
+				std::cout << std::left << std::setw(10) << i->type;
 				std::cout << std::left << std::setw(12) << "isblocked: ";
-				std::cout << std::left << std::setw(5) << iter->isblocked;
-				std::cout << std::left << std::setw(10) << "pointer: ";
-				std::cout << std::left << iter->pointer << std::endl;
+				std::cout << std::left << std::setw(5) << i->isblocked;
+				if (extended) {
+					std::cout << std::left << std::setw(10) << "pointer: ";
+					std::cout << std::left << std::setw(20) << i->pointer;
+					std::cout << std::left << std::setw(16) << "tread pointers: ";
+					std::cout << i->usedbystreams.size();
+				}
+				std::cout << std::endl;
 				l++;
-				iter++;
 			}
-			std::cout << "---end of memory block---" << typesize << std::endl;
+			std::cout << "---end of memory block---" << std::endl;
 		}
 
 		memorycontroller* memorycontroller::_instance;
@@ -167,8 +137,9 @@ namespace memory {
 		}
 		memorycontroller::~memorycontroller() {
 			for (typeallocator* ta : objects) {
-				ta->~typeallocator();
+				delete ta;
 			}
+			objects.clear();
 			_instance = nullptr;
 		}
 		memorycontroller* memorycontroller::instance(vector<size_t>* sizes) {
@@ -186,6 +157,11 @@ namespace memory {
 				((typeallocator*)*iter)->~typeallocator();
 				objects.erase(iter);
 			}
+		}
+
+		uint64_t memorycontroller::getfreeid() {
+			//to do
+			return 0;
 		}
 	}
 }

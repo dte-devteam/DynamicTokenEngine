@@ -147,6 +147,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="compiler\include\function.h" />
+    <ClInclude Include="tests.h" />
     <ClInclude Include="utils\include\hash.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

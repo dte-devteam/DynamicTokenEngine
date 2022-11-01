@@ -17,15 +17,5 @@ namespace memory {
 				}
 			}
 		}
-
-		void initobjmemory() {
-			std::vector<size_t> initsizedata({
-				sizeof(void*),
-				sizeof(int),
-				sizeof(double),
-				5
-			});
-			object::memorycontroller::instance(&initsizedata);
-		}
 	}
 }
