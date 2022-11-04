@@ -3,17 +3,40 @@
 #include <iostream>	//temp
 #include <iomanip>	//temp
 #include "stream.h"
+/*
+* memory organisation:
+* memorycontroller
+* |
+* +-- typeallocator
+*	  |
+*	  +-- iterator
+*		  |
+*		  +-- memory object (void*)
+* 
+* memory usage:
+* addobject - register object for usage (also getobject after creation) 
+* getobject - get access to object
+* unregisterobject - unregister object (memory isn`t used anymore by stream)
+* 
+* problems:
+* heap memory defragmentation
+*/
 using namespace std;
 namespace memory {
 	namespace object {
-		struct iterator {
-			iterator(size_t typesize);
-			virtual ~iterator();
-			uint64_t id = 0;
-			uint64_t type = 0;
-			bool isblocked = false;	//make atomic
-			void* pointer;
-			vector<stream::stream*> usedbystreams;
+		class iterator {
+			friend class typeallocator;
+			public:
+				iterator(size_t typesize);
+				virtual ~iterator();
+				uint64_t type = 0;
+				bool isblocked = false;	//make atomic, or smth else
+				vector<stream::stream*> usedbystreams;
+				void* getpointer();
+				uint64_t getid();
+			private:
+				uint64_t id = 0;
+				void* pointer;
 		};
 		class typeallocator {
 			friend class memorycontroller;
@@ -27,13 +50,11 @@ namespace memory {
 				size_t gettypesize();
 				size_t getlistsize();
 
-				//iterator* objdesc;	//MAKE THIS PRIVATE!!!
-				vector<iterator*> iters;
+				vector<iterator*> iters;	//make it private!!!
 				//temprorary debug functions (debug should be throught basicfunctions!)
 				void log_data(bool extended = false);
 			private:
 				size_t typesize;
-				void* memoryblock;
 				//iterator* objdesc;
 		};
 		class memorycontroller {

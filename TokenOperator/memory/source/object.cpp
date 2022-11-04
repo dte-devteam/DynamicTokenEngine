@@ -1,13 +1,19 @@
 #include "../include/object.h"
 namespace memory {
 	namespace object {
-		iterator::iterator(size_t typesize) : pointer(malloc(1* typesize)){}
+		iterator::iterator(size_t typesize) : pointer(malloc(typesize)){}
 		iterator::~iterator() {
 			for (stream::stream* s : usedbystreams) {
 				s->killstream(0);
 			}
 			free(pointer);
 			usedbystreams.clear();
+		}
+		void* iterator::getpointer() {
+			return pointer;
+		}
+		uint64_t iterator::getid() {
+			return id;
 		}
 
 		typeallocator::typeallocator(size_t typesize, size_t listsize) : typesize(typesize) {
@@ -80,7 +86,7 @@ namespace memory {
 		}
 		iterator* typeallocator::getobject(uint64_t id, bool maywrite, stream::stream* caller) {
 			for (iterator* i : iters) {
-				if (i->id == id) {
+				if (i->getid() == id) {
 					if (i->isblocked && maywrite) {
 						return nullptr;
 					}
@@ -161,6 +167,7 @@ namespace memory {
 
 		uint64_t memorycontroller::getfreeid() {
 			//to do
+			
 			return 0;
 		}
 	}
