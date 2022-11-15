@@ -1,22 +1,36 @@
 #pragma once
 #include "memory/include/object.h"
+#include "memory/include/function.h"
+#include "memory/include/stream.h"
+#define ALGEBRA_EXPORTS
+#include "add.h"
+using namespace memory::object;
+using namespace memory::stream;
 namespace test {
-	using namespace memory::object;
 	enum testmode {
-		INITMEM = 0,
-		TERMMEM = 1,
-		LOG = 2,
-		RESIZEBIG = 3,
-		RESIZESMALL = 4,
-		ADD_OBJ_1 = 5
+		INITMEM,
+		TERMMEM,
+		LOG,
+		RESIZEBIG,
+		RESIZESMALL,
+		ADD_OBJ,
+		OP_INT_SET_0,
+		OP_INT_ADD,
+		LOG_INT_OBJ,
+
+		THREAD_CREATE
 	};
-	static vector<size_t>* sizes = new std::vector<size_t>({
+	static std::vector<size_t>* sizes = new std::vector<size_t>({
 		sizeof(void*),	//8
 		sizeof(int),	//4
 		5				//5
 	});
+	static stream* s;
+	static int a, b, c;
+	static uint64_t e = 0;
 	void inline test(int testmode) {
 		switch (testmode) {
+			iterator* i;
 			case INITMEM:
 				memorycontroller::instance(sizes);
 				for (typeallocator* typealloc : memorycontroller::instance()->objects) {
@@ -38,8 +52,28 @@ namespace test {
 			case RESIZESMALL:
 				memorycontroller::instance()->objects[0]->setlistsize(5, true);
 				break;
-			case ADD_OBJ_1:
+			case ADD_OBJ:
 				memorycontroller::instance()->objects[0]->addobject(1, nullptr);
+				break;
+			case OP_INT_SET_0:
+				i = memorycontroller::instance()->getobject(20, false);
+				*(int*)i->getpointer() = 0;
+				break;
+			case OP_INT_ADD:
+				i = memorycontroller::instance()->getobject(20, false);
+				*(int*)i->getpointer() = *(int*)i->getpointer() + 1;
+				break;
+			case LOG_INT_OBJ:
+				i = memorycontroller::instance()->getobject(20, false);
+				std::cout << *(int*)i->getpointer() << std::endl;
+				break;
+			case THREAD_CREATE:
+				a = 10;
+				b = 5;
+				s = new stream(&functions::algebra::int_add, 0, nullptr);
+				s->execute(new std::vector<void*>({ (void*)&a, (void*)&b, (void*)&c }), nullptr, true);
+				s->thread->join();
+				std::cout << c << std::endl;
 				break;
 			default:
 				std::cout << "def" << std::endl;

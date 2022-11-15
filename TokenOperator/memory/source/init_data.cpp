@@ -7,7 +7,7 @@ namespace memory {
 				return;
 			}
 			for (void* value : defaultvalues) {
-				std::vector<basicfunction*>::iterator iter = std::find_if(memory::function::functions.begin(), memory::function::functions.end(), [value](basicfunction* v) { return ((basicfunction*)value)->name == v->name; });
+				std::vector<basicfunction*>::iterator iter = std::find_if(memory::function::functions.begin(), memory::function::functions.end(), [value](basicfunction* v) { return ((basicfunction*)value)->getid() == v->getid(); });
 				if (iter == memory::function::functions.end()) {
 					memory::function::functions.push_back((basicfunction*)value);
 				}

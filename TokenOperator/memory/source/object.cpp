@@ -4,7 +4,7 @@ namespace memory {
 		iterator::iterator(size_t typesize) : pointer(malloc(typesize)){}
 		iterator::~iterator() {
 			for (stream::stream* s : usedbystreams) {
-				s->killstream(0);
+				s->killstream(nullptr, true);
 			}
 			free(pointer);
 			usedbystreams.clear();
@@ -73,7 +73,7 @@ namespace memory {
 		iterator* typeallocator::addobject(uint64_t type, stream::stream* caller) {
 			for (iterator* i : iters) {
 				if (!i->id) {
-					//i->id = id;	//to do
+					i->id = memorycontroller::instance()->getfreeid();
 					i->type = type;
 					i->isblocked = true;
 					if (caller) {
@@ -132,7 +132,7 @@ namespace memory {
 		}
 
 		memorycontroller* memorycontroller::_instance;
-		memorycontroller::memorycontroller(vector<size_t>* types) {
+		memorycontroller::memorycontroller(std::vector<size_t>* types) {
 			if (types) {
 				for (size_t iter : *types) {
 					if (find_if(objects.begin(), objects.end(), [iter](typeallocator* alloc) { return iter == alloc->typesize; }) == objects.end()) {
@@ -145,10 +145,9 @@ namespace memory {
 			for (typeallocator* ta : objects) {
 				delete ta;
 			}
-			objects.clear();
 			_instance = nullptr;
 		}
-		memorycontroller* memorycontroller::instance(vector<size_t>* sizes) {
+		memorycontroller* memorycontroller::instance(std::vector<size_t>* sizes) {
 			if (!_instance) {
 				_instance = new memorycontroller(sizes);
 			}
@@ -158,17 +157,24 @@ namespace memory {
 			objects.push_back(new typeallocator(typesize, listsize));
 		}
 		void memorycontroller::deltypeallocator(size_t typesize) {
-			vector<typeallocator*>::iterator iter = find_if(objects.begin(), objects.end(), [typesize](typeallocator* alloc) { return typesize == alloc->typesize; });
+			std::vector<typeallocator*>::iterator iter = find_if(objects.begin(), objects.end(), [typesize](typeallocator* alloc) { return typesize == alloc->typesize; });
 			if (iter != objects.end()) {
-				((typeallocator*)*iter)->~typeallocator();
+				delete (typeallocator*)*iter;
 				objects.erase(iter);
 			}
 		}
-
+		iterator* memorycontroller::getobject(uint64_t id, bool maywrite, stream::stream* caller) {
+			iterator* iter;
+			for (typeallocator* ta : objects) {
+				iter = ta->getobject(id, maywrite, caller);
+				return iter;
+			}
+			return nullptr;
+		}
 		uint64_t memorycontroller::getfreeid() {
 			//to do
 			
-			return 0;
+			return 20;
 		}
 	}
 }

@@ -3,12 +3,15 @@ namespace functionfactory {
 	int r() {
 		return 100;
 	}
-	basicfunction::basicfunction(uint64_t name, vector<void*> defaultvalues) : name(name), defaultvalues(defaultvalues) {}
-	function::function(uint64_t name, vector<void*> defaultvalues, vector<functioncaller> callings) : basicfunction(name, defaultvalues), callings(callings) {}
-	typedfunction::typedfunction(uint64_t name, vector<void*> defaultvalues, vector<functioncaller> callings, vector<vector<void*>> valuetypes) : function(name, defaultvalues, callings), valuetypes(valuetypes) {}
-	muxfunction::muxfunction(uint64_t name, vector<void*> defaultvalues, vector<functioncaller> callings, vector<vector<void*>> valuetypes, basicfunction* mux) : typedfunction(name, defaultvalues, callings, valuetypes), mux(mux) {}
-	void basicfunction::filldefaultvalues(vector<void*>* argumentspointer, vector<void*>* target) {
-		vector<void*> values(defaultvalues);
+	basicfunction::basicfunction(uint64_t id, std::vector<void*> defaultvalues) : id(id), defaultvalues(defaultvalues) {}
+	function::function(uint64_t name, std::vector<void*> defaultvalues, std::vector<functioncaller> callings) : basicfunction(name, defaultvalues), callings(callings) {}
+	typedfunction::typedfunction(uint64_t name, std::vector<void*> defaultvalues, std::vector<functioncaller> callings, std::vector<std::vector<void*>> valuetypes) : function(name, defaultvalues, callings), valuetypes(valuetypes) {}
+	muxfunction::muxfunction(uint64_t name, std::vector<void*> defaultvalues, std::vector<functioncaller> callings, std::vector<std::vector<void*>> valuetypes, basicfunction* mux) : typedfunction(name, defaultvalues, callings, valuetypes), mux(mux) {}
+	uint64_t basicfunction::getid() {
+		return id;
+	}
+	void basicfunction::filldefaultvalues(std::vector<void*>* argumentspointer, std::vector<void*>* target) {
+		std::vector<void*> values(defaultvalues);
 		size_t i = 0;
 		size_t s = values.size();
 		size_t argsize = argumentspointer->size();
@@ -19,15 +22,15 @@ namespace functionfactory {
 		//values.push_back(argumentspointer);
 		*target = values;
 	}
-	void typedfunction::filltypes(vector<void*>::iterator start, vector<void*>::iterator end, vector<void*>* target) {
-		vector<void*> types(start, end);
+	void typedfunction::filltypes(std::vector<void*>::iterator start, std::vector<void*>::iterator end, std::vector<void*>* target) {
+		std::vector<void*> types(start, end);
 		*target = types;
 	}
-	bool function::callfunctions(vector<void*>* values, uint64_t* errorcodepointer, bool forced) {
+	bool function::callfunctions(std::vector<void*>* values, uint64_t* errorcodepointer, bool forced) {
 		size_t values_size = values->size();
 		for (functioncaller func : callings) {
-			vector<void*> args;
-			for (pair<size_t, bool> i : func.args_indices) {
+			std::vector<void*> args;
+			for (std::pair<size_t, bool> i : func.args_indices) {
 				if (i.second) {
 					args.push_back((void*)i.first);
 				}
@@ -44,16 +47,16 @@ namespace functionfactory {
 		}
 		return false;
 	}
-	void function::execute(vector<void*>* argumentspointer, uint64_t* errorcodepointer, bool forced) {
-		vector<void*> values;
+	void function::execute(std::vector<void*>* argumentspointer, uint64_t* errorcodepointer, bool forced) {
+		std::vector<void*> values;
 		filldefaultvalues(argumentspointer, &values);
 		callfunctions(&values, errorcodepointer, forced);
 	}
-	void typedfunction::execute(vector<void*>* argumentspointer, uint64_t* errorcodepointer, bool forced) {
+	void typedfunction::execute(std::vector<void*>* argumentspointer, uint64_t* errorcodepointer, bool forced) {
 		size_t size = defaultvalues.size();
 		size_t argssize = argumentspointer->size();
-		vector<void*> values;
-		vector<void*> types;
+		std::vector<void*> values;
+		std::vector<void*> types;
 		if (errorcodepointer) {
 			if (argssize < size * 2) {
 				*errorcodepointer = 21;//errorcode, change
@@ -80,8 +83,8 @@ namespace functionfactory {
 			filltypes(argumentspointer->begin() + size, argumentspointer->end(), &types);
 		}
 		for (functioncaller func : callings) {
-			vector<void*> args;
-			for (pair<size_t, bool> i : func.args_indices) {
+			std::vector<void*> args;
+			for (std::pair<size_t, bool> i : func.args_indices) {
 				if (i.second) {
 					args.push_back((void*)i.first);
 				}
@@ -89,7 +92,7 @@ namespace functionfactory {
 					args.push_back(values[i.first]);
 				}
 			}
-			for (pair<size_t, bool> i : func.args_indices) {
+			for (std::pair<size_t, bool> i : func.args_indices) {
 				if (i.second) {
 					args.push_back((void*)i.first);
 				}
@@ -105,7 +108,7 @@ namespace functionfactory {
 			}
 		}
 	}
-	void muxfunction::execute(vector<void*>* argumentspointer, uint64_t* errorcodepointer, bool forced) {
+	void muxfunction::execute(std::vector<void*>* argumentspointer, uint64_t* errorcodepointer, bool forced) {
 		if (!mux) {
 			if (errorcodepointer) {
 				*errorcodepointer = 0;//errorcode, change
@@ -114,8 +117,8 @@ namespace functionfactory {
 		}
 		size_t size = defaultvalues.size();
 		size_t argssize = argumentspointer->size();
-		vector<void*> values;
-		vector<void*> types;
+		std::vector<void*> values;
+		std::vector<void*> types;
 		if (errorcodepointer) {
 			if (argssize < size) {
 				*errorcodepointer = 0;//errorcode, change
@@ -149,8 +152,8 @@ namespace functionfactory {
 		mux->execute(argumentspointer, errorcodepointer, forced);
 		argumentspointer->pop_back();
 		if (index < callings.size()) {
-			vector<void*> args;
-			for (pair<size_t, bool> i : callings[index].args_indices) {
+			std::vector<void*> args;
+			for (std::pair<size_t, bool> i : callings[index].args_indices) {
 				if (i.second) {
 					args.push_back((void*)i.first);
 				}
@@ -158,7 +161,7 @@ namespace functionfactory {
 					args.push_back(values[i.first]);
 				}
 			}
-			for (pair<size_t, bool> i : callings[index].args_indices) {
+			for (std::pair<size_t, bool> i : callings[index].args_indices) {
 				if (i.second) {
 					args.push_back((void*)i.first);
 				}
@@ -169,8 +172,8 @@ namespace functionfactory {
 			callings[index].functionpointer->execute(&args, errorcodepointer, forced);
 		}
 	}
-	void unreliablefunction::execute(vector<void*>* argumentspointer, uint64_t* errorcodepointer, bool forced) {
-		vector<void*> values;
+	void unreliablefunction::execute(std::vector<void*>* argumentspointer, uint64_t* errorcodepointer, bool forced) {
+		std::vector<void*> values;
 		filldefaultvalues(argumentspointer, &values);
 		if (errorcodepointer) {
 			if (*errorcodepointer == 1) {
@@ -189,23 +192,23 @@ namespace functionfactory {
 			callfunctions(&values, errorcodepointer, forced);
 		}
 	}
-	void triggeredfunction::execute(vector<void*>* argumentspointer, uint64_t* errorcodepointer, bool forced) {
+	void triggeredfunction::execute(std::vector<void*>* argumentspointer, uint64_t* errorcodepointer, bool forced) {
 		//note: values.back() will be read as bool*, so overriding it to noncastable for bool* type will cause crash
 		if (check(argumentspointer, errorcodepointer)) {
-			vector<void*> values;
+			std::vector<void*> values;
 			filldefaultvalues(argumentspointer, &values);
 			if (*(bool*)values.back()) {
 				callfunctions(&values, errorcodepointer, forced);
 			}
 		}
 	}
-	void cyclefunction::execute(vector<void*>* argumentspointer, uint64_t* errorcodepointer, bool forced) {
+	void cyclefunction::execute(std::vector<void*>* argumentspointer, uint64_t* errorcodepointer, bool forced) {
 		//note: pushes back data pointer, new pointer is bool*, so available index++ for callings args
 		//advice: for use wrap your functions in construction {function(bool controller, trigger), triggeredfunction{any functions}}, but you can ignore this and use any fucntion combination
 		//note: to stop cycle set cycletrigger to false or raise error, cycle will be executing forever if this condition is false
 		//advice: for preventing eternal cycles, make threads or raise error in cycle (by iteration number or delta time)
 		bool cycletrigger = true;
-		vector<void*> values;
+		std::vector<void*> values;
 		filldefaultvalues(argumentspointer, &values);
 		values.push_back(&cycletrigger);
 		while (*(bool*)values.back()) {
@@ -214,7 +217,7 @@ namespace functionfactory {
 			}
 		}
 	}
-	bool typedfunction::checktypecompability(vector<void*>* argumentspointer) {
+	bool typedfunction::checktypecompability(std::vector<void*>* argumentspointer) {
 		size_t i = 0;
 		for (void* arg : *argumentspointer) {
 			if (find_if(valuetypes[i].begin(), valuetypes[i].end(), [arg](void* value) { return value == arg; }) == valuetypes[i].end()) {
@@ -224,7 +227,7 @@ namespace functionfactory {
 		}
 		return false;
 	}
-	bool triggeredfunction::check(vector<void*>* argumentspointer, uint64_t* errorcodepointer) {
+	bool triggeredfunction::check(std::vector<void*>* argumentspointer, uint64_t* errorcodepointer) {
 		if (defaultvalues.empty()) {
 			if (errorcodepointer) {
 				*errorcodepointer = 0;//errorcode, change

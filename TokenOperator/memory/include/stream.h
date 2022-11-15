@@ -4,30 +4,43 @@
 #include <semaphore>
 #include "../../function/include/functionfactory.h"
 #include "metatable.h"
-using namespace std;
 using namespace functionfactory;
 namespace memory {
 	namespace stream {
+		class absolutestreamrights {
+			public:
+				bool getkillrights();
+				bool getsemaphorerights();
+			private:
+				bool killstream;
+				bool semaphore;
+		};
 		struct createstreamstruct : basicfunction {
 			using basicfunction::basicfunction;
 			void execute(std::vector<void*>* argumentspointer, uint64_t* errorcodepointer, bool forced);	//to do
 		};
-		class stream {
+		struct stream : basicfunction {
 			public:
-				stream(basicfunction* function, uint64_t id, stream* caller) {}
-				void execute(){}	//add function arguments
-				uint64_t getid() { return 0; }
-				void interrupt(uint64_t id) {}	//to do, interrupterid нельзя заменить, если он не 0!
-				void proceed(uint64_t id) {}	//to do, если id совпадает, возобновляем работу
-				void killstream(uint64_t id) {}	//to do (придумать когда поток может быть убит), удалить поток и информацию о нем
+				stream(basicfunction* function, uint64_t id, stream* caller);
+				void execute(std::vector<void*>* argumentspointer, uint64_t* errorcodepointer, bool forced);
+				//void execute(){}	//add function arguments
+				void interrupt(stream* caller) {}	//to do, interrupterid нельзя заменить, если он не 0!
+				void proceed(stream* caller) {}	//to do, если id совпадает, возобновляем работу
+				void killstream(stream* caller, bool shouldjoin);	//to do (придумать когда поток может быть убит), удалить поток и информацию о нем
+				bool isalive();
+				bool iswaiting();
+				std::thread* thread = nullptr;
 			protected:
-				virtual ~stream() {}
+				~stream();
 			private:
 				stream* caller;
-				uint64_t id;
-				uint64_t interrupterid = 0;
-				binary_semaphore semaphore = binary_semaphore(false);
+				stream* interrupterer = 0;
+				basicfunction* function;
+				//std::thread thread;
+				std::binary_semaphore semaphore{0};
 				//vector<void*> stack;
+				std::vector<stream*> childstreams;
+				absolutestreamrights* rights;
 		};
 		//static vector<stream*> treads;
 	}

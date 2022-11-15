@@ -21,7 +21,6 @@
 * problems:
 * heap memory defragmentation
 */
-using namespace std;
 namespace memory {
 	namespace object {
 		class iterator {
@@ -31,7 +30,7 @@ namespace memory {
 				virtual ~iterator();
 				uint64_t type = 0;
 				bool isblocked = false;	//make atomic, or smth else
-				vector<stream::stream*> usedbystreams;
+				std::vector<stream::stream*> usedbystreams;
 				void* getpointer();
 				uint64_t getid();
 			private:
@@ -50,7 +49,7 @@ namespace memory {
 				size_t gettypesize();
 				size_t getlistsize();
 
-				vector<iterator*> iters;	//make it private!!!
+				std::vector<iterator*> iters;	//make it private!!!
 				//temprorary debug functions (debug should be throught basicfunctions!)
 				void log_data(bool extended = false);
 			private:
@@ -61,17 +60,17 @@ namespace memory {
 			public:
 				static inline size_t defaultlistsize = 10;
 				virtual ~memorycontroller();	//почему в итоге память не высвобождается?!
-				static memorycontroller* instance(vector<size_t>* types = nullptr);
+				static memorycontroller* instance(std::vector<size_t>* types = nullptr);
 				void addtypeallocator(size_t typesize, size_t listsize = defaultlistsize);
 				void deltypeallocator(size_t typesize);
 				iterator* getobject(uint64_t id, bool maywrite = true, stream::stream* caller = nullptr);
 				uint64_t getfreeid();
-				vector<typeallocator*> objects;	//MAKE THIS PRIVATE!!!
+				std::vector<typeallocator*> objects;	//MAKE THIS PRIVATE!!!
 			protected:
-				memorycontroller(vector<size_t>* sizes);
+				memorycontroller(std::vector<size_t>* sizes);
 			private:
 				static memorycontroller* _instance;
-				vector<uint64_t> potentialfreeid;
+				std::vector<uint64_t> potentialfreeid;
 		};
 	}
 }

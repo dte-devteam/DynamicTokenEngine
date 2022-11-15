@@ -1,7 +1,6 @@
 #include <iostream>
 
 #include "utils/include/hash.h"
-#include "memory/include/function.h"
 
 #include "tests.h"
 
@@ -19,12 +18,11 @@ struct int_addadd : function { using function::function; };
 struct add_funtion : muxfunction { using muxfunction::muxfunction; };
 struct setter : basicfunction { //temp
     using basicfunction::basicfunction;
-    void __fastcall execute(std::vector<void*>* argumentspointer, uint64_t* errorcodepointer, bool forced) {
+    void execute(std::vector<void*>* argumentspointer, uint64_t* errorcodepointer, bool forced) {
         *(size_t*)(*argumentspointer)[1] = (size_t)(*argumentspointer)[0];
     }
 };
 std::chrono::milliseconds timespan(5000);
-
 
 int main() {
     int_addadd addadd {
@@ -160,13 +158,14 @@ int main() {
 
     std::cout << "exec time: " << (clock() - t) / 1000.0 << "ms" << std::endl;
     t = clock();
-    std::this_thread::sleep_for(timespan);
 
+    test::test(test::THREAD_CREATE);
+    std::cout << "THREAD" << std::endl;
 
     test::test(test::INITMEM);
 
     test::test(test::LOG);
-    test::test(test::ADD_OBJ_1);
+    test::test(test::ADD_OBJ);
     std::cout << "ADD" << std::endl;
     test::test(test::LOG);
     test::test(test::RESIZEBIG);
@@ -175,8 +174,18 @@ int main() {
     test::test(test::RESIZESMALL);
     std::cout << "SMALL" << std::endl;
     test::test(test::LOG);
+    test::test(test::LOG_INT_OBJ);
+    test::test(test::OP_INT_SET_0);
+    test::test(test::LOG_INT_OBJ);
+    size_t i = 20;
+    while (i--) {
+        test::test(test::OP_INT_ADD);
+        test::test(test::LOG_INT_OBJ);
+    }
 
     test::test(test::TERMMEM);
+
+
 
     std::this_thread::sleep_for(timespan);
 
