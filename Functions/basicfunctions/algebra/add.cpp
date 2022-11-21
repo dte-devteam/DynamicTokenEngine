@@ -2,7 +2,7 @@
 #include "add.h"
 namespace functions {
 	namespace algebra {
-		void int_add_function::execute(std::vector<void*>* argumentspointer, uint64_t* errorcodepointer, bool forced) {
+		void int_add_function::execute(std::vector<void*>* argumentspointer, uint64_t* errorcodepointer, bool forced, void* stream) {
 			std::vector<void*> values;
 			filldefaultvalues(argumentspointer, &values);
 			if (values[2] && values[1] && values[0]) {
@@ -14,7 +14,7 @@ namespace functions {
 				*errorcodepointer = 2; //change errorcode: error: can`t operate nullptr
 			}
 		}
-		void float_add_function::execute(std::vector<void*>* argumentspointer, uint64_t* errorcodepointer, bool forced) {
+		void float_add_function::execute(std::vector<void*>* argumentspointer, uint64_t* errorcodepointer, bool forced, void* stream) {
 			std::vector<void*> values;
 			filldefaultvalues(argumentspointer, &values);
 			if (values[2] && values[1] && values[0]) {
@@ -27,7 +27,7 @@ namespace functions {
 			}
 		}
 		//(-)
-		void int_sub_function::execute(std::vector<void*>* argumentspointer, uint64_t* errorcodepointer, bool forced) {
+		void int_sub_function::execute(std::vector<void*>* argumentspointer, uint64_t* errorcodepointer, bool forced, void* stream) {
 			std::vector<void*> values;
 			filldefaultvalues(argumentspointer, &values);
 			if (values[2] && values[1] && values[0]) {
@@ -39,7 +39,7 @@ namespace functions {
 				*errorcodepointer = 2; //change errorcode: error: can`t operate nullptr
 			}
 		}
-		void float_sub_function::execute(std::vector<void*>* argumentspointer, uint64_t* errorcodepointer, bool forced) {
+		void float_sub_function::execute(std::vector<void*>* argumentspointer, uint64_t* errorcodepointer, bool forced, void* stream) {
 			std::vector<void*> values;
 			filldefaultvalues(argumentspointer, &values);
 			if (values[2] && values[1] && values[0]) {
@@ -52,7 +52,7 @@ namespace functions {
 			}
 		}
 		//(*)
-		void int_mul_function::execute(std::vector<void*>* argumentspointer, uint64_t* errorcodepointer, bool forced) {
+		void int_mul_function::execute(std::vector<void*>* argumentspointer, uint64_t* errorcodepointer, bool forced, void* stream) {
 			std::vector<void*> values;
 			filldefaultvalues(argumentspointer, &values);
 			if (values[2] && values[1] && values[0]) {
@@ -64,7 +64,7 @@ namespace functions {
 				*errorcodepointer = 2; //change errorcode: error: can`t operate nullptr
 			}
 		}
-		void float_mul_function::execute(std::vector<void*>* argumentspointer, uint64_t* errorcodepointer, bool forced) {
+		void float_mul_function::execute(std::vector<void*>* argumentspointer, uint64_t* errorcodepointer, bool forced, void* stream) {
 			std::vector<void*> values;
 			filldefaultvalues(argumentspointer, &values);
 			if (values[2] && values[1] && values[0]) {
@@ -77,7 +77,7 @@ namespace functions {
 			}
 		}
 		//(/)
-		void int_div_function::execute(std::vector<void*>* argumentspointer, uint64_t* errorcodepointer, bool forced) {
+		void int_div_function::execute(std::vector<void*>* argumentspointer, uint64_t* errorcodepointer, bool forced, void* stream) {
 			std::vector<void*> values;
 			filldefaultvalues(argumentspointer, &values);
 			if (values[2] && values[1] && values[0]) {
@@ -95,7 +95,7 @@ namespace functions {
 				*errorcodepointer = 2; //change errorcode: error: can`t operate nullptr
 			}
 		}
-		void float_div_function::execute(std::vector<void*>* argumentspointer, uint64_t* errorcodepointer, bool forced) {
+		void float_div_function::execute(std::vector<void*>* argumentspointer, uint64_t* errorcodepointer, bool forced, void* stream) {
 			std::vector<void*> values;
 			filldefaultvalues(argumentspointer, &values);
 			if (values[2] && values[1] && values[0]) {

@@ -2,10 +2,9 @@
 #include "memory/include/object.h"
 #include "memory/include/function.h"
 #include "memory/include/stream.h"
-#define ALGEBRA_EXPORTS
-#include "add.h"
 using namespace memory::object;
 using namespace memory::stream;
+typedef std::vector<functionfactory::basicfunction*>* (*DLLPROC)();
 namespace test {
 	enum testmode {
 		INITMEM,
@@ -18,14 +17,18 @@ namespace test {
 		OP_INT_ADD,
 		LOG_INT_OBJ,
 
-		THREAD_CREATE
+		THREAD_CREATE,
+		THREAD_DELETE
 	};
+	static std::vector<functionfactory::basicfunction*>* dllf = ((DLLPROC)GetProcAddress(LoadLibrary(L"algebra.dll"), "getfunctions"))();
 	static std::vector<size_t>* sizes = new std::vector<size_t>({
 		sizeof(void*),	//8
 		sizeof(int),	//4
 		5				//5
 	});
-	static stream* s;
+	static stream* s = new stream((*dllf)[0], 0);
+	//static stream* s = new stream(&functions::algebra::int_add, 0);
+	static stream* us = new stream(nullptr, 0);
 	static int a, b, c;
 	static uint64_t e = 0;
 	void inline test(int testmode) {
@@ -53,7 +56,7 @@ namespace test {
 				memorycontroller::instance()->objects[0]->setlistsize(5, true);
 				break;
 			case ADD_OBJ:
-				memorycontroller::instance()->objects[0]->addobject(1, nullptr);
+				memorycontroller::instance()->objects[0]->addobject(1, s);
 				break;
 			case OP_INT_SET_0:
 				i = memorycontroller::instance()->getobject(20, false);
@@ -70,10 +73,12 @@ namespace test {
 			case THREAD_CREATE:
 				a = 10;
 				b = 5;
-				s = new stream(&functions::algebra::int_add, 0, nullptr);
 				s->execute(new std::vector<void*>({ (void*)&a, (void*)&b, (void*)&c }), nullptr, true);
-				s->thread->join();
+				s->joinstream(us);
 				std::cout << c << std::endl;
+				break;
+			case THREAD_DELETE:
+				s->killstream(s);
 				break;
 			default:
 				std::cout << "def" << std::endl;

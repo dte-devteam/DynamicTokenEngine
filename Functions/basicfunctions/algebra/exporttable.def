@@ -1,4 +1,4 @@
 LIBRARY "algebra"
 	DESCRIPTION 'basic math functions v0'
 EXPORTS
-	getftemp     @1
+	getfunctions     @1

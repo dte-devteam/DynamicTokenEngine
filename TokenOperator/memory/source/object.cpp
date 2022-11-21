@@ -4,16 +4,25 @@ namespace memory {
 		iterator::iterator(size_t typesize) : pointer(malloc(typesize)){}
 		iterator::~iterator() {
 			for (stream::stream* s : usedbystreams) {
-				s->killstream(nullptr, true);
+				s->killstream(s);	//fix, make enough rights to kill;
 			}
 			free(pointer);
-			usedbystreams.clear();
 		}
 		void* iterator::getpointer() {
 			return pointer;
 		}
+		bool iterator::settype(uint64_t newtype) {
+			if (isblocked) {
+				return false;
+			}
+			type = newtype;
+			return true;
+		}
 		uint64_t iterator::getid() {
 			return id;
+		}
+		uint64_t iterator::gettype() {
+			return type;
 		}
 
 		typeallocator::typeallocator(size_t typesize, size_t listsize) : typesize(typesize) {
@@ -48,6 +57,7 @@ namespace memory {
 				//if (!iters.back()->pointer) {
 				//	в случае ошибки - уничтожить
 				//	return -2;	//fail to create memory
+				// (to do)
 				//}
 			}
 			return 0;
@@ -78,6 +88,7 @@ namespace memory {
 					i->isblocked = true;
 					if (caller) {
 						i->usedbystreams.push_back(caller);
+						caller->iterators.push_back(i);
 					}
 					return i;
 				}
@@ -92,6 +103,12 @@ namespace memory {
 					}
 					if (maywrite) {
 						i->isblocked = true;
+					}
+					if (caller) {
+						if (find_if(i->usedbystreams.begin(), i->usedbystreams.end(),[caller](stream::stream* stream) { return caller->getid() == stream->getid(); }) == i->usedbystreams.end()) {
+							i->usedbystreams.push_back(caller);
+							caller->iterators.push_back(i);
+						}
 					}
 					return i;
 				}
@@ -154,6 +171,12 @@ namespace memory {
 			return _instance;
 		}
 		void memorycontroller::addtypeallocator(size_t typesize, size_t listsize) {
+			for (typeallocator* ta : objects) {
+				if (ta->typesize) {
+					ta->setlistsize(listsize, false);
+					return;
+				}
+			}
 			objects.push_back(new typeallocator(typesize, listsize));
 		}
 		void memorycontroller::deltypeallocator(size_t typesize) {
@@ -173,8 +196,15 @@ namespace memory {
 		}
 		uint64_t memorycontroller::getfreeid() {
 			//to do
-			
 			return 20;
+		}
+		bool memorycontroller::hastypewithsize(size_t typesize) {
+			for (typeallocator* ta : objects) {
+				if (ta->typesize) {
+					return true;
+				}
+			}
+			return false;
 		}
 	}
 }

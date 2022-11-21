@@ -2,7 +2,7 @@
 #include <algorithm>
 namespace memory {
 	namespace init {
-		void initbasefuncionstruct::execute(std::vector<void*>* argumentspointer, uint64_t* errorcodepointer, bool forced) {
+		void initbasefuncionstruct::execute(std::vector<void*>* argumentspointer, uint64_t* errorcodepointer, bool forced, void* stream) {
 			if (errorcodepointer && !forced) {
 				return;
 			}
@@ -15,6 +15,23 @@ namespace memory {
 					delete *iter;
 					*iter = (basicfunction*)value;
 				}
+			}
+		}
+		void initmemorystruct::execute(std::vector<void*>* argumentspointer, uint64_t* errorcodepointer, bool forced, void* stream) {
+			if (argumentspointer->size() % 2) {
+				if (!forced) {
+					if (errorcodepointer) {
+						*errorcodepointer = 8576;	//errorcode (change): can`t make pairs from not even argument count
+					}
+					return;
+				}
+			}
+			std::vector<void*>::iterator end = argumentspointer->end();
+			std::vector<void*>::iterator begin = argumentspointer->begin();
+			std::vector<void*>::iterator i1 = begin;
+			std::vector<void*>::iterator i2 = i1 + 1;
+			while (!(i1++ == end || i2++ == end)) {
+				memory::object::memorycontroller::instance()->addtypeallocator((size_t)*i1, (size_t)*i2);
 			}
 		}
 	}

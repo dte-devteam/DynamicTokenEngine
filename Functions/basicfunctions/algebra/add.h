@@ -1,4 +1,5 @@
 #pragma once
+#pragma warning(disable:4275) //solve this later!
 #include "pch.h"
 #ifdef ALGEBRA_EXPORTS
 #define ALGEBRA_API __declspec(dllexport)
@@ -10,43 +11,43 @@ namespace functions {
 	namespace algebra {
 		//constructors
 		//(+)
-		struct ALGEBRA_API int_add_function : basicfunction {
+		struct __declspec(dllexport) int_add_function : basicfunction {
 			using basicfunction::basicfunction;
-			void execute(std::vector<void*>* argumentspointer, uint64_t* errorcodepointer, bool forced);
+			void execute(std::vector<void*>* argumentspointer, uint64_t* errorcodepointer, bool forced, void* stream);
 		};
-		struct ALGEBRA_API float_add_function : basicfunction {
+		struct __declspec(dllexport) float_add_function : basicfunction {
 			using basicfunction::basicfunction;
-			void execute(std::vector<void*>* argumentspointer, uint64_t* errorcodepointer, bool forced);
+			void execute(std::vector<void*>* argumentspointer, uint64_t* errorcodepointer, bool forced, void* stream);
 		};
-		struct ALGEBRA_API add_function : muxfunction {
+		struct __declspec(dllexport) add_function : muxfunction {
 			using muxfunction::muxfunction;
 		};
 		//(-)
-		struct ALGEBRA_API int_sub_function : basicfunction {
+		struct __declspec(dllexport) int_sub_function : basicfunction {
 			using basicfunction::basicfunction;
-			void execute(std::vector<void*>* argumentspointer, uint64_t* errorcodepointer, bool forced);
+			void execute(std::vector<void*>* argumentspointer, uint64_t* errorcodepointer, bool forced, void* stream);
 		};
-		struct ALGEBRA_API float_sub_function : basicfunction {
+		struct __declspec(dllexport) float_sub_function : basicfunction {
 			using basicfunction::basicfunction;
-			void execute(std::vector<void*>* argumentspointer, uint64_t* errorcodepointer, bool forced);
+			void execute(std::vector<void*>* argumentspointer, uint64_t* errorcodepointer, bool forced, void* stream);
 		};
 		//(*)
-		struct ALGEBRA_API int_mul_function : basicfunction {
+		struct __declspec(dllexport) int_mul_function : basicfunction {
 			using basicfunction::basicfunction;
-			void execute(std::vector<void*>* argumentspointer, uint64_t* errorcodepointer, bool forced);
+			void execute(std::vector<void*>* argumentspointer, uint64_t* errorcodepointer, bool forced, void* stream);
 		};
-		struct ALGEBRA_API float_mul_function : basicfunction {
+		struct __declspec(dllexport) float_mul_function : basicfunction {
 			using basicfunction::basicfunction;
-			void execute(std::vector<void*>* argumentspointer, uint64_t* errorcodepointer, bool forced);
+			void execute(std::vector<void*>* argumentspointer, uint64_t* errorcodepointer, bool forced, void* stream);
 		};
 		//(/)
-		struct ALGEBRA_API int_div_function : basicfunction {
+		struct __declspec(dllexport) int_div_function : basicfunction {
 			using basicfunction::basicfunction;
-			void execute(std::vector<void*>* argumentspointer, uint64_t* errorcodepointer, bool forced);
+			void execute(std::vector<void*>* argumentspointer, uint64_t* errorcodepointer, bool forced, void* stream);
 		};
-		struct ALGEBRA_API float_div_function : basicfunction {
+		struct __declspec(dllexport) float_div_function : basicfunction {
 			using basicfunction::basicfunction;
-			void execute(std::vector<void*>* argumentspointer, uint64_t* errorcodepointer, bool forced);
+			void execute(std::vector<void*>* argumentspointer, uint64_t* errorcodepointer, bool forced, void* stream);
 		};
 		//(%)
 		//instances
@@ -167,25 +168,21 @@ namespace functions {
 		};
 		//(%)
 		//function vector
-		extern ALGEBRA_API std::vector<basicfunction*> getfunctions() {
-			return std::vector<basicfunction*>(
-				/*{
-					&int_add,
-					&float_add,
-					&add,
-					&int_sub,
-					&float_sub,
-					&int_mul,
-					&float_mul,
-					&int_div,
-					&float_div
-				}*/
-				{}
-			);
+		std::vector<basicfunction*>* functions = new std::vector<basicfunction*>(
+			{
+				&int_add,
+				&float_add,
+				&add,
+				&int_sub,
+				&float_sub,
+				&int_mul,
+				&float_mul,
+				&int_div,
+				&float_div
+			}
+		);
+		extern _declspec(dllexport) std::vector<basicfunction*>* getfunctions() {
+			return functions;
 		}
-		
 	}
-}
-extern _declspec(dllexport) int getftemp() {
-	return -2000;
 }

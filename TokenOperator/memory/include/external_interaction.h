@@ -2,16 +2,15 @@
 #include "../../target_architecture.h"
 #include <libloaderapi.h>
 #include "../../function/include/functionfactory.h"
-using namespace functionfactory;
 namespace memory {
 	namespace external {
-		struct importdllstructure : basicfunction {
-			using basicfunction::basicfunction;
-			void execute(std::vector<void*>* argumentspointer, uint64_t* errorcodepointer, bool forced);
+		struct importdllstructure : functionfactory::basicfunction {
+			using functionfactory::basicfunction::basicfunction;
+			void execute(std::vector<void*>* argumentspointer, uint64_t* errorcodepointer, bool forced, void* stream);
 		};
-		struct getprocaddressstructure : basicfunction {
-			using basicfunction::basicfunction;
-			void execute(std::vector<void*>* argumentspointer, uint64_t* errorcodepointer, bool forced);
+		struct getprocaddressstructure : functionfactory::basicfunction {
+			using functionfactory::basicfunction::basicfunction;
+			void execute(std::vector<void*>* argumentspointer, uint64_t* errorcodepointer, bool forced, void* stream);
 		};
 		//instances
 		static importdllstructure importdll {

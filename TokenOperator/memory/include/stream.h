@@ -3,44 +3,51 @@
 #include <thread>
 #include <semaphore>
 #include "../../function/include/functionfactory.h"
-#include "metatable.h"
-using namespace functionfactory;
 namespace memory {
 	namespace stream {
 		class absolutestreamrights {
 			public:
+				absolutestreamrights(bool killstreamrights = false, bool semaphorerights = false, bool joinrights = false);
 				bool getkillrights();
 				bool getsemaphorerights();
+				bool getjoinrights();
 			private:
-				bool killstream;
+				bool kill;
 				bool semaphore;
+				bool join;
 		};
-		struct createstreamstruct : basicfunction {
-			using basicfunction::basicfunction;
-			void execute(std::vector<void*>* argumentspointer, uint64_t* errorcodepointer, bool forced);	//to do
+		struct createstreamstruct : functionfactory::basicfunction {
+			using functionfactory::basicfunction::basicfunction;
+			void execute(std::vector<void*>* argumentspointer, uint64_t* errorcodepointer, bool forced, void* stream);	//to do
 		};
-		struct stream : basicfunction {
+		struct stream : functionfactory::basicfunction {
 			public:
-				stream(basicfunction* function, uint64_t id, stream* caller);
-				void execute(std::vector<void*>* argumentspointer, uint64_t* errorcodepointer, bool forced);
+				stream(functionfactory::basicfunction* function, uint64_t id, stream* caller = nullptr);
+				void execute(std::vector<void*>* argumentspointer, uint64_t* errorcodepointer, bool forced, void* stream = nullptr);
 				//void execute(){}	//add function arguments
 				void interrupt(stream* caller) {}	//to do, interrupterid нельзя заменить, если он не 0!
 				void proceed(stream* caller) {}	//to do, если id совпадает, возобновляем работу
-				void killstream(stream* caller, bool shouldjoin);	//to do (придумать когда поток может быть убит), удалить поток и информацию о нем
+				void killstream(stream* caller);	//to do (придумать когда поток может быть убит), удалить поток и информацию о нем
+				void joinstream(stream* caller);
 				bool isalive();
 				bool iswaiting();
-				std::thread* thread = nullptr;
+				uint64_t getfunctionid();
+
+				std::vector<void*> iterators;//private!!!
 			protected:
 				~stream();
 			private:
+				uint64_t* sharederrorcodepointer = nullptr;
+				uint64_t* generatederrorcodepointer = new uint64_t;
 				stream* caller;
 				stream* interrupterer = 0;
-				basicfunction* function;
-				//std::thread thread;
+				functionfactory::basicfunction* function;
+				std::thread* thread = nullptr;
+				absolutestreamrights* rights;
 				std::binary_semaphore semaphore{0};
 				//vector<void*> stack;
 				std::vector<stream*> childstreams;
-				absolutestreamrights* rights;
+				
 		};
 		//static vector<stream*> treads;
 	}

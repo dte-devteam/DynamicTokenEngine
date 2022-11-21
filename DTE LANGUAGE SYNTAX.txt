@@ -1,0 +1,50 @@
+WARNING! THIS IS A PROTOTYPE!
+SPECIAL SYMBOLS:
+# - #comment
+: - token_type:name
+= - data description
+{ - open complex data description
+} - close complex data description
+( - open argument list
+) - close argument list
+"\t" or " " - divides list elements 
+
+TOKEN TYPES
+null
+type
+data
+function
+stream
+
+CODE EXAMPLE EXECUTABLE (description for execution):
+function:int_add(var_a, var_b, var_c) #result var_c = var_a + var_b
+
+CODE EXAMPLE PREEXECUTABLE (description for preexecution, fills memory, creates custom functions from dll functions and creates streams):
+data:var_a = {
+	type = int
+	data = 10
+	#think about type filling by c++ (may be basicfunction)
+}
+data:var_b = {
+	type = int
+	data = 90
+	#think about type filling by c++ (may be basicfunction)
+}
+data:var_c = {
+	type = int
+	data = 0
+	#think about type filling by c++ (may be basicfunction)
+}
+
+CODE EXEMPLE INI (initialise memory and dll functions, called to create memory and import functions):
+type:int = {
+	size = 4
+	length = 3 #we want to use 3 vars
+}
+type:void_pointer = {
+	size = 8
+	length = 2 #we want to use 1 function: add
+}
+load_functions = {
+	dll = "algebra"
+}

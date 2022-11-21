@@ -30,7 +30,7 @@
 * 32 bites - type description
 * [0] - is const
 * [1] - is pointer
-* 
+* [2] - is class (list of pointers to another iterators)
 */
 namespace functionfactory {
 	int r();
@@ -39,10 +39,9 @@ namespace functionfactory {
 		virtual ~basicfunction() {}
 		uint64_t getid();
 		std::vector<void*> defaultvalues;
-		virtual void execute(std::vector<void*>* argumentspointer, uint64_t* errorcodepointer, bool forced) = 0;
+		virtual void execute(std::vector<void*>* argumentspointer, uint64_t* errorcodepointer, bool forced, void* stream) = 0;
 		protected:
 			void filldefaultvalues(std::vector<void*>* argumentspointer, std::vector<void*>* target);
-		private:
 			uint64_t id;
 	};
 	struct functioncaller {
@@ -52,35 +51,36 @@ namespace functionfactory {
 	struct function : basicfunction {
 		function(uint64_t id = 0, std::vector<void*> defaultvalues = {}, std::vector<functioncaller> callings = {});
 		std::vector<functioncaller> callings;
-		void execute(std::vector<void*>* argumentspointer, uint64_t* errorcodepointer, bool forced);
+		void execute(std::vector<void*>* argumentspointer, uint64_t* errorcodepointer, bool forced, void* stream);
 		protected:
-			bool callfunctions(std::vector<void*>* values, uint64_t* errorcodepointer, bool forced);
+			bool callfunctions(std::vector<void*>* values, uint64_t* errorcodepointer, bool forced, void* stream);
 	};
 	struct typedfunction : function {
 		typedfunction(uint64_t id = 0, std::vector<void*> defaultvalues = {}, std::vector<functioncaller> callings = {}, std::vector<std::vector<void*>> valuetypes = {});
 		std::vector<std::vector<void*>> valuetypes;
-		void execute(std::vector<void*>* argumentspointer, uint64_t* errorcodepointer, bool forced);
+		void execute(std::vector<void*>* argumentspointer, uint64_t* errorcodepointer, bool forced, void* stream);
 		protected:
 			bool checktypecompability(std::vector<void*>* types);
 			void filltypes(std::vector<void*>::iterator start, std::vector<void*>::iterator end, std::vector<void*>* target);
 	};
 	struct muxfunction : typedfunction {
-		muxfunction(uint64_t id = 0, std::vector<void*> defaultvalues = {}, std::vector<functioncaller> callings = {}, std::vector<std::vector<void*>> valuetypes = {}, basicfunction* mux = nullptr);
-		void execute(std::vector<void*>* argumentspointer, uint64_t* errorcodepointer, bool forced);
+		muxfunction(uint64_t id = 0, std::vector<void*> defaultvalues = {}, std::vector<functioncaller> callings = {}, std::vector<std::vector<void*>> valuetypes = {}, basicfunction* mux = nullptr, std::vector<std::pair<size_t, bool>> mux_indices = {});
+		void execute(std::vector<void*>* argumentspointer, uint64_t* errorcodepointer, bool forced, void* stream);
 		basicfunction* mux;
+		std::vector<std::pair<size_t, bool>> mux_indices;
 	};
 	struct unreliablefunction : function {
 		using function::function;
-		void execute(std::vector<void*>* argumentspointer, uint64_t* errorcodepointer, bool forced);
+		void execute(std::vector<void*>* argumentspointer, uint64_t* errorcodepointer, bool forced, void* stream);
 	};
 	struct triggeredfunction : function {
 		using function::function;
-		void execute(std::vector<void*>* argumentspointer, uint64_t* errorcodepointer, bool forced);
+		void execute(std::vector<void*>* argumentspointer, uint64_t* errorcodepointer, bool forced, void* stream);
 		protected:
 			bool check(std::vector<void*>* argumentspointer, uint64_t* errorcodepointer);
 	};
 	struct cyclefunction : function {
 		using function::function;
-		void execute(std::vector<void*>* argumentspointer, uint64_t* errorcodepointer, bool forced);
+		void execute(std::vector<void*>* argumentspointer, uint64_t* errorcodepointer, bool forced, void* stream);
 	};
 }

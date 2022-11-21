@@ -1,19 +1,18 @@
 #pragma once
 #include "../../function/include/functionfactory.h"
 #include "external_interaction.h"
-using namespace functionfactory;
 namespace memory {
 	namespace function {
-		struct importfunctionstruct : typedfunction {
-			using typedfunction::typedfunction;
+		struct importfunctionstruct : functionfactory::typedfunction {
+			using functionfactory::typedfunction::typedfunction;
 		};
-		struct createfunctionstruct : basicfunction {
-			using basicfunction::basicfunction;
-			void execute(std::vector<void*>* argumentspointer, uint64_t* errorcodepointer, bool forced) {}
+		struct createfunctionstruct : functionfactory::basicfunction {
+			using functionfactory::basicfunction::basicfunction;
+			void execute(std::vector<void*>* argumentspointer, uint64_t* errorcodepointer, bool forced, void* stream) {}
 		};
-		struct functionloaderstruct : muxfunction {
-			using muxfunction::muxfunction;
-			void execute(std::vector<void*>* argumentspointer, uint64_t* errorcodepointer, bool forced) {}
+		struct functionloaderstruct : functionfactory::muxfunction {
+			using functionfactory::muxfunction::muxfunction;
+			void execute(std::vector<void*>* argumentspointer, uint64_t* errorcodepointer, bool forced, void* stream) {}
 		};
 		//constances
 		static LPCSTR dllfunctionloadername = "getftemp";
@@ -64,7 +63,7 @@ namespace memory {
 		static functionloaderstruct functionloader {
 			//to do (must create f() from other functions)
 		};
-		static std::vector<basicfunction*> functions;
+		static std::vector<functionfactory::basicfunction*> functions;
 		//в процессе инициации/добавления/поиска новых функции нужно будет делить вектор функций на куски и обрабатывать это параллельно
 		//чтобы при поиске функции find_if не занимала слишком много времени
 	}

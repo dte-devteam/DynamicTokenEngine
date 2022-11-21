@@ -1,8 +1,7 @@
 #include "../include/external_interaction.h"
-using namespace functionfactory;
 namespace memory {
 	namespace external {
-		void importdllstructure::execute(std::vector<void*>* argumentspointer, uint64_t* errorcodepointer, bool forced) {
+		void importdllstructure::execute(std::vector<void*>* argumentspointer, uint64_t* errorcodepointer, bool forced, void* stream) {
 			std::vector<void*> values;
 			filldefaultvalues(argumentspointer, &values);
 			HMODULE dllentry = NULL;
@@ -15,7 +14,7 @@ namespace memory {
 				}
 			}
 		}
-		void getprocaddressstructure::execute(std::vector<void*>* argumentspointer, uint64_t* errorcodepointer, bool forced) {
+		void getprocaddressstructure::execute(std::vector<void*>* argumentspointer, uint64_t* errorcodepointer, bool forced, void* stream) {
 			std::vector<void*> values;
 			filldefaultvalues(argumentspointer, &values);
 			void* vectoroffunctions = nullptr;

@@ -20,6 +20,10 @@
 * 
 * problems:
 * heap memory defragmentation
+* unable to hold class pointer safely:
+*	class* turned into void*
+*	thread MUST kill all created classes before death, but termination can prevent it - memory leak
+* unable to hold class with dynamic size
 */
 namespace memory {
 	namespace object {
@@ -28,13 +32,15 @@ namespace memory {
 			public:
 				iterator(size_t typesize);
 				virtual ~iterator();
-				uint64_t type = 0;
 				bool isblocked = false;	//make atomic, or smth else
 				std::vector<stream::stream*> usedbystreams;
 				void* getpointer();
+				bool settype(uint64_t newtype);
 				uint64_t getid();
+				uint64_t gettype();
 			private:
 				uint64_t id = 0;
+				uint64_t type = 0;
 				void* pointer;
 		};
 		class typeallocator {
@@ -65,12 +71,12 @@ namespace memory {
 				void deltypeallocator(size_t typesize);
 				iterator* getobject(uint64_t id, bool maywrite = true, stream::stream* caller = nullptr);
 				uint64_t getfreeid();
+				bool hastypewithsize(size_t typesize);
 				std::vector<typeallocator*> objects;	//MAKE THIS PRIVATE!!!
 			protected:
 				memorycontroller(std::vector<size_t>* sizes);
 			private:
 				static memorycontroller* _instance;
-				std::vector<uint64_t> potentialfreeid;
 		};
 	}
 }
