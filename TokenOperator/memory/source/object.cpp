@@ -6,23 +6,67 @@ namespace memory {
 			for (stream::stream* s : usedbystreams) {
 				s->killstream(s);	//fix, make enough rights to kill;
 			}
-			free(pointer);
+			if (deleter) {
+				deleter(pointer);
+			}
+			else {
+				free(pointer);
+			}
 		}
 		void* iterator::getpointer() {
 			return pointer;
-		}
-		bool iterator::settype(uint64_t newtype) {
-			if (isblocked) {
-				return false;
-			}
-			type = newtype;
-			return true;
 		}
 		uint64_t iterator::getid() {
 			return id;
 		}
 		uint64_t iterator::gettype() {
 			return type;
+		}
+		void iterator::settype(stream::stream* caller, uint64_t newtype) {
+			if (blocker) {
+				if (!caller) {
+					return;
+				}
+				if (caller->getid() != blocker->getid()) {
+					return;
+				}
+			}
+			type = newtype;
+		}
+		void iterator::setdeleter(stream::stream* caller, void (*deleter)(void*)) {
+			if (blocker) {
+				if (!caller) {
+					return;
+				}
+				if (caller->getid() != blocker->getid()) {
+					return;
+				}
+			}
+			this->deleter = deleter;
+		}
+		void iterator::unregisterobject(stream::stream* caller) {
+			if (caller) {
+				std::vector< stream::stream*>::iterator end = usedbystreams.end();
+				std::vector< stream::stream*>::iterator iter = find_if(
+					usedbystreams.begin(),
+					end,
+					[caller](stream::stream* stream) {
+						return caller->getid() == stream->getid();
+					}
+				);
+				if (iter != end) {
+					usedbystreams.erase(iter);
+				}
+				if (blocker) {
+					if (caller->getid() == blocker->getid()) {
+						blocker = nullptr;
+					}
+				}
+			}
+			if (usedbystreams.empty()) {
+				id = 0;
+				type = 0;
+			}
 		}
 
 		typeallocator::typeallocator(size_t typesize, size_t listsize) : typesize(typesize) {
@@ -36,7 +80,6 @@ namespace memory {
 		}
 		typeallocator::~typeallocator() {
 			for (iterator* i : iters) {
-				i->isblocked = true;
 				delete i;
 			}
 			iters.clear();
@@ -63,29 +106,18 @@ namespace memory {
 			return 0;
 		}
 		void typeallocator::unregisterobject(iterator* iter, stream::stream* caller) {
-			if (caller) {
-				iter->usedbystreams.erase(
-					find_if(
-						iter->usedbystreams.begin(), 
-						iter->usedbystreams.end(), 
-						[caller](stream::stream* stream) { 
-							return caller->getid() == stream->getid(); 
-						}
-					)
-				);
-			}
-			if (iter->usedbystreams.empty()) {
-				iter->id = 0;
-				iter->type = 0;
-				iter->isblocked = false;
+			if (iter) {
+				iter->unregisterobject(caller);
 			}
 		}
-		iterator* typeallocator::addobject(uint64_t type, stream::stream* caller) {
+		iterator* typeallocator::addobject(uint64_t type, bool maywrite, stream::stream* caller) {
 			for (iterator* i : iters) {
 				if (!i->id) {
 					i->id = memorycontroller::instance()->getfreeid();
 					i->type = type;
-					i->isblocked = true;
+					if (maywrite) {
+						i->blocker = caller;
+					}
 					if (caller) {
 						i->usedbystreams.push_back(caller);
 						caller->iterators.push_back(i);
@@ -97,12 +129,17 @@ namespace memory {
 		}
 		iterator* typeallocator::getobject(uint64_t id, bool maywrite, stream::stream* caller) {
 			for (iterator* i : iters) {
-				if (i->getid() == id) {
-					if (i->isblocked && maywrite) {
-						return nullptr;
+				if (i->id == id) {
+					if (i->blocker && maywrite) {
+						if (!caller) {
+							return nullptr;
+						}
+						if (i->blocker->getid() != caller->getid()) {
+							return nullptr;
+						}
 					}
 					if (maywrite) {
-						i->isblocked = true;
+						i->blocker = caller;
 					}
 					if (caller) {
 						if (find_if(i->usedbystreams.begin(), i->usedbystreams.end(),[caller](stream::stream* stream) { return caller->getid() == stream->getid(); }) == i->usedbystreams.end()) {
@@ -135,7 +172,7 @@ namespace memory {
 				std::cout << std::left << std::setw(7) << "type: ";
 				std::cout << std::left << std::setw(10) << i->type;
 				std::cout << std::left << std::setw(12) << "isblocked: ";
-				std::cout << std::left << std::setw(5) << i->isblocked;
+				std::cout << std::left << std::setw(5) << i->blocker;
 				if (extended) {
 					std::cout << std::left << std::setw(10) << "pointer: ";
 					std::cout << std::left << std::setw(20) << i->pointer;
@@ -190,7 +227,9 @@ namespace memory {
 			iterator* iter;
 			for (typeallocator* ta : objects) {
 				iter = ta->getobject(id, maywrite, caller);
-				return iter;
+				if (iter) {
+					return iter;
+				}
 			}
 			return nullptr;
 		}

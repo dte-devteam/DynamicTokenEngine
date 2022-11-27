@@ -1,4 +1,3 @@
-LIBRARY "algebra"
-	DESCRIPTION 'basic math functions v0'
+LIBRARY "DTE algebra v0"
 EXPORTS
-	getfunctions     @1
+	getfunctions	@1

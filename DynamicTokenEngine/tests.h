@@ -27,10 +27,10 @@ namespace test {
 		5				//5
 	});
 	static stream* s = new stream((*dllf)[0], 0);
-	//static stream* s = new stream(&functions::algebra::int_add, 0);
-	static stream* us = new stream(nullptr, 0);
-	static int a, b, c;
+	static stream* us = new stream(nullptr, 1);
+	static int a = 10, b = 5, c = 0;
 	static uint64_t e = 0;
+	static std::vector<void*>* args = new std::vector<void*>({ (void*)&a, (void*)&c, (void*)&c });
 	void inline test(int testmode) {
 		switch (testmode) {
 			iterator* i;
@@ -56,7 +56,7 @@ namespace test {
 				memorycontroller::instance()->objects[0]->setlistsize(5, true);
 				break;
 			case ADD_OBJ:
-				memorycontroller::instance()->objects[0]->addobject(1, s);
+				memorycontroller::instance()->objects[0]->addobject(1, true, s);
 				break;
 			case OP_INT_SET_0:
 				i = memorycontroller::instance()->getobject(20, false);
@@ -71,9 +71,7 @@ namespace test {
 				std::cout << *(int*)i->getpointer() << std::endl;
 				break;
 			case THREAD_CREATE:
-				a = 10;
-				b = 5;
-				s->execute(new std::vector<void*>({ (void*)&a, (void*)&b, (void*)&c }), nullptr, true);
+				s->execute(args, nullptr, true);
 				s->joinstream(us);
 				std::cout << c << std::endl;
 				break;

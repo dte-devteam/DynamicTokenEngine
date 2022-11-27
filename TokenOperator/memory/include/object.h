@@ -28,17 +28,22 @@
 namespace memory {
 	namespace object {
 		class iterator {
+			//think of atomic
 			friend class typeallocator;
+			//friend void memorycontroller::unregisterobject(iterator*, stream::stream*);	//error C2653 why???
 			public:
 				iterator(size_t typesize);
 				virtual ~iterator();
-				bool isblocked = false;	//make atomic, or smth else
 				std::vector<stream::stream*> usedbystreams;
 				void* getpointer();
-				bool settype(uint64_t newtype);
 				uint64_t getid();
 				uint64_t gettype();
+				void settype(stream::stream* caller, uint64_t newtype);
+				void setdeleter(stream::stream* caller, void (*deleter)(void*));
+				void unregisterobject(stream::stream* caller);
 			private:
+				stream::stream* blocker = nullptr;
+				void (*deleter)(void*) = nullptr;
 				uint64_t id = 0;
 				uint64_t type = 0;
 				void* pointer;
@@ -49,8 +54,8 @@ namespace memory {
 				typeallocator(size_t typesize, size_t listsize);
 				virtual ~typeallocator();
 				int setlistsize(size_t listsize, bool forced);
-				void unregisterobject(iterator* iter, stream::stream* caller);
-				iterator* addobject(uint64_t type, stream::stream* caller);
+				static void unregisterobject(iterator* iter, stream::stream* caller);
+				iterator* addobject(uint64_t type, bool maywrite, stream::stream* caller);
 				iterator* getobject(uint64_t id, bool maywrite, stream::stream* caller);
 				size_t gettypesize();
 				size_t getlistsize();

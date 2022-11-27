@@ -26,7 +26,17 @@ namespace memory {
 			delete generatederrorcodepointer;
 		}
 		void stream::execute(std::vector<void*>* argumentspointer, uint64_t* errorcodepointer, bool forced, void* stream) {
+			if (alive) {
+				if (errorcodepointer) {
+					*errorcodepointer = 9090;	//change error code (to do): cant execute alive thread
+				}
+				return;
+			}
 			if (function) {
+				if (thread.joinable()) {
+					thread.join();
+				}
+				alive = true;
 				if (errorcodepointer) {
 					sharederrorcodepointer = errorcodepointer;
 				}
@@ -34,14 +44,20 @@ namespace memory {
 					*generatederrorcodepointer = 0;
 					sharederrorcodepointer = generatederrorcodepointer;
 				}
-				thread = new std::thread(&basicfunction::execute, function, argumentspointer, sharederrorcodepointer, forced, this);
+				//thread = new std::thread(&basicfunction::execute, function, argumentspointer, sharederrorcodepointer, forced, this);
+				thread = std::thread(
+					[this, argumentspointer, forced] {
+						function->execute(argumentspointer, sharederrorcodepointer, forced, this);
+						alive = false;
+					}
+				);
 			}
 			else if (errorcodepointer) {
 				*errorcodepointer = 7658;	//change error code (to do): cant execute nullptr of function
 			}
 		}
 		void stream::killstream(stream* caller) {
-			if (thread) {
+			if (alive) {
 				if (caller) {
 					if (this->caller) {
 						if (caller->id == this->caller->id) {
@@ -61,38 +77,38 @@ namespace memory {
 				for (stream* s : childstreams) {
 					s->killstream(this);
 				}
-				for (void* i : iterators) {
-					((object::iterator*)i)->isblocked = false;	//test
-				}
 				*sharederrorcodepointer = 0xFFFFFFFFFFFFFFFF;	//change, maybe temprorary value
+				//wait until thread is dead (to do)
+				//unregister every used iteretor (to do)
+				for (void* i : iterators) {
+					((object::iterator*)i)->unregisterobject(this);
+				}
+				iterators.clear();
 			}
 		}
 		void stream::joinstream(stream* caller) {
-			if (caller == this) {
+			if (caller->id == this->id) {
 				return;
 			}
-			if (thread) {
-				if (thread->joinable() && caller) {
+			if (alive) {
+				if (thread.joinable() && caller) {
 					if (this->caller) {
 						if (caller->id == this->caller->id) {
-							return thread->join();
+							return thread.join();
 						}
 					}
 					if (caller->rights->getjoinrights()) {
-						return thread->join();
+						return thread.join();
 					}
 				}
 			}
 		}
 
 		bool stream::isalive() {
-			if (thread) {
-				return std::thread::id() == thread->get_id();	//may be wrong!!! (check)
-			}
-			return false;
+			return alive;
 		}
 		bool stream::iswaiting() {
-			if (thread) {
+			if (alive) {
 				//get semaphore value (to do)
 			}
 			return false;

@@ -2,6 +2,7 @@
 #include <stdint.h>
 #include <thread>
 #include <semaphore>
+#include <atomic>
 #include "../../function/include/functionfactory.h"
 namespace memory {
 	namespace stream {
@@ -33,21 +34,21 @@ namespace memory {
 				bool iswaiting();
 				uint64_t getfunctionid();
 
-				std::vector<void*> iterators;//private!!!
+				std::vector<void*> iterators{};//private!!!
 			protected:
 				~stream();
 			private:
+				std::atomic<bool> alive {false};
 				uint64_t* sharederrorcodepointer = nullptr;
 				uint64_t* generatederrorcodepointer = new uint64_t;
 				stream* caller;
 				stream* interrupterer = 0;
 				functionfactory::basicfunction* function;
-				std::thread* thread = nullptr;
+				std::thread thread = std::thread();
 				absolutestreamrights* rights;
 				std::binary_semaphore semaphore{0};
-				//vector<void*> stack;
 				std::vector<stream*> childstreams;
-				
+				//vector<void*> stack; (to do later, will be usefull for debug)
 		};
 		//static vector<stream*> treads;
 	}

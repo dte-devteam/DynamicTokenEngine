@@ -5,7 +5,6 @@
 #include "tests.h"
 
 #include <chrono>
-#include <thread>
 
 #include <variant>
 
@@ -159,6 +158,12 @@ int main() {
 
     test::test(test::THREAD_DELETE);
     test::test(test::LOG);
+
+    i = 200;
+    while (i--) {
+        test::test(test::THREAD_CREATE);
+        //test::test(test::THREAD_DELETE);
+    }
 
 
     test::test(test::TERMMEM);
