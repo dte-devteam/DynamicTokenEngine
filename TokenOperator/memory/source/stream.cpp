@@ -78,7 +78,7 @@ namespace memory {
 					s->killstream(this);
 				}
 				*sharederrorcodepointer = 0xFFFFFFFFFFFFFFFF;	//change, maybe temprorary value
-				//wait until thread is dead (to do)
+				alive.wait(true);
 				//unregister every used iteretor (to do)
 				for (void* i : iterators) {
 					((object::iterator*)i)->unregisterobject(this);

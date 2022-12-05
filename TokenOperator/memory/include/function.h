@@ -14,8 +14,6 @@ namespace memory {
 			using functionfactory::muxfunction::muxfunction;
 			void execute(std::vector<void*>* argumentspointer, uint64_t* errorcodepointer, bool forced, void* stream) {}
 		};
-		//constances
-		static LPCSTR dllfunctionloadername = "getftemp";
 		//instances
 		static importfunctionstruct importfunction {
 			0,	//name (change)
@@ -36,7 +34,7 @@ namespace memory {
 					{
 						{1, false},
 						{1, false},
-						{(size_t)dllfunctionloadername, true}
+						{(size_t)"getfunctions", true}
 					}
 				}
 			},

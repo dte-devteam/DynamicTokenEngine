@@ -1,12 +1,10 @@
 #include <iostream>
+#include <chrono>
+#include <variant>
 
 #include "utils/include/hash.h"
 
 #include "tests.h"
-
-#include <chrono>
-
-#include <variant>
 
 struct int_addadd : functionfactory::function { using function::function; };
 struct add_funtion : functionfactory::muxfunction { using muxfunction::muxfunction; };
@@ -19,6 +17,7 @@ struct setter : functionfactory::basicfunction { //temp
 std::chrono::milliseconds timespan(5000);
 
 int main() {
+    test::inittestdata();
     int_addadd addadd {
         0,  //name
         {   //defaultvalues
@@ -171,7 +170,8 @@ int main() {
 
     std::cout << "END" << std::endl;
 
-
+    std::cout << test::dllf->size() << std::endl;
+    std::cout << "exec time: " << (clock() - t) / 1000.0 << "ms" << std::endl;
 
     std::this_thread::sleep_for(timespan);
     return functionfactory::r();

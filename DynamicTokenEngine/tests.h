@@ -1,9 +1,7 @@
 #pragma once
 #include "memory/include/object.h"
-#include "memory/include/function.h"
 #include "memory/include/stream.h"
-using namespace memory::object;
-using namespace memory::stream;
+#include "memory/include/function.h"
 typedef std::vector<functionfactory::basicfunction*>* (*DLLPROC)();
 namespace test {
 	enum testmode {
@@ -16,27 +14,34 @@ namespace test {
 		OP_INT_SET_0,
 		OP_INT_ADD,
 		LOG_INT_OBJ,
-
 		THREAD_CREATE,
 		THREAD_DELETE
 	};
-	static std::vector<functionfactory::basicfunction*>* dllf = ((DLLPROC)GetProcAddress(LoadLibrary(L"algebra.dll"), "getfunctions"))();
+	static std::vector<functionfactory::basicfunction*>* dllf;// = ((DLLPROC)GetProcAddress(LoadLibrary(L"algebra.dll"), "getfunctions"))();
 	static std::vector<size_t>* sizes = new std::vector<size_t>({
 		sizeof(void*),	//8
 		sizeof(int),	//4
 		5				//5
 	});
-	static stream* s = new stream((*dllf)[0], 0);
-	static stream* us = new stream(nullptr, 1);
+	static memory::stream::stream* s;
+	static memory::stream::stream* us;
 	static int a = 10, b = 5, c = 0;
 	static uint64_t e = 0;
 	static std::vector<void*>* args = new std::vector<void*>({ (void*)&a, (void*)&c, (void*)&c });
+	void inline inittestdata() {
+		DLLPROC functogetfucns;
+		std::vector<void*> vec({(void*)L"algebra.dll", &functogetfucns, 0, 0});
+		memory::function::importfunction.execute(&vec, nullptr, false, nullptr);
+		dllf = functogetfucns();
+		s = new memory::stream::stream((*dllf)[0], 0);
+		us = new memory::stream::stream(nullptr, 1);
+	}
 	void inline test(int testmode) {
 		switch (testmode) {
-			iterator* i;
+			memory::object::iterator* i;
 			case INITMEM:
-				memorycontroller::instance(sizes);
-				for (typeallocator* typealloc : memorycontroller::instance()->objects) {
+				memory::object::memorycontroller::instance(sizes);
+				for (memory::object::typeallocator* typealloc : memory::object::memorycontroller::instance()->objects) {
 					std::cout << std::left << std::setw(6) << "size: ";
 					std::cout << std::left << std::setw(7) << typealloc->gettypesize();
 					std::cout << std::left << std::setw(8) << "length: ";
@@ -44,30 +49,30 @@ namespace test {
 				}
 				break;
 			case TERMMEM:
-				delete memorycontroller::instance();
+				delete memory::object::memorycontroller::instance();
 				break;
 			case LOG:
-				memorycontroller::instance()->objects[0]->log_data();
+				memory::object::memorycontroller::instance()->objects[0]->log_data();
 				break;
 			case RESIZEBIG:
-				memorycontroller::instance()->objects[0]->setlistsize(15, true);
+				memory::object::memorycontroller::instance()->objects[0]->setlistsize(15, true);
 				break;
 			case RESIZESMALL:
-				memorycontroller::instance()->objects[0]->setlistsize(5, true);
+				memory::object::memorycontroller::instance()->objects[0]->setlistsize(5, true);
 				break;
 			case ADD_OBJ:
-				memorycontroller::instance()->objects[0]->addobject(1, true, s);
+				memory::object::memorycontroller::instance()->objects[0]->addobject(1, true, s);
 				break;
 			case OP_INT_SET_0:
-				i = memorycontroller::instance()->getobject(20, false);
+				i = memory::object::memorycontroller::instance()->getobject(20, false);
 				*(int*)i->getpointer() = 0;
 				break;
 			case OP_INT_ADD:
-				i = memorycontroller::instance()->getobject(20, false);
+				i = memory::object::memorycontroller::instance()->getobject(20, false);
 				*(int*)i->getpointer() = *(int*)i->getpointer() + 1;
 				break;
 			case LOG_INT_OBJ:
-				i = memorycontroller::instance()->getobject(20, false);
+				i = memory::object::memorycontroller::instance()->getobject(20, false);
 				std::cout << *(int*)i->getpointer() << std::endl;
 				break;
 			case THREAD_CREATE:

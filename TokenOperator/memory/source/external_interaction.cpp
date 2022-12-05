@@ -2,11 +2,8 @@
 namespace memory {
 	namespace external {
 		void importdllstructure::execute(std::vector<void*>* argumentspointer, uint64_t* errorcodepointer, bool forced, void* stream) {
-			std::vector<void*> values;
-			filldefaultvalues(argumentspointer, &values);
-			HMODULE dllentry = NULL;
-			if (values[0] && values[1]) {
-				dllentry = LoadLibrary((LPCWSTR)values[0]);
+			if ((*argumentspointer)[0] && (*argumentspointer)[1]) {
+				*(void**)(*argumentspointer)[1] = LoadLibrary((LPCWSTR)(*argumentspointer)[0]);
 			}
 			else {
 				if (errorcodepointer) {
@@ -15,11 +12,8 @@ namespace memory {
 			}
 		}
 		void getprocaddressstructure::execute(std::vector<void*>* argumentspointer, uint64_t* errorcodepointer, bool forced, void* stream) {
-			std::vector<void*> values;
-			filldefaultvalues(argumentspointer, &values);
-			void* vectoroffunctions = nullptr;
-			if (values[0] && values[1] && values[2]) {
-				vectoroffunctions = (void*)GetProcAddress(*(HMODULE*)values[0], (LPCSTR)values[2]);	//change "getfunctions" to real function
+			if ((*argumentspointer)[0] && (*argumentspointer)[1] && (*argumentspointer)[2]) {
+				*(void**)(*argumentspointer)[1] = GetProcAddress(*(HMODULE*)(*argumentspointer)[0], (LPCSTR)(*argumentspointer)[2]);	//change "getfunctions" to real function
 			}
 			else {
 				if (errorcodepointer) {
