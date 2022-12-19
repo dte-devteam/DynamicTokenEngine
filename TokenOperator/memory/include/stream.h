@@ -8,14 +8,16 @@ namespace memory {
 	namespace stream {
 		class absolutestreamrights {
 			public:
-				absolutestreamrights(bool killstreamrights = false, bool semaphorerights = false, bool joinrights = false);
+				absolutestreamrights(bool killstreamrights = false, bool semaphorerights = false, bool joinrights = false, bool memoryrights = false);
 				bool getkillrights();
 				bool getsemaphorerights();
 				bool getjoinrights();
+				bool getmemoryrights();
 			private:
 				bool kill;
 				bool semaphore;
 				bool join;
+				bool memoryrights;
 		};
 		struct createstreamstruct : functionfactory::basicfunction {
 			using functionfactory::basicfunction::basicfunction;
@@ -25,7 +27,6 @@ namespace memory {
 			public:
 				stream(functionfactory::basicfunction* function, uint64_t id, stream* caller = nullptr);
 				void execute(std::vector<void*>* argumentspointer, uint64_t* errorcodepointer, bool forced, void* stream = nullptr);
-				//void execute(){}	//add function arguments
 				void interrupt(stream* caller) {}	//to do, interrupterid нельзя заменить, если он не 0!
 				void proceed(stream* caller) {}	//to do, если id совпадает, возобновляем работу
 				void killstream(stream* caller);	//to do (придумать когда поток может быть убит), удалить поток и информацию о нем
@@ -50,6 +51,5 @@ namespace memory {
 				std::vector<stream*> childstreams;
 				//vector<void*> stack; (to do later, will be usefull for debug)
 		};
-		//static vector<stream*> treads;
 	}
 }

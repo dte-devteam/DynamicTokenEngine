@@ -23,6 +23,9 @@ namespace functionfactory {
 		values.push_back(argumentspointer);
 		*target = values;
 	}
+	void basicfunction::destruct(void* pointer) {
+		deletable_obj::destructor<basicfunction>(pointer);
+	}
 	void typedfunction::filltypes(std::vector<void*>::iterator start, std::vector<void*>::iterator end, std::vector<void*>* target) {
 		std::vector<void*> types(start, end);
 		*target = types;

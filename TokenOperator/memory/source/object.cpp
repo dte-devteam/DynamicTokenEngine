@@ -110,10 +110,10 @@ namespace memory {
 				iter->unregisterobject(caller);
 			}
 		}
-		iterator* typeallocator::addobject(uint64_t type, bool maywrite, stream::stream* caller) {
+		iterator* typeallocator::addobject(uint64_t type, bool maywrite, stream::stream* caller, uint64_t id) {
 			for (iterator* i : iters) {
 				if (!i->id) {
-					i->id = memorycontroller::instance()->getfreeid();
+					i->id = id;
 					i->type = type;
 					if (maywrite) {
 						i->blocker = caller;
@@ -168,9 +168,9 @@ namespace memory {
 				std::cout << std::left << std::setw(8) << "index: ";
 				std::cout << std::left << std::setw(8) << l;
 				std::cout << std::left << std::setw(5) << "id: ";
-				std::cout << std::left << std::setw(10) << i->id;
+				std::cout << std::left << std::setw(12) << i->id;
 				std::cout << std::left << std::setw(7) << "type: ";
-				std::cout << std::left << std::setw(10) << i->type;
+				std::cout << std::left << std::setw(12) << i->type;
 				std::cout << std::left << std::setw(12) << "isblocked: ";
 				std::cout << std::left << std::setw(5) << i->blocker;
 				if (extended) {
@@ -209,7 +209,7 @@ namespace memory {
 		}
 		void memorycontroller::addtypeallocator(size_t typesize, size_t listsize) {
 			for (typeallocator* ta : objects) {
-				if (ta->typesize) {
+				if (ta->typesize == typesize) {
 					ta->setlistsize(listsize, false);
 					return;
 				}
@@ -219,8 +219,52 @@ namespace memory {
 		void memorycontroller::deltypeallocator(size_t typesize) {
 			std::vector<typeallocator*>::iterator iter = find_if(objects.begin(), objects.end(), [typesize](typeallocator* alloc) { return typesize == alloc->typesize; });
 			if (iter != objects.end()) {
-				delete (typeallocator*)*iter;
+				delete *iter;
 				objects.erase(iter);
+			}
+		}
+		iterator* memorycontroller::addobject(uint64_t type, bool maywrite, stream::stream* caller, size_t size) {
+			mutex.lock();
+			uint32_t realtype = type >> 32;
+			std::vector<table::typedesc>::iterator i = std::find_if(
+				table::type_table.begin(), 
+				table::type_table.end(), 
+				[realtype](table::typedesc t) { 
+					return realtype == t.type; 
+				}
+			);
+			if (i == table::type_table.end()) {
+				if (size) {
+					uint64_t id = getfreeid();
+					objects.push_back(new typeallocator(size, 1));
+					table::registernewtype(realtype, size);
+					mutex.unlock();
+					return objects.back()->addobject(type, maywrite, caller, id);
+				}
+				mutex.unlock();
+				return nullptr;
+			}
+			else {
+				uint64_t id = getfreeid();
+				std::vector<typeallocator*>::iterator ta = std::find_if(
+					objects.begin(),
+					objects.end(),
+					[i](typeallocator* ta) {
+						return i->size == ta->typesize;
+					}
+				);
+				iterator* it = (*ta)->addobject(type, maywrite, caller, id);
+				if (it) {
+					mutex.unlock();
+					return it;
+				}
+				else if (size) {
+					(*ta)->setlistsize((*ta)->getlistsize() + 1, false);
+					mutex.unlock();
+					return (*ta)->addobject(type, maywrite, caller, id);
+				}
+				mutex.unlock();
+				return nullptr;
 			}
 		}
 		iterator* memorycontroller::getobject(uint64_t id, bool maywrite, stream::stream* caller) {
@@ -234,16 +278,15 @@ namespace memory {
 			return nullptr;
 		}
 		uint64_t memorycontroller::getfreeid() {
-			//to do
-			return 20;
-		}
-		bool memorycontroller::hastypewithsize(size_t typesize) {
+			uint64_t id = 1;
 			for (typeallocator* ta : objects) {
-				if (ta->typesize) {
-					return true;
+				for (iterator* it : ta->iters) {
+					if (id == it->getid()) {
+						id++;
+					}
 				}
 			}
-			return false;
+			return id;
 		}
 	}
 }

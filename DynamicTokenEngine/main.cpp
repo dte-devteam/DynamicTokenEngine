@@ -1,6 +1,5 @@
 #include <iostream>
 #include <chrono>
-#include <variant>
 
 #include "utils/include/hash.h"
 
@@ -138,7 +137,7 @@ int main() {
 
     test::test(test::LOG);
     test::test(test::ADD_OBJ);
-    std::cout << "ADD" << std::endl;
+    test::test(test::ADD_OBJ);
     test::test(test::LOG);
     test::test(test::RESIZEBIG);
     std::cout << "BIG" << std::endl;
@@ -158,10 +157,10 @@ int main() {
     test::test(test::THREAD_DELETE);
     test::test(test::LOG);
 
-    i = 200;
+    i = 20;
     while (i--) {
         test::test(test::THREAD_CREATE);
-        //test::test(test::THREAD_DELETE);
+        test::test(test::THREAD_DELETE);
     }
 
 

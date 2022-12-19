@@ -138,9 +138,6 @@
     <ClCompile Include="utils\source\hash.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Functions\basicfunctions\algebra\algebra.vcxproj">
-      <Project>{fd3aa9f7-e808-4aa5-95ac-540e96a02a1b}</Project>
-    </ProjectReference>
     <ProjectReference Include="..\TokenOperator\TokenOperator.vcxproj">
       <Project>{0007904b-0187-456f-b355-c552e1bb6c2d}</Project>
     </ProjectReference>
@@ -151,6 +148,5 @@
     <ClInclude Include="utils\include\hash.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
-  <ImportGroup Label="ExtensionTargets">
-  </ImportGroup>
+  <ImportGroup Label="ExtensionTargets" />
 </Project>

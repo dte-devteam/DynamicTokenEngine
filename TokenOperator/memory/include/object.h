@@ -1,8 +1,11 @@
 #pragma once
 #include <vector>
+#include <mutex>
 #include <iostream>	//temp
 #include <iomanip>	//temp
 #include "stream.h"
+#include "metatable.h"
+//to do: stream defines if it can write (+basicfunction)
 /*
 * memory organisation:
 * memorycontroller
@@ -28,9 +31,9 @@
 namespace memory {
 	namespace object {
 		class iterator {
-			//think of atomic
+			//think of atomic or mutex
 			friend class typeallocator;
-			//friend void memorycontroller::unregisterobject(iterator*, stream::stream*);	//error C2653 why???
+			//friend uint64_t memorycontroller::getfreeid(void);	//error C2653 why???
 			public:
 				iterator(size_t typesize);
 				virtual ~iterator();
@@ -55,7 +58,7 @@ namespace memory {
 				virtual ~typeallocator();
 				int setlistsize(size_t listsize, bool forced);
 				static void unregisterobject(iterator* iter, stream::stream* caller);
-				iterator* addobject(uint64_t type, bool maywrite, stream::stream* caller);
+				iterator* addobject(uint64_t type, bool maywrite, stream::stream* caller, uint64_t id = 20);	//temp should be 0
 				iterator* getobject(uint64_t id, bool maywrite, stream::stream* caller);
 				size_t gettypesize();
 				size_t getlistsize();
@@ -65,23 +68,25 @@ namespace memory {
 				void log_data(bool extended = false);
 			private:
 				size_t typesize;
-				//iterator* objdesc;
 		};
 		class memorycontroller {
+			friend iterator* typeallocator::addobject(uint64_t, bool, stream::stream*, uint64_t);
 			public:
 				static inline size_t defaultlistsize = 10;
 				virtual ~memorycontroller();	//почему в итоге память не высвобождается?!
 				static memorycontroller* instance(std::vector<size_t>* types = nullptr);
 				void addtypeallocator(size_t typesize, size_t listsize = defaultlistsize);
 				void deltypeallocator(size_t typesize);
+				iterator* addobject(uint64_t type, bool maywrite, stream::stream* caller = nullptr, size_t size = 0);	//add stream safe (critical section or smth)
 				iterator* getobject(uint64_t id, bool maywrite = true, stream::stream* caller = nullptr);
-				uint64_t getfreeid();
-				bool hastypewithsize(size_t typesize);
+				stream::stream* createstream();
 				std::vector<typeallocator*> objects;	//MAKE THIS PRIVATE!!!
 			protected:
 				memorycontroller(std::vector<size_t>* sizes);
 			private:
 				static memorycontroller* _instance;
+				uint64_t getfreeid();
+				std::mutex mutex;
 		};
 	}
 }

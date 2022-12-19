@@ -35,6 +35,8 @@ namespace test {
 		dllf = functogetfucns();
 		s = new memory::stream::stream((*dllf)[0], 0);
 		us = new memory::stream::stream(nullptr, 1);
+		//register type`s size
+		memory::table::registernewtype(1, 4);
 	}
 	void inline test(int testmode) {
 		switch (testmode) {
@@ -52,27 +54,28 @@ namespace test {
 				delete memory::object::memorycontroller::instance();
 				break;
 			case LOG:
-				memory::object::memorycontroller::instance()->objects[0]->log_data();
+				memory::object::memorycontroller::instance()->objects[1]->log_data();
 				break;
 			case RESIZEBIG:
-				memory::object::memorycontroller::instance()->objects[0]->setlistsize(15, true);
+				memory::object::memorycontroller::instance()->objects[1]->setlistsize(15, true);
 				break;
 			case RESIZESMALL:
-				memory::object::memorycontroller::instance()->objects[0]->setlistsize(5, true);
+				memory::object::memorycontroller::instance()->objects[1]->setlistsize(5, true);
 				break;
 			case ADD_OBJ:
-				memory::object::memorycontroller::instance()->objects[0]->addobject(1, true, s);
+				memory::object::memorycontroller::instance()->addobject(0x100000000, true, s);
+				std::cout << "ADD" << std::endl;
 				break;
 			case OP_INT_SET_0:
-				i = memory::object::memorycontroller::instance()->getobject(20, false);
+				i = memory::object::memorycontroller::instance()->getobject(1, false);
 				*(int*)i->getpointer() = 0;
 				break;
 			case OP_INT_ADD:
-				i = memory::object::memorycontroller::instance()->getobject(20, false);
+				i = memory::object::memorycontroller::instance()->getobject(1, false);
 				*(int*)i->getpointer() = *(int*)i->getpointer() + 1;
 				break;
 			case LOG_INT_OBJ:
-				i = memory::object::memorycontroller::instance()->getobject(20, false);
+				i = memory::object::memorycontroller::instance()->getobject(1, false);
 				std::cout << *(int*)i->getpointer() << std::endl;
 				break;
 			case THREAD_CREATE:

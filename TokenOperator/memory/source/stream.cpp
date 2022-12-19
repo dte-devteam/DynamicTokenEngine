@@ -2,7 +2,7 @@
 #include "../include/object.h"
 namespace memory {
 	namespace stream {
-		absolutestreamrights::absolutestreamrights(bool killstreamrights, bool semaphorerights, bool joinrights) : kill(killstreamrights), semaphore(semaphorerights), join(joinrights) {
+		absolutestreamrights::absolutestreamrights(bool killstreamrights, bool semaphorerights, bool joinrights, bool memoryrights) : kill(killstreamrights), semaphore(semaphorerights), join(joinrights), memoryrights(memoryrights) {
 			join = true; //temp, for testing
 			kill = true; //temp, for testing
 		}
@@ -14,6 +14,9 @@ namespace memory {
 		}
 		bool absolutestreamrights::getjoinrights() {
 			return join;
+		}
+		bool absolutestreamrights::getmemoryrights() {
+			return memoryrights;
 		}
 
 		stream::stream(basicfunction* function, uint64_t id, stream* caller) : basicfunction(id), function(function), caller(caller) {

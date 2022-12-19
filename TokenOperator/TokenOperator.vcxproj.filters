@@ -42,6 +42,9 @@
     <ClInclude Include="memory\include\metatable.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
+    <ClInclude Include="deletable_obj.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="function\source\functionfactory.cpp">
@@ -62,8 +65,5 @@
     <ClCompile Include="memory\source\stream.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
   </ItemGroup>
 </Project>
