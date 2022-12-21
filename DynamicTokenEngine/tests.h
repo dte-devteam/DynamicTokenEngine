@@ -33,6 +33,10 @@ namespace test {
 		std::vector<void*> vec({(void*)L"algebra.dll", &functogetfucns, 0, 0});
 		memory::function::importfunction.execute(&vec, nullptr, false, nullptr);
 		dllf = functogetfucns();
+		dllf->push_back(
+			(*((DLLPROC)GetProcAddress(LoadLibrary(L"DLL1.dll"), "getfunctions"))())[0]
+		);
+		(*dllf)[9]->execute(nullptr, nullptr, false, nullptr);
 		s = new memory::stream::stream((*dllf)[0], 0);
 		us = new memory::stream::stream(nullptr, 1);
 		//register type`s size
