@@ -9,9 +9,7 @@ namespace memory {
 			if (deleter) {
 				deleter(pointer);
 			}
-			else {
-				free(pointer);
-			}
+			free(pointer);
 		}
 		void* iterator::getpointer() {
 			return pointer;
