@@ -41,7 +41,7 @@ namespace memory {
 			private:
 				std::atomic<bool> alive {false};
 				uint64_t* sharederrorcodepointer = nullptr;
-				uint64_t* generatederrorcodepointer = new uint64_t;
+				uint64_t* generatederrorcodepointer = new uint64_t(0);
 				stream* caller;
 				stream* interrupterer = 0;
 				functionfactory::basicfunction* function;

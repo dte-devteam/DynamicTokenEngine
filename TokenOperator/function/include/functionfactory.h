@@ -19,7 +19,7 @@
 * 
 * error codes:
 * 0 - no error, but if error occure - it will have no handler
-* 1 - no error, but if error occure - it will have handler, so function don`t have to call-check and than call-execute
+* 1 - no error, but if error occure - it will have handler, so function don`t have to call-check and than call-execute, after "try" function
 * 
 * function data:
 * defaultvalues - args, that we can put in function

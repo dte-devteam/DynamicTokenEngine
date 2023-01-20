@@ -166,12 +166,13 @@ int main() {
 
     test::test(test::TERMMEM);
 
-
+    
     std::cout << "END" << std::endl;
 
     std::cout << test::dllf->size() << std::endl;
     std::cout << "exec time: " << (clock() - t) / 1000.0 << "ms" << std::endl;
 
     std::this_thread::sleep_for(timespan);
+    test::th->join();
     return functionfactory::r();
 }

@@ -21,6 +21,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="function\include\defaultvalues.h" />
+    <ClInclude Include="function\include\errorvalues.h" />
     <ClInclude Include="function\include\functionfactory.h" />
     <ClInclude Include="deletable_obj.h" />
     <ClInclude Include="memory\include\external_interaction.h" />
@@ -30,8 +31,10 @@
     <ClInclude Include="memory\include\object.h" />
     <ClInclude Include="memory\include\stream.h" />
     <ClInclude Include="target_architecture.h" />
+    <ClInclude Include="token_name.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="function\source\errorvalues.cpp" />
     <ClCompile Include="function\source\functionfactory.cpp" />
     <ClCompile Include="memory\source\external_interaction.cpp" />
     <ClCompile Include="memory\source\function.cpp" />
