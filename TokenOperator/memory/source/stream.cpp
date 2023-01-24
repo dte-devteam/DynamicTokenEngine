@@ -47,7 +47,6 @@ namespace memory {
 					*generatederrorcodepointer = 0;
 					sharederrorcodepointer = generatederrorcodepointer;
 				}
-				//thread = new std::thread(&basicfunction::execute, function, argumentspointer, sharederrorcodepointer, forced, this);
 				thread = std::thread(
 					[this, argumentspointer, forced] {
 						function->execute(argumentspointer, sharederrorcodepointer, forced, this);
@@ -62,6 +61,9 @@ namespace memory {
 		void stream::killstream(stream* caller) {
 			if (alive) {
 				if (caller) {
+					if (this->id == caller->id) {
+						return;
+					}
 					if (this->caller) {
 						if (caller->id == this->caller->id) {
 							goto killstream;
@@ -70,13 +72,9 @@ namespace memory {
 					if (caller->rights->getkillrights()) {
 						goto killstream;
 					}
-					if (this->id = caller->id) {
-						goto killstream;
-					}
 				}
 				return;
 				killstream:
-				std::cout << "kill" << std::endl;
 				for (stream* s : childstreams) {
 					s->killstream(this);
 				}
@@ -90,17 +88,19 @@ namespace memory {
 			}
 		}
 		void stream::joinstream(stream* caller) {
-			if (caller->id == this->id) {
-				return;
-			}
 			if (alive) {
-				if (thread.joinable() && caller) {
-					if (this->caller) {
-						if (caller->id == this->caller->id) {
-							return thread.join();
-						}
+				if (!(this->caller && caller)) {
+					return;
+				}
+				if (caller->id == this->id) {
+					return;
+				}
+				if (thread.joinable()) {
+					if (caller->id == this->caller->id) {
+						return thread.join();
 					}
 					if (caller->rights->getjoinrights()) {
+						std::cout << "join" << std::endl;
 						return thread.join();
 					}
 				}
@@ -115,6 +115,13 @@ namespace memory {
 				//get semaphore value (to do)
 			}
 			return false;
+		}
+		bool stream::setfunction(functionfactory::basicfunction* func) {
+			if (alive) {
+				return false;
+			}
+			function = func;
+			return true;
 		}
 		uint64_t stream::getfunctionid() {
 			if (function) {

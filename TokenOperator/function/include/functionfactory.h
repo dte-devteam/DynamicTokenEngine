@@ -3,6 +3,7 @@
 #include <vector>
 #include <algorithm>
 #include "../../deletable_obj.h"
+#define HAS_E *errorcodepointer > 1
 /*
 * function hierarchy:
 * basicfunction

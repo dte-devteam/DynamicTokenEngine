@@ -50,6 +50,7 @@ namespace memory {
 				uint64_t id = 0;
 				uint64_t type = 0;
 				void* pointer;
+				bool iscriticalsection = false;
 		};
 		class typeallocator {
 			friend class memorycontroller;
@@ -58,7 +59,7 @@ namespace memory {
 				virtual ~typeallocator();
 				int setlistsize(size_t listsize, bool forced);
 				static void unregisterobject(iterator* iter, stream::stream* caller);
-				iterator* addobject(uint64_t type, bool maywrite, stream::stream* caller, uint64_t id = 20);	//temp should be 0
+				iterator* addobject(uint64_t type, bool maywrite, stream::stream* caller, uint64_t id = 20, bool iscriticalsection = false);	//temp should be 0
 				iterator* getobject(uint64_t id, bool maywrite, stream::stream* caller);
 				size_t gettypesize();
 				size_t getlistsize();
@@ -70,7 +71,6 @@ namespace memory {
 				size_t typesize;
 		};
 		class memorycontroller {
-			friend iterator* typeallocator::addobject(uint64_t, bool, stream::stream*, uint64_t);
 			public:
 				static inline size_t defaultlistsize = 10;
 				virtual ~memorycontroller();	//почему в итоге память не высвобождается?!

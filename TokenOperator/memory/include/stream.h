@@ -33,6 +33,7 @@ namespace memory {
 				void joinstream(stream* caller);
 				bool isalive();
 				bool iswaiting();
+				bool setfunction(functionfactory::basicfunction* func);
 				uint64_t getfunctionid();
 
 				std::vector<void*> iterators{};//private!!!
@@ -43,7 +44,7 @@ namespace memory {
 				uint64_t* sharederrorcodepointer = nullptr;
 				uint64_t* generatederrorcodepointer = new uint64_t(0);
 				stream* caller;
-				stream* interrupterer = 0;
+				stream* interrupterer = nullptr;
 				functionfactory::basicfunction* function;
 				std::thread thread = std::thread();
 				absolutestreamrights* rights;

@@ -6,6 +6,7 @@
 #include <Windows.h>
 
 typedef std::vector<functionfactory::basicfunction*>* (*DLLPROC)();
+struct do_win : functionfactory::function { using function::function; };
 namespace test {
 	enum testmode {
 		INITMEM,
@@ -29,10 +30,17 @@ namespace test {
 	static void* window = nullptr;
 	static memory::stream::stream* s;
 	static memory::stream::stream* us;
+	static memory::stream::stream* controlstream = new memory::stream::stream(nullptr, 1, nullptr);	//id is VERY IMPORTANT!!!
 	static std::thread* th;
-	static int a = 10, b = 5, c = 0;
+	static int a = 10, b = 5, c = 0, w = 800;
 	static uint64_t e = 0;
 	static std::vector<void*>* args = new std::vector<void*>({ (void*)&a, (void*)&c, (void*)&c });
+	static do_win do_window{
+		0,	//name
+		{   //defaultvalues
+			&window, &w
+		}
+	};
 	void inline inittestdata() {
 		DLLPROC functogetfucns;
 		std::vector<void*> vec({(void*)L"algebra.dll", &functogetfucns, 0, 0});
@@ -44,20 +52,30 @@ namespace test {
 		for (functionfactory::basicfunction* bf : *dllf) {
 			std::cout << bf->getid() << std::endl;
 		}
-		//window
-		th = new std::thread([]() {
-			int w = 800;
-			(*dllf)[10]->execute(new std::vector<void*>({ &window }), nullptr, false, nullptr);
-			(*dllf)[13]->execute(new std::vector<void*>({ &window, &w }), nullptr, false, nullptr);
-			MSG msg;
-			while (GetMessage(&msg, 0, 0, 0)) {
-				TranslateMessage(&msg);
-				DispatchMessage(&msg);
-			}
-		});
 		//stream
-		s = new memory::stream::stream((*dllf)[0], 0);
-		us = new memory::stream::stream(nullptr, 1);
+		s = new memory::stream::stream((*dllf)[0], 0, controlstream);
+		us = new memory::stream::stream(&do_window, 0, controlstream);
+		//window
+		do_window.callings = {
+			{
+				(*dllf)[10],
+				{
+					{0, false}
+				}
+			},
+			{
+				(*dllf)[13],
+				{
+					{0, false},
+					{1, false}
+				}
+			},
+			{
+				(*dllf)[18],
+				{}
+			}
+		};
+		us->execute(new std::vector<void*>(), nullptr, false);
 		//register type`s size
 		memory::table::registernewtype(1, 4);
 	}
@@ -103,11 +121,11 @@ namespace test {
 				break;
 			case THREAD_CREATE:
 				s->execute(args, nullptr, true);
-				s->joinstream(us);
+				s->joinstream(controlstream);
 				std::cout << c << std::endl;
 				break;
 			case THREAD_DELETE:
-				s->killstream(s);
+				s->killstream(controlstream);
 				break;
 			default:
 				std::cout << "def" << std::endl;

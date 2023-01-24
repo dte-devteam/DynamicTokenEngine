@@ -44,7 +44,7 @@ namespace functionfactory {
 			}
 			func.functionpointer->execute(&args, errorcodepointer, forced, stream);
 			if (errorcodepointer) {
-				if (*errorcodepointer > 1) {
+				if (HAS_E) {
 					return true;
 				}
 			}
@@ -106,7 +106,7 @@ namespace functionfactory {
 			}
 			func.functionpointer->execute(&args, errorcodepointer, forced, stream);
 			if (errorcodepointer) {
-				if (*errorcodepointer > 1) {
+				if (HAS_E) {
 					break;
 				}
 			}
@@ -164,7 +164,7 @@ namespace functionfactory {
 		mux_args.push_back(&index);
 		mux->execute(&mux_args, errorcodepointer, forced, stream);
 		if (errorcodepointer) {
-			if (*errorcodepointer > 1) {
+			if (HAS_E) {
 				return;
 			}
 		}

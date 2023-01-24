@@ -64,6 +64,10 @@ namespace memory {
 			if (usedbystreams.empty()) {
 				id = 0;
 				type = 0;
+				iscriticalsection = false;
+				if (deleter) {
+					deleter(pointer);
+				}
 			}
 		}
 
@@ -108,7 +112,7 @@ namespace memory {
 				iter->unregisterobject(caller);
 			}
 		}
-		iterator* typeallocator::addobject(uint64_t type, bool maywrite, stream::stream* caller, uint64_t id) {
+		iterator* typeallocator::addobject(uint64_t type, bool maywrite, stream::stream* caller, uint64_t id, bool iscriticalsection) {
 			for (iterator* i : iters) {
 				if (!i->id) {
 					i->id = id;
@@ -118,6 +122,7 @@ namespace memory {
 					}
 					if (caller) {
 						i->usedbystreams.push_back(caller);
+						i->iscriticalsection = iscriticalsection;
 						caller->iterators.push_back(i);
 					}
 					return i;
@@ -128,6 +133,9 @@ namespace memory {
 		iterator* typeallocator::getobject(uint64_t id, bool maywrite, stream::stream* caller) {
 			for (iterator* i : iters) {
 				if (i->id == id) {
+					if (i->iscriticalsection) {
+						return nullptr;
+					}
 					if (i->blocker && maywrite) {
 						if (!caller) {
 							return nullptr;
