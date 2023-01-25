@@ -1,4 +1,0 @@
-LIBRARY "DTE algebra v0"
-DESCRIPTION "DTE algebra module provides ariphmetic operations"
-EXPORTS
-	getfunctions	@1

@@ -7,8 +7,6 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DynamicTokenEngine", "Dynam
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TokenOperator", "TokenOperator\TokenOperator.vcxproj", "{0007904B-0187-456F-B355-C552E1BB6C2D}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "algebra", "Functions\basicfunctions\algebra\algebra.vcxproj", "{FD3AA9F7-E808-4AA5-95AC-540E96A02A1B}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|ARM = Debug|ARM
@@ -53,22 +51,6 @@ Global
 		{0007904B-0187-456F-B355-C552E1BB6C2D}.Release|x64.Build.0 = Release|x64
 		{0007904B-0187-456F-B355-C552E1BB6C2D}.Release|x86.ActiveCfg = Release|Win32
 		{0007904B-0187-456F-B355-C552E1BB6C2D}.Release|x86.Build.0 = Release|Win32
-		{FD3AA9F7-E808-4AA5-95AC-540E96A02A1B}.Debug|ARM.ActiveCfg = Debug|x64
-		{FD3AA9F7-E808-4AA5-95AC-540E96A02A1B}.Debug|ARM.Build.0 = Debug|x64
-		{FD3AA9F7-E808-4AA5-95AC-540E96A02A1B}.Debug|ARM64.ActiveCfg = Debug|x64
-		{FD3AA9F7-E808-4AA5-95AC-540E96A02A1B}.Debug|ARM64.Build.0 = Debug|x64
-		{FD3AA9F7-E808-4AA5-95AC-540E96A02A1B}.Debug|x64.ActiveCfg = Debug|x64
-		{FD3AA9F7-E808-4AA5-95AC-540E96A02A1B}.Debug|x64.Build.0 = Debug|x64
-		{FD3AA9F7-E808-4AA5-95AC-540E96A02A1B}.Debug|x86.ActiveCfg = Debug|Win32
-		{FD3AA9F7-E808-4AA5-95AC-540E96A02A1B}.Debug|x86.Build.0 = Debug|Win32
-		{FD3AA9F7-E808-4AA5-95AC-540E96A02A1B}.Release|ARM.ActiveCfg = Release|x64
-		{FD3AA9F7-E808-4AA5-95AC-540E96A02A1B}.Release|ARM.Build.0 = Release|x64
-		{FD3AA9F7-E808-4AA5-95AC-540E96A02A1B}.Release|ARM64.ActiveCfg = Release|x64
-		{FD3AA9F7-E808-4AA5-95AC-540E96A02A1B}.Release|ARM64.Build.0 = Release|x64
-		{FD3AA9F7-E808-4AA5-95AC-540E96A02A1B}.Release|x64.ActiveCfg = Release|x64
-		{FD3AA9F7-E808-4AA5-95AC-540E96A02A1B}.Release|x64.Build.0 = Release|x64
-		{FD3AA9F7-E808-4AA5-95AC-540E96A02A1B}.Release|x86.ActiveCfg = Release|Win32
-		{FD3AA9F7-E808-4AA5-95AC-540E96A02A1B}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
