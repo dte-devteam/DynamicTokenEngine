@@ -1,0 +1,74 @@
+                          DTE LICENSE
+                   Version 1, 26 January 2023
+
+ Copyright (C) 2023 DTE Dev Team.
+ Everyone is permitted to copy and distribute verbatim copies
+ of this license document in projects that depend on Dynamic 
+ Token Engine, but changing it`s terms and conditions is not allowed.
+ 
+                            PREAMBLE
+
+ The DTE LICENSE is a free, copyleft license for software.
+ 
+ DTE LICENSE allows to save your author rights on your software
+ project. It guarantees your freedom to share and change all versions 
+ of a program to make sure it remains free software for all its users.
+
+                       TERMS AND CONDITIONS
+  0. Defintion
+    "Parent sofware" is software that is being copied.
+    "Initial software" is software that has no parent software.
+    "Parent license" is license of parent software.
+    "This lisence" refers to DTE LICENSE.
+    
+    This license applies to the folder and folder contents in which 
+    it is located.
+
+  1. Rules.
+    This license automaticaly asings it`s terms and conditions to 
+    copy of parent software.
+    
+    Any copies of parent software that uses this license must be 
+    published under this license.
+    
+    Any verbatim copies of parent software that uses this license
+    must keep authors of parent license and must have reference to
+    parent software and parent software version/build/release in
+    this license.
+    
+    Only verbatim copies of parent software must have the same name 
+    and parent license as parent software. Any other copy must have 
+    "DTE-" prefix in it`s name and allowed to have this 
+    license modified under it`s terms and conditions.
+    
+    Modification of license include only modification of author,
+    license`s date and version, parent software fields.
+    
+    Author field has list structure:
+    [parent software autrors]\n[software copy authors].
+    List of the software copy authors are allowed only if copy of
+    parent software was modified.
+    
+    License date field is date of license modification.
+    
+    License version field is version of modified license, can be only
+    same or lower in integer non-negative format.
+    
+    Parent software field is block that allows refering to parent
+    software. It can be only parent sofware name or link to storage
+    where parent sofware (their combination allowed).
+
+    Authors of parent software copy receives a license from the
+    original licensors, to run, modify and propagate that work, 
+    subject to this license. They are not responsible for enforcing 
+    compliance by third parties with this license.
+
+                     END OF TERMS AND CONDITIONS
+                     
+                                FIELDS
+
+    Authors:
+      Pasha-2033
+    License date: 26 January 2023
+    License version: 1
+    Parent software: Dynamic Token Engine (https://github.com/dte-devteam/DynamicTokenEngine)
