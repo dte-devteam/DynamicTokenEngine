@@ -79,7 +79,6 @@ namespace memory {
 				void deltypeallocator(size_t typesize);
 				iterator* addobject(uint64_t type, bool maywrite, stream::stream* caller = nullptr, size_t size = 0);	//add stream safe (critical section or smth)
 				iterator* getobject(uint64_t id, bool maywrite = true, stream::stream* caller = nullptr);
-				stream::stream* createstream();
 				std::vector<typeallocator*> objects;	//MAKE THIS PRIVATE!!!
 			protected:
 				memorycontroller(std::vector<size_t>* sizes);

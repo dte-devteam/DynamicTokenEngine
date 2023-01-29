@@ -113,6 +113,9 @@ namespace memory {
 			}
 		}
 		iterator* typeallocator::addobject(uint64_t type, bool maywrite, stream::stream* caller, uint64_t id, bool iscriticalsection) {
+			if (!id) {
+				return nullptr;
+			}
 			for (iterator* i : iters) {
 				if (!i->id) {
 					i->id = id;

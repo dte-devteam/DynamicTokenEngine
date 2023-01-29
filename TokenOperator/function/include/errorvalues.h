@@ -1,12 +1,13 @@
 #pragma once
 #include <iostream>
 #include "functionfactory.h"
-#include "../../token_name.h"
+#include "../../token_data.h"
 namespace functionfactory {
 	namespace errorvalues {
 		enum errorvalues {
 			NO_ERROR_NO_HANDLER,
 			NO_ERROR_HANDLER,
+			FORCE_STOP,
 			NULLPTR,
 			INDEX_OUT_RANGE
 		};
@@ -17,12 +18,13 @@ namespace functionfactory {
 				std::vector<const wchar_t*> errorvalues{
 					L"NO ERROR HANDLER: OK",
 					L"ERROR HANDLER: OK",
+					L"FROCED STOP",
 					L"NULL POINTER ERROR",
 					L"INDEX OUT RANGE"
 				};
 		};
 		static errorcode geterrorcode{
-			token_name::token_name_to_id(L"geterrorcode") //name
+			token_data::token_name_to_id(L"geterrorcode") //name
 		};
 	}
 }

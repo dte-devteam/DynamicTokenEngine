@@ -10,7 +10,7 @@ struct add_funtion : functionfactory::muxfunction { using muxfunction::muxfuncti
 struct setter : functionfactory::basicfunction { //temp
     using basicfunction::basicfunction;
     void execute(std::vector<void*>* argumentspointer, uint64_t* errorcodepointer, bool forced, void* stream) {
-        *(size_t*)(*argumentspointer)[1] = (size_t)(*argumentspointer)[0];
+        *(size_t*)(*argumentspointer)[0] = (size_t)(*argumentspointer)[1];
     }
 };
 std::chrono::milliseconds timespan(5000);
@@ -73,47 +73,24 @@ int main() {
                 }
             }
         },
-        {   //valuetypes
-            {
-                (void*)0,
-                (void*)1,
-                (void*)2,
-                (void*)3
-            },
-            {
-                (void*)0,
-                (void*)1,
-                (void*)2,
-                (void*)3
-            },
-            {
-                (void*)0,
-                (void*)1,
-                (void*)2,
-                (void*)3
-            }
-        },
-        &set,   //mux
-        {       //mux args
-            {4, false}  //not 3! 3 is &values! value0, value1, value2, pointer of vector with value0, value1, value2
-        }
+        &set   //mux
     };
 
     clock_t t = clock();
 
     int a = 2, b = 8, c = 5, r1 = 0, r2 = 0;
     float fa = 20.5f, fb = 80.3f, fr = 0.1f;
-    std::vector<void*> args({ &a, &b, &c, &r1, &r2 });
+    std::vector<void*> args{ &a, &b, &c, &r1, &r2 };
     addadd.execute(&args, nullptr, false, nullptr);
     std::cout << r1 << "(2+8)" << std::endl;
     std::cout << r2 << "(2+5)" << std::endl;
-    std::vector<void*> args2({ &b, &c, &r1, (void*)0, (void*)0, (void*)0 });
+    std::vector<void*> args2{ &b, &c, &r1, (void*)0 };
     add.execute(&args2, nullptr, false, nullptr);
     std::cout << r1 << "(8+5)" << std::endl;
-    std::vector<void*> args3({ &fa, &fb, &fr, (void*)1, (void*)1, (void*)1 });
+    std::vector<void*> args3{ &fa, &fb, &fr, (void*)1 };
     add.execute(&args3, nullptr, false, nullptr);
     std::cout << fr << "(20.5f+80.3f)" << std::endl;
-    std::vector<void*> args4({ &r1, &b, &r2 });
+    std::vector<void*> args4{ &r1, &b, &r2 };
     (*test::dllf)[7]->execute(&args4, nullptr, false, nullptr);
     std::cout << r2 << "(10/8)" << std::endl;
     

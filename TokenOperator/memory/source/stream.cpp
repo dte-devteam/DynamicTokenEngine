@@ -29,7 +29,7 @@ namespace memory {
 			delete generatederrorcodepointer;
 		}
 		void stream::execute(std::vector<void*>* argumentspointer, uint64_t* errorcodepointer, bool forced, void* stream) {
-			if (alive) {
+			if (alive.load()) {
 				if (errorcodepointer) {
 					*errorcodepointer = 9090;	//change error code (to do): cant execute alive thread
 				}
@@ -39,7 +39,7 @@ namespace memory {
 				if (thread.joinable()) {
 					thread.join();
 				}
-				alive = true;
+				alive.store(true);
 				if (errorcodepointer) {
 					sharederrorcodepointer = errorcodepointer;
 				}
@@ -50,7 +50,7 @@ namespace memory {
 				thread = std::thread(
 					[this, argumentspointer, forced] {
 						function->execute(argumentspointer, sharederrorcodepointer, forced, this);
-						alive = false;
+						alive.store(false);
 					}
 				);
 			}
@@ -59,7 +59,7 @@ namespace memory {
 			}
 		}
 		void stream::killstream(stream* caller) {
-			if (alive) {
+			if (alive.load()) {
 				if (caller) {
 					if (this->id == caller->id) {
 						return;
@@ -88,11 +88,11 @@ namespace memory {
 			}
 		}
 		void stream::joinstream(stream* caller) {
-			if (alive) {
-				if (!(this->caller && caller)) {
+			if (alive.load()) {
+				if (caller->id == this->id) {
 					return;
 				}
-				if (caller->id == this->id) {
+				if (!(this->caller && caller)) {
 					return;
 				}
 				if (thread.joinable()) {
@@ -100,24 +100,16 @@ namespace memory {
 						return thread.join();
 					}
 					if (caller->rights->getjoinrights()) {
-						std::cout << "join" << std::endl;
 						return thread.join();
 					}
 				}
 			}
 		}
-
 		bool stream::isalive() {
 			return alive;
 		}
-		bool stream::iswaiting() {
-			if (alive) {
-				//get semaphore value (to do)
-			}
-			return false;
-		}
 		bool stream::setfunction(functionfactory::basicfunction* func) {
-			if (alive) {
+			if (alive.load() || !func) {
 				return false;
 			}
 			function = func;

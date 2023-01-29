@@ -1,9 +1,12 @@
 #pragma once
 #include <stdint.h>
+//#include <atomic>
 #include <vector>
+#include <iterator>
 #include <algorithm>
 #include "../../deletable_obj.h"
 #define HAS_E *errorcodepointer > 1
+#define HAS_CRIT_E *errorcodepointer > 2
 /*
 * function hierarchy:
 * basicfunction
@@ -21,6 +24,7 @@
 * error codes:
 * 0 - no error, but if error occure - it will have no handler
 * 1 - no error, but if error occure - it will have handler, so function don`t have to call-check and than call-execute, after "try" function
+* 2 - no error, but execution must be stoped
 * 
 * function data:
 * defaultvalues - args, that we can put in function
@@ -39,7 +43,7 @@ namespace functionfactory {
 		basicfunction(uint64_t id = 0, std::vector<void*> defaultvalues = {});
 		virtual ~basicfunction() {}
 		uint64_t getid();
-		std::vector<void*> defaultvalues;
+		std::vector<void*> defaultvalues;	//make this protected!
 		virtual void execute(std::vector<void*>* argumentspointer, uint64_t* errorcodepointer, bool forced, void* stream) = 0;
 		static void destruct(void* pointer);
 		protected:
@@ -52,24 +56,28 @@ namespace functionfactory {
 	};
 	struct function : basicfunction {
 		function(uint64_t id = 0, std::vector<void*> defaultvalues = {}, std::vector<functioncaller> callings = {});
-		std::vector<functioncaller> callings;
+		std::vector<functioncaller> callings; //make this protected!
 		void execute(std::vector<void*>* argumentspointer, uint64_t* errorcodepointer, bool forced, void* stream);
 		protected:
 			bool callfunctions(std::vector<void*>* values, uint64_t* errorcodepointer, bool forced, void* stream);
 	};
 	struct typedfunction : function {
 		typedfunction(uint64_t id = 0, std::vector<void*> defaultvalues = {}, std::vector<functioncaller> callings = {}, std::vector<std::vector<void*>> valuetypes = {});
-		std::vector<std::vector<void*>> valuetypes;
+		std::vector<std::vector<void*>> valuetypes; //make this protected!
 		void execute(std::vector<void*>* argumentspointer, uint64_t* errorcodepointer, bool forced, void* stream);
 		protected:
-			bool checktypecompability(std::vector<void*>* types);
+			virtual bool checktypecompability(std::vector<void*>* types);
 			void filltypes(std::vector<void*>::iterator start, std::vector<void*>::iterator end, std::vector<void*>* target);
 	};
-	struct muxfunction : typedfunction {
-		muxfunction(uint64_t id = 0, std::vector<void*> defaultvalues = {}, std::vector<functioncaller> callings = {}, std::vector<std::vector<void*>> valuetypes = {}, basicfunction* mux = nullptr, std::vector<std::pair<size_t, bool>> mux_indices = {});
+	struct subtypedfunction : typedfunction {
+		using typedfunction::typedfunction;
+		protected:
+			bool checktypecompability(std::vector<void*>* types);
+	};
+	struct muxfunction : function {
+		muxfunction(uint64_t id = 0, std::vector<void*> defaultvalues = {}, std::vector<functioncaller> callings = {}, basicfunction* mux = nullptr);
 		void execute(std::vector<void*>* argumentspointer, uint64_t* errorcodepointer, bool forced, void* stream);
-		basicfunction* mux;
-		std::vector<std::pair<size_t, bool>> mux_indices;
+		basicfunction* mux; //make this private!
 	};
 	struct unreliablefunction : function {
 		using function::function;

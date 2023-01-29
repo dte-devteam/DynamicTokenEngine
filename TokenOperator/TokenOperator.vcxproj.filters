@@ -42,7 +42,7 @@
     <ClInclude Include="deletable_obj.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="token_name.h">
+    <ClInclude Include="token_data.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
     <ClInclude Include="function\include\defaultvalues.h">

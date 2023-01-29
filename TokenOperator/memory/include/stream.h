@@ -1,7 +1,6 @@
 #pragma once
 #include <stdint.h>
 #include <thread>
-#include <semaphore>
 #include <atomic>
 #include "../../function/include/functionfactory.h"
 namespace memory {
@@ -27,12 +26,9 @@ namespace memory {
 			public:
 				stream(functionfactory::basicfunction* function, uint64_t id, stream* caller = nullptr);
 				void execute(std::vector<void*>* argumentspointer, uint64_t* errorcodepointer, bool forced, void* stream = nullptr);
-				void interrupt(stream* caller) {}	//to do, interrupterid нельзя заменить, если он не 0!
-				void proceed(stream* caller) {}	//to do, если id совпадает, возобновляем работу
 				void killstream(stream* caller);	//to do (придумать когда поток может быть убит), удалить поток и информацию о нем
 				void joinstream(stream* caller);
 				bool isalive();
-				bool iswaiting();
 				bool setfunction(functionfactory::basicfunction* func);
 				uint64_t getfunctionid();
 
@@ -40,15 +36,14 @@ namespace memory {
 			protected:
 				~stream();
 			private:
-				std::atomic<bool> alive {false};
+				std::atomic_bool alive{ false };
 				uint64_t* sharederrorcodepointer = nullptr;
-				uint64_t* generatederrorcodepointer = new uint64_t(0);
+				uint64_t* generatederrorcodepointer = new uint64_t{ 0 };
 				stream* caller;
 				stream* interrupterer = nullptr;
 				functionfactory::basicfunction* function;
 				std::thread thread = std::thread();
 				absolutestreamrights* rights;
-				std::binary_semaphore semaphore{0};
 				std::vector<stream*> childstreams;
 				//vector<void*> stack; (to do later, will be usefull for debug)
 		};
