@@ -134,7 +134,7 @@ int main() {
     test::test(test::THREAD_DELETE);
     test::test(test::LOG);
 
-    i = 20;
+    i = 2000;
     while (i--) {
         test::test(test::THREAD_CREATE);
         test::test(test::THREAD_DELETE);

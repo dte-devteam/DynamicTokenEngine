@@ -97,9 +97,11 @@ namespace memory {
 				}
 				if (thread.joinable()) {
 					if (caller->id == this->caller->id) {
+						std::cout << "join\n";
 						return thread.join();
 					}
 					if (caller->rights->getjoinrights()) {
+						std::cout << "join\n";
 						return thread.join();
 					}
 				}
