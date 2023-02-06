@@ -151,6 +151,8 @@
   <ItemGroup>
     <ClInclude Include="compiler\include\function.h" />
     <ClInclude Include="tests.h" />
+    <ClInclude Include="TokenOperator\function\include\defaultvalues.h" />
+    <ClInclude Include="TokenOperator\function\include\errorvalues.h" />
     <ClInclude Include="utils\include\hash.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

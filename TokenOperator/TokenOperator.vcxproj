@@ -34,6 +34,7 @@
     <ClInclude Include="token_data.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="function\source\defaultvalues.cpp" />
     <ClCompile Include="function\source\errorvalues.cpp" />
     <ClCompile Include="function\source\functionfactory.cpp" />
     <ClCompile Include="memory\source\external_interaction.cpp" />

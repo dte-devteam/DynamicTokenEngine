@@ -45,7 +45,6 @@ namespace functionfactory {
 		uint64_t getid();
 		std::vector<void*> defaultvalues;	//make this protected!
 		virtual void execute(std::vector<void*>* argumentspointer, uint64_t* errorcodepointer, bool forced, void* stream) = 0;
-		static void destruct(void* pointer);
 		protected:
 			void filldefaultvalues(std::vector<void*>* argumentspointer, std::vector<void*> &target);
 			uint64_t id;

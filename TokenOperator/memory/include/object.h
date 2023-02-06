@@ -28,6 +28,9 @@
 *	thread MUST kill all created classes before death, but termination can prevent it - memory leak
 * unable to hold class with dynamic size
 */
+
+//(to do) вынести из lib в DynamicTokenEngine в lib, что не будет использоваться dll (не плодить статики)
+//полностью - любая вставленная модификация может привести полному краху, без возможности узнать источник ошибки
 namespace memory {
 	namespace object {
 		class iterator {

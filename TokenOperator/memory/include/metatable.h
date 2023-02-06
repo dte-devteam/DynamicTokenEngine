@@ -13,6 +13,8 @@ namespace memory {
 		};
 		//stored data
 
+
+		//(to do) вынести из lib в DynamicTokenEngine в lib, что не будет использоваться dll (не плодить статики)
 		//make class of it
 		inline std::vector<typedesc> type_table;
 		inline bool registernewtype(uint32_t type, size_t size) {

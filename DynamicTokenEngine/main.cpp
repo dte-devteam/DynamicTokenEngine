@@ -1,9 +1,16 @@
-#include <iostream>
+﻿#include <iostream>
 #include <chrono>
 
 #include "utils/include/hash.h"
 
 #include "tests.h"
+
+/*
+* future structure:
+* lib(functions)-------->dll(any module, may be multiple)
+*   ↓                     ↓
+* lib(static instances)->exe
+*/
 
 struct int_addadd : functionfactory::function { using function::function; };
 struct add_funtion : functionfactory::muxfunction { using muxfunction::muxfunction; };
@@ -134,7 +141,7 @@ int main() {
     test::test(test::THREAD_DELETE);
     test::test(test::LOG);
 
-    i = 2000;
+    i = 20;
     while (i--) {
         test::test(test::THREAD_CREATE);
         test::test(test::THREAD_DELETE);

@@ -78,7 +78,7 @@ namespace memory {
 				for (stream* s : childstreams) {
 					s->killstream(this);
 				}
-				*sharederrorcodepointer = 0xFFFFFFFFFFFFFFFF;	//change, maybe temprorary value
+				*sharederrorcodepointer = functionfactory::errorvalues::FORCE_STOP;	//change, maybe temprorary value
 				alive.wait(true);
 				//unregister every used iteretor (to do)
 				for (void* i : iterators) {
@@ -97,11 +97,9 @@ namespace memory {
 				}
 				if (thread.joinable()) {
 					if (caller->id == this->caller->id) {
-						std::cout << "join\n";
 						return thread.join();
 					}
 					if (caller->rights->getjoinrights()) {
-						std::cout << "join\n";
 						return thread.join();
 					}
 				}

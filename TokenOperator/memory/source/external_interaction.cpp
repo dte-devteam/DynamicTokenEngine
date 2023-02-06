@@ -21,5 +21,9 @@ namespace memory {
 				}
 			}
 		}
+		void addfunctionsstructure::execute(std::vector<void*>* argumentspointer, uint64_t* errorcodepointer, bool forced, void* stream) {
+			std::vector<basicfunction*>* functions = ((F_LOADER)(*argumentspointer)[0])();
+			std::copy(functions->begin(), functions->end(), std::back_inserter(*(std::vector<basicfunction*>*)(*argumentspointer)[1]));
+		}
 	}
 }

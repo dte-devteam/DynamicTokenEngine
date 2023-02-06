@@ -74,5 +74,8 @@
     <ClCompile Include="function\source\errorvalues.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
+    <ClCompile Include="function\source\defaultvalues.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

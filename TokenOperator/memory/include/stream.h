@@ -2,7 +2,8 @@
 #include <stdint.h>
 #include <thread>
 #include <atomic>
-#include "../../function/include/functionfactory.h"
+#include "function/include/functionfactory.h"
+#include "function/include/errorvalues.h"
 namespace memory {
 	namespace stream {
 		class absolutestreamrights {
