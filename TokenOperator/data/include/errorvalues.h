@@ -1,7 +1,7 @@
 #pragma once
 #include <iostream>
-#include "functionfactory.h"
-#include "../../token_data.h"
+#include "function/include/functionfactory.h"
+#include "token_data.h"
 namespace functionfactory {
 	namespace errorvalues {
 		enum errorvalues {

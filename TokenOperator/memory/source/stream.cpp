@@ -1,5 +1,4 @@
-#include "../include/stream.h"
-#include "../include/object.h"
+#include "memory/include/stream.h"
 namespace memory {
 	namespace stream {
 		absolutestreamrights::absolutestreamrights(bool killstreamrights, bool semaphorerights, bool joinrights, bool memoryrights) : kill(killstreamrights), semaphore(semaphorerights), join(joinrights), memoryrights(memoryrights) {
@@ -81,9 +80,9 @@ namespace memory {
 				*sharederrorcodepointer = functionfactory::errorvalues::FORCE_STOP;	//change, maybe temprorary value
 				alive.wait(true);
 				//unregister every used iteretor (to do)
-				for (void* i : iterators) {
-					((object::iterator*)i)->unregisterobject(this);
-				}
+				//for (void* i : iterators) {
+				//	((object::iterator*)i)->unregisterobject(this);
+				//}
 				iterators.clear();
 			}
 		}

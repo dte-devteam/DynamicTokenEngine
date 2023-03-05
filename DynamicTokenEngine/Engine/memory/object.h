@@ -3,7 +3,7 @@
 #include <mutex>
 #include <iostream>	//temp
 #include <iomanip>	//temp
-#include "stream.h"
+#include "memory/include/stream.h"
 #include "metatable.h"
 //to do: stream defines if it can write (+basicfunction)
 /*

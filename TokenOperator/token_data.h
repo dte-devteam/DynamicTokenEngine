@@ -18,7 +18,7 @@ namespace token_data {
 		uint64_t hash = hash_1;
 		return (hash << 32) | hash_0;
 	}
-	inline uint32_t token_type_to_id(std::wstring string) {
+	constexpr inline uint32_t token_type_to_id(std::wstring string) {
 		wchar_t hash = 0;
 		for (wchar_t c : string) {
 			hash ^= c;

@@ -18,24 +18,5 @@ namespace memory {
 			using functionfactory::basicfunction::basicfunction;
 			void execute(std::vector<void*>* argumentspointer, uint64_t* errorcodepointer, bool forced, void* stream);
 		};
-
-
-		//(to do) вынести из lib в DynamicTokenEngine в lib, что не будет использоваться dll (не плодить статики)
-		//instances
-		static importdllstructure importdll {
-			0,	//name
-			{	//defaultvalues
-				nullptr,	//LPCWSTR of dllname
-				nullptr		//where dll pointer should be written
-			}
-		};
-		static getprocaddressstructure getprocaddress {
-			0,	//name
-			{	//defaultvalues
-				nullptr,	//dll entry pointer
-				nullptr,	//where proc pointer should be written
-				nullptr		//LPCSTR of proc name
-			}
-		};
 	}
 }

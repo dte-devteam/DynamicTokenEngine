@@ -5,6 +5,8 @@
 
 #include "tests.h"
 
+#include <Windows.h>
+
 /*
 * future structure:
 * lib(functions)-------->dll(any module, may be multiple)
@@ -158,5 +160,36 @@ int main() {
 
     //std::this_thread::sleep_for(timespan);
     test::us->joinstream(test::controlstream);
+
+
+    DWORD  verHandle = 0;
+    UINT   size = 0;
+    LPBYTE lpBuffer = NULL;
+    DWORD verSize = GetFileVersionInfoSize(L"algebra.dll", &verHandle);
+
+    if (verSize != NULL){
+        LPSTR verData = new char[verSize];
+        if (GetFileVersionInfo(L"algebra.dll", verHandle, verSize, verData)){
+            if (VerQueryValue(verData, L"\\", (VOID FAR * FAR*) & lpBuffer, &size)){
+                if (size){
+                    VS_FIXEDFILEINFO* verInfo = (VS_FIXEDFILEINFO*)lpBuffer;
+                    if (verInfo->dwSignature == 0xfeef04bd){
+                        // Doesn't matter if you are on 32 bit or 64 bit,
+                        // DWORD is always 32 bits, so first two revision numbers
+                        // come from dwFileVersionMS, last two come from dwFileVersionLS
+                        printf("File Version: %d.%d.%d.%d\n",
+                            (verInfo->dwFileVersionMS >> 16) & 0xffff,
+                            (verInfo->dwFileVersionMS >> 0) & 0xffff,
+                            (verInfo->dwFileVersionLS >> 16) & 0xffff,
+                            (verInfo->dwFileVersionLS >> 0) & 0xffff
+                        );
+                    }
+                }
+            }
+        }
+        delete[] verData;
+    }
+
+
     return functionfactory::r();
 }

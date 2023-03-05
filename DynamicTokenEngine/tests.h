@@ -1,7 +1,7 @@
 #pragma once
-#include "memory/include/object.h"
+#include "Engine/memory/object.h"
 #include "memory/include/stream.h"
-#include "memory/include/function.h"
+#include "Engine/functions/function.h"
 
 #include <Windows.h>
 
@@ -46,6 +46,8 @@ namespace test {
 		std::vector<void*> vec({(void*)L"algebra.dll", &functogetfucns, 0, 0});
 		memory::function::importfunction.execute(&vec, nullptr, false, nullptr);
 		dllf = functogetfucns();
+		HMODULE hwndm = LoadLibrary(L"HWND.dll");
+		DLLPROC hwndpa = (DLLPROC)GetProcAddress(hwndm, "getfunctions");
 		std::vector<functionfactory::basicfunction*>* hwndf = ((DLLPROC)GetProcAddress(LoadLibrary(L"HWND.dll"), "getfunctions"))();
 		std::copy(hwndf->begin(), hwndf->end(), std::back_inserter(*dllf));
 		//check function id`s

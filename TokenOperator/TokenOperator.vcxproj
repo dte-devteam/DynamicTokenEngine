@@ -20,28 +20,27 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="function\include\defaultvalues.h" />
-    <ClInclude Include="function\include\errorvalues.h" />
+    <ClInclude Include="data\include\values.h" />
+    <ClInclude Include="data\include\errorvalues.h" />
     <ClInclude Include="function\include\functionfactory.h" />
     <ClInclude Include="deletable_obj.h" />
     <ClInclude Include="memory\include\external_interaction.h" />
     <ClInclude Include="memory\include\function.h" />
-    <ClInclude Include="memory\include\init_data.h" />
-    <ClInclude Include="memory\include\metatable.h" />
-    <ClInclude Include="memory\include\object.h" />
     <ClInclude Include="memory\include\stream.h" />
+    <ClInclude Include="module\include\dependency_desc.h" />
+    <ClInclude Include="module\include\type_desc.h" />
     <ClInclude Include="target_architecture.h" />
     <ClInclude Include="token_data.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="function\source\defaultvalues.cpp" />
-    <ClCompile Include="function\source\errorvalues.cpp" />
+    <ClCompile Include="data\source\values.cpp" />
+    <ClCompile Include="data\source\errorvalues.cpp" />
     <ClCompile Include="function\source\functionfactory.cpp" />
     <ClCompile Include="memory\source\external_interaction.cpp" />
     <ClCompile Include="memory\source\function.cpp" />
-    <ClCompile Include="memory\source\init_data.cpp" />
-    <ClCompile Include="memory\source\object.cpp" />
     <ClCompile Include="memory\source\stream.cpp" />
+    <ClCompile Include="module\source\dependency_desc.cpp" />
+    <ClCompile Include="module\source\type_desc.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
@@ -133,6 +132,11 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <AdditionalIncludeDirectories>$(SolutionDir)TokenOperator</AdditionalIncludeDirectories>
+      <Optimization>Disabled</Optimization>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <FavorSizeOrSpeed>Neither</FavorSizeOrSpeed>
+      <CallingConvention>FastCall</CallingConvention>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -149,6 +153,10 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <AdditionalIncludeDirectories>$(SolutionDir)TokenOperator</AdditionalIncludeDirectories>
+      <CallingConvention>FastCall</CallingConvention>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <Optimization>MaxSpeed</Optimization>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -156,6 +164,9 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
+    <Lib>
+      <LinkTimeCodeGeneration>true</LinkTimeCodeGeneration>
+    </Lib>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />

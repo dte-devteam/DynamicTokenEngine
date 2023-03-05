@@ -1,4 +1,4 @@
-#include "../include/object.h"
+#include "object.h"
 namespace memory {
 	namespace object {
 		iterator::iterator(size_t typesize) : pointer(malloc(typesize)){}
@@ -137,6 +137,9 @@ namespace memory {
 			for (iterator* i : iters) {
 				if (i->id == id) {
 					if (i->iscriticalsection) {
+						if (i->blocker->getid() == caller->getid()) {
+							return i;
+						}
 						return nullptr;
 					}
 					if (i->blocker && maywrite) {

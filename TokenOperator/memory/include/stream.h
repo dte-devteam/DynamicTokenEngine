@@ -3,7 +3,7 @@
 #include <thread>
 #include <atomic>
 #include "function/include/functionfactory.h"
-#include "function/include/errorvalues.h"
+#include "data/include/errorvalues.h"
 namespace memory {
 	namespace stream {
 		class absolutestreamrights {
@@ -35,7 +35,7 @@ namespace memory {
 
 				std::vector<void*> iterators{};//private!!!
 			protected:
-				~stream();
+				virtual ~stream();
 			private:
 				std::atomic_bool alive{ false };
 				uint64_t* sharederrorcodepointer = nullptr;

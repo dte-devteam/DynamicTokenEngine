@@ -5,8 +5,10 @@
 #include <iterator>
 #include <algorithm>
 #include "../../deletable_obj.h"
-#define HAS_E *errorcodepointer > 1
-#define HAS_CRIT_E *errorcodepointer > 2
+#define RAW_HAS_E *errorcodepointer > 1
+#define RAW_HAS_CRIT_E *errorcodepointer > 2
+#define HAS_E errorcodepointer ? RAW_HAS_E : false
+#define HAS_CRIT_E errorcodepointer ? RAW_HAS_CRIT_E : false
 /*
 * function hierarchy:
 * basicfunction

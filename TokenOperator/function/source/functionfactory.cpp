@@ -21,8 +21,7 @@ namespace functionfactory {
 		size_t s = values.size();
 		size_t argsize = argumentspointer->size();
 		while (i < s && i < argsize) {
-			values[i] = (*argumentspointer)[i];
-			i++;
+			values[i++] = (*argumentspointer)[i];
 		}
 		values.push_back(argumentspointer);
 		target = values;
@@ -32,22 +31,14 @@ namespace functionfactory {
 		*target = types;
 	}
 	bool function::callfunctions(std::vector<void*>* values, uint64_t* errorcodepointer, bool forced, void* stream) {
-		size_t values_size = values->size();
 		for (functioncaller func : callings) {
 			std::vector<void*> args;
 			for (std::pair<size_t, bool> i : func.args_indices) {
-				if (i.second) {
-					args.push_back((void*)i.first);
-				}
-				else {
-					args.push_back((*values)[i.first]);
-				}
+				args.push_back(i.second ? (void*)i.first : (*values)[i.first]);
 			}
 			func.functionpointer->execute(&args, errorcodepointer, forced, stream);
-			if (errorcodepointer) {
-				if (HAS_E) {
-					return true;
-				}
+			if (HAS_E) {
+				return true;
 			}
 		}
 		return false;
@@ -106,10 +97,8 @@ namespace functionfactory {
 				}
 			}
 			func.functionpointer->execute(&args, errorcodepointer, forced, stream);
-			if (errorcodepointer) {
-				if (HAS_E) {
-					break;
-				}
+			if (HAS_E) {
+				break;
 			}
 		}
 	}
@@ -122,10 +111,8 @@ namespace functionfactory {
 		std::vector<void*> mux_args{ &index };
 		std::copy(argumentspointer->begin() + values.size() - 1, argumentspointer->end(), std::back_inserter(mux_args));
 		mux->execute(&mux_args, errorcodepointer, forced, stream);
-		if (errorcodepointer) {
-			if (HAS_E) {
-				return;
-			}
+		if (HAS_E) {
+			return;
 		}
 		if (index < callings.size()) {
 			std::vector<void*> args;
