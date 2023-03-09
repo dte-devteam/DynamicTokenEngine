@@ -176,12 +176,19 @@
     <ClInclude Include="Engine\memory\function.h" />
     <ClInclude Include="Engine\memory\metatable.h" />
     <ClInclude Include="Engine\memory\object.h" />
+    <ClInclude Include="resource.h" />
     <ClInclude Include="tests.h" />
     <ClInclude Include="Engine\data\defaultvalues.h" />
     <ClInclude Include="Engine\data\errorvalues.h" />
     <ClInclude Include="Engine\functions\external_interaction.h" />
     <ClInclude Include="Engine\functions\function.h" />
     <ClInclude Include="utils\include\hash.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="DynamicTokenEngine.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="..\dte_logo.ico" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />
