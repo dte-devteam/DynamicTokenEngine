@@ -19,7 +19,7 @@ namespace data {
 			size_t getsize();
 			uint64_t getname();
 			void* getpointer();
-		private:
+		protected:
 			size_t size;
 			uint64_t name;
 			void* p;

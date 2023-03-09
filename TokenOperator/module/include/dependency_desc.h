@@ -13,17 +13,19 @@ namespace dependency_desc {
 		public:
 			module_version(uint16_t v0 = 0, uint16_t v1 = 0, uint16_t v2 = 0, uint16_t v3 = 0);
 			uint16_t* getversion();
-		private:
+		protected:
 			uint16_t versionnumbers[4];
 	};
 	class module_requirement {
 		public:
-			module_requirement(std::wstring name, module_version minversion);
+			module_requirement(std::wstring dllname, module_version minversion, bool critical = true);
 			std::wstring getname();
 			module_version getminversion();
-		private:
-			std::wstring name;
+			bool iscritical();
+		protected:
+			std::wstring dllname;
 			module_version minversion;
+			bool critical;
 	};
 	class function_requirement {
 		public:
@@ -32,7 +34,7 @@ namespace dependency_desc {
 			uint64_t getname();
 			size_t getindex();
 			desc_type getdesctype();
-		private:
+		protected:
 			uint64_t name;
 			size_t index;
 			desc_type type;

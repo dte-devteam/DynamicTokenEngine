@@ -21,12 +21,15 @@ namespace dependency_desc {
 	uint16_t* module_version::getversion() {
 		return versionnumbers;
 	}
-	module_requirement::module_requirement(std::wstring name, module_version minversion) : name(name), minversion(minversion){}
+	module_requirement::module_requirement(std::wstring dllname, module_version minversion, bool critical) : dllname(dllname), minversion(minversion), critical(critical){}
 	std::wstring module_requirement::getname() {
-		return name;
+		return dllname;
 	}
 	module_version module_requirement::getminversion() {
 		return minversion;
+	}
+	bool module_requirement::iscritical() {
+		return critical;
 	}
 	function_requirement::function_requirement(uint64_t name, size_t index, desc_type desc_type) : name(name), index(index), type(desc_type){}
 	function_requirement::function_requirement(std::wstring name, size_t index, desc_type desc_type) : function_requirement(token_data::token_name_to_id(name), index, desc_type){}

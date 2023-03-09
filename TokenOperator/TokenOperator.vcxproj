@@ -28,7 +28,8 @@
     <ClInclude Include="memory\include\function.h" />
     <ClInclude Include="memory\include\stream.h" />
     <ClInclude Include="module\include\dependency_desc.h" />
-    <ClInclude Include="module\include\type_desc.h" />
+    <ClInclude Include="module\include\module_desc.h" />
+    <ClInclude Include="module\include\data_desc.h" />
     <ClInclude Include="target_architecture.h" />
     <ClInclude Include="token_data.h" />
   </ItemGroup>
@@ -40,7 +41,8 @@
     <ClCompile Include="memory\source\function.cpp" />
     <ClCompile Include="memory\source\stream.cpp" />
     <ClCompile Include="module\source\dependency_desc.cpp" />
-    <ClCompile Include="module\source\type_desc.cpp" />
+    <ClCompile Include="module\source\data_desc.cpp" />
+    <ClCompile Include="module\source\module_desc.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
@@ -142,6 +144,9 @@
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
+    <Lib>
+      <AdditionalDependencies>Version.lib</AdditionalDependencies>
+    </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -166,6 +171,7 @@
     </Link>
     <Lib>
       <LinkTimeCodeGeneration>true</LinkTimeCodeGeneration>
+      <AdditionalDependencies>Version.lib</AdditionalDependencies>
     </Lib>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

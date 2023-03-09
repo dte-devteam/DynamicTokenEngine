@@ -13,7 +13,7 @@ namespace memory {
 				bool getsemaphorerights();
 				bool getjoinrights();
 				bool getmemoryrights();
-			private:
+			protected:
 				bool kill;
 				bool semaphore;
 				bool join;
@@ -26,6 +26,7 @@ namespace memory {
 		struct stream : functionfactory::basicfunction {
 			public:
 				stream(functionfactory::basicfunction* function, uint64_t id, stream* caller = nullptr);
+				virtual ~stream();
 				void execute(std::vector<void*>* argumentspointer, uint64_t* errorcodepointer, bool forced, void* stream = nullptr);
 				void killstream(stream* caller);	//to do (придумать когда поток может быть убит), удалить поток и информацию о нем
 				void joinstream(stream* caller);
@@ -35,8 +36,6 @@ namespace memory {
 
 				std::vector<void*> iterators{};//private!!!
 			protected:
-				virtual ~stream();
-			private:
 				std::atomic_bool alive{ false };
 				uint64_t* sharederrorcodepointer = nullptr;
 				uint64_t* generatederrorcodepointer = new uint64_t{ 0 };

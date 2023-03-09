@@ -45,7 +45,10 @@
     <ClInclude Include="module\include\dependency_desc.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="module\include\type_desc.h">
+    <ClInclude Include="module\include\data_desc.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="module\include\module_desc.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
   </ItemGroup>
@@ -71,7 +74,10 @@
     <ClCompile Include="module\source\dependency_desc.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="module\source\type_desc.cpp">
+    <ClCompile Include="module\source\data_desc.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="module\source\module_desc.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
   </ItemGroup>
