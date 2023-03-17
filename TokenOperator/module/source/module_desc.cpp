@@ -7,7 +7,6 @@ namespace module_desc {
 		library = LoadLibrary(dllname.c_str());
         fetch_module_data();
         search_for_version(dllname);
-        define_init_status();
 	}
 	module::~module() {
 		FreeLibrary(library);
@@ -18,13 +17,8 @@ namespace module_desc {
     HMODULE module::getlibrary() {
         return library;
     }
-
-
     dependency_desc::module_version module::getversion() {
         return version;
-    }
-    bool module::isinited() {
-        return inited;
     }
 	void module::search_for_version(std::wstring dllname) {
         DWORD verhandle = NULL, versize = GetFileVersionInfoSize(dllname.c_str(), &verhandle);
@@ -62,8 +56,5 @@ namespace module_desc {
         types = t ? t() : nullptr;
         data = v ? v() : nullptr;
         requirements = mr ? mr() : nullptr;
-    }
-    void module::define_init_status() {
-        inited = requirements->size() == 0;     //maybe there is need for function check - to do in next versions
     }
 }

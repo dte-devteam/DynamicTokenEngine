@@ -3,13 +3,17 @@
 #include "function/include/functionfactory.h"
 namespace dependency_desc {
 	enum class desc_type {
-		function,
-		constant,
-		type
+		function,	//pointer for direct work with f()
+		f_call,		//pointer for calling f() (NOT FOR basicfunction!!!)
+		f_mux,		//pointer for mux function (ONLY FOR muxfunction!!!)
+		data,		//pointer for data
+		type		//pointer for type data
 	};
 	class module_version {
 		friend bool operator >(module_version& ver1, module_version& ver2);
 		friend bool operator ==(module_version& ver1, module_version& ver2);
+		friend bool operator >(module_version&& ver1, module_version&& ver2);
+		friend bool operator ==(module_version&& ver1, module_version&& ver2);
 		public:
 			module_version(uint16_t v0 = 0, uint16_t v1 = 0, uint16_t v2 = 0, uint16_t v3 = 0);
 			uint16_t* getversion();

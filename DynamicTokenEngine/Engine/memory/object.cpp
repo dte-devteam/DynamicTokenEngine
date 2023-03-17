@@ -1,7 +1,7 @@
 #include "object.h"
 namespace memory {
 	namespace object {
-		iterator::iterator(size_t typesize) : pointer(malloc(typesize)){}
+		iterator::iterator(size_t typesize) : pointer(malloc(typesize)) {}
 		iterator::~iterator() {
 			for (stream::stream* s : usedbystreams) {
 				s->killstream(s);	//fix, make enough rights to kill;

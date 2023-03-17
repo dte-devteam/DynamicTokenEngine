@@ -162,6 +162,7 @@
   <ItemGroup>
     <ClCompile Include="compiler\source\function.cpp" />
     <ClCompile Include="Engine\memory\object.cpp" />
+    <ClCompile Include="Engine\module\source\module_operator.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="utils\source\hash.cpp" />
   </ItemGroup>
@@ -176,6 +177,7 @@
     <ClInclude Include="Engine\memory\function.h" />
     <ClInclude Include="Engine\memory\metatable.h" />
     <ClInclude Include="Engine\memory\object.h" />
+    <ClInclude Include="Engine\module\include\module_operator.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="tests.h" />
     <ClInclude Include="Engine\data\defaultvalues.h" />

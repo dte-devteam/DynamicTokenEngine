@@ -17,6 +17,22 @@ namespace dependency_desc {
 		}
 		return true;
 	}
+	bool operator >(module_version&& ver1, module_version&& ver2) { 
+		for (size_t i = 0; i < sizeof(module_version::versionnumbers); i++) {
+			if (ver1.versionnumbers[i] > ver2.versionnumbers[i]) {
+				return true;
+			}
+		}
+		return false;
+	}
+	bool operator ==(module_version&& ver1, module_version&& ver2) { 
+		for (size_t i = 0; i < sizeof(module_version::versionnumbers); i++) {
+			if (ver1.versionnumbers[i] != ver2.versionnumbers[i]) {
+				return false;
+			}
+		}
+		return true;
+	}
 	module_version::module_version(uint16_t v0, uint16_t v1, uint16_t v2, uint16_t v3) : versionnumbers{v0, v1, v2, v3} {}
 	uint16_t* module_version::getversion() {
 		return versionnumbers;
