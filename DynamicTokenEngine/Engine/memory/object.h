@@ -4,7 +4,7 @@
 #include <iostream>	//temp
 #include <iomanip>	//temp
 #include "memory/include/stream.h"
-#include "metatable.h"
+#include "module/include/data_desc.h"
 //to do: stream defines if it can write (+basicfunction)
 /*
 * memory organisation:
@@ -35,56 +35,51 @@ namespace memory {
 	namespace object {
 		class iterator {
 			//think of atomic or mutex
-			friend class typeallocator;
-			//friend uint64_t memorycontroller::getfreeid(void);	//error C2653 why???
-			public:
-				iterator(size_t typesize);
-				virtual ~iterator();
-				std::vector<stream::stream*> usedbystreams;
-				void* getpointer();
-				uint64_t getid();
-				uint64_t gettype();
-				void settype(stream::stream* caller, uint64_t newtype);
-				void setdeleter(stream::stream* caller, void (*deleter)(void*));
-				void unregisterobject(stream::stream* caller);
-			private:
-				stream::stream* blocker = nullptr;
-				void (*deleter)(void*) = nullptr;
-				uint64_t id = 0;
-				uint64_t type = 0;
-				void* pointer;
-				bool iscriticalsection = false;
-		};
-		class typeallocator {
 			friend class memorycontroller;
 			public:
-				typeallocator(size_t typesize, size_t listsize);
-				virtual ~typeallocator();
-				int setlistsize(size_t listsize, bool forced);
-				static void unregisterobject(iterator* iter, stream::stream* caller);
-				iterator* addobject(uint64_t type, bool maywrite, stream::stream* caller, uint64_t id = 20, bool iscriticalsection = false);	//temp should be 0
-				iterator* getobject(uint64_t id, bool maywrite, stream::stream* caller);
-				size_t gettypesize();
-				size_t getlistsize();
-
-				std::vector<iterator*> iters;	//make it private!!!
-				//temprorary debug functions (debug should be throught basicfunctions!)
-				void log_data(bool extended = false);
+				iterator();
+				virtual ~iterator();
+				std::vector<stream::stream*> usedbystreams;
+				void* getpointer(stream::stream* caller);
+				uint64_t getid();
+				uint64_t gettype();
+				uint32_t getsupertype();
+				uint32_t getflags();
+				void settype(stream::stream* caller, data_desc::typedesc* typeinstance);
+				void setflags(stream::stream* caller, uint32_t flags);
+				void unregisterobject(stream::stream* caller);
 			private:
-				size_t typesize;
+				iterator(stream::stream* caller, data_desc::typedesc* typeinstance, uint64_t id, uint32_t flags, bool iscriticalsection);
+				/*
+				* чтобы не запутаться:
+				* blocker это первый (по приоритету), кто может писать
+				* iscriticalsection это сигнал о том, что только blocker или поток с maywrite = false может получит доступ к объекту
+				*/
+				stream::stream* blocker = nullptr;
+				data_desc::typedesc* typeinstance = nullptr;
+				uint64_t id = 0;
+				uint32_t flags = 0;
+				void* pointer = nullptr;
+				bool iscriticalsection = false;
+				void create_value(data_desc::typedesc* typeinstance);
+				void kill_value();
 		};
 		class memorycontroller {
 			public:
 				static inline size_t defaultlistsize = 10;
 				virtual ~memorycontroller();	//почему в итоге память не высвобождается?!
-				static memorycontroller* instance(std::vector<size_t>* types = nullptr);
-				void addtypeallocator(size_t typesize, size_t listsize = defaultlistsize);
-				void deltypeallocator(size_t typesize);
-				iterator* addobject(uint64_t type, bool maywrite, stream::stream* caller = nullptr, size_t size = 0);	//add stream safe (critical section or smth)
-				iterator* getobject(uint64_t id, bool maywrite = true, stream::stream* caller = nullptr);
-				std::vector<typeallocator*> objects;	//MAKE THIS PRIVATE!!!
+				static memorycontroller* instance();
+				static memorycontroller* instance(std::vector<std::pair<data_desc::typedesc*, size_t>> initstartmemory);
+				iterator* addobject(data_desc::typedesc* typeinstance, uint32_t flags = 0, stream::stream* caller = nullptr, bool getascritical = false);	//add stream safe (critical section or smth)
+				iterator* getobject(uint64_t id, size_t size = 0, stream::stream* caller = nullptr, bool getascritical = false);
+				void setlistsize(size_t listsize, bool forced = false, size_t datasize = 0);
+				std::vector<std::pair<size_t, std::vector<iterator>>> objects;	//MAKE THIS PRIVATE!!!
+
+				//logs
+				void log_size(bool extended = false, size_t size = 0);
+				void log_iterator(iterator& i, size_t shift, bool extended = false);
 			protected:
-				memorycontroller(std::vector<size_t>* sizes);
+				memorycontroller(std::vector<std::pair<data_desc::typedesc*, size_t>>* initstartmemory = nullptr);
 			private:
 				static memorycontroller* _instance;
 				uint64_t getfreeid();

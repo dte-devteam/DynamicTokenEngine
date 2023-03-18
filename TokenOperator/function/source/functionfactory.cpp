@@ -8,7 +8,7 @@ namespace functionfactory {
 	function::function(uint64_t name, std::vector<void*> defaultvalues, std::vector<functioncaller> callings) : basicfunction(name, defaultvalues), callings(callings) {}
 	typedfunction::typedfunction(uint64_t name, std::vector<void*> defaultvalues, std::vector<functioncaller> callings, std::vector<std::vector<void*>> valuetypes) : function(name, defaultvalues, callings), valuetypes(valuetypes) {}
 	muxfunction::muxfunction(uint64_t name, std::vector<void*> defaultvalues, std::vector<functioncaller> callings, basicfunction* mux) : function(name, defaultvalues, callings), mux(mux){}
-	uint64_t basicfunction::getid() {
+	uint64_t basicfunction::getid() const {
 		return id;
 	}
 	void basicfunction::filldefaultvalues(std::vector<void*>* argumentspointer, std::vector<void*> &target) {

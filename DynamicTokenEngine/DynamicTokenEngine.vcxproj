@@ -164,7 +164,6 @@
     <ClCompile Include="Engine\memory\object.cpp" />
     <ClCompile Include="Engine\module\source\module_operator.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="utils\source\hash.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\TokenOperator\TokenOperator.vcxproj">
@@ -175,7 +174,6 @@
     <ClInclude Include="compiler\include\function.h" />
     <ClInclude Include="Engine\base.h" />
     <ClInclude Include="Engine\memory\function.h" />
-    <ClInclude Include="Engine\memory\metatable.h" />
     <ClInclude Include="Engine\memory\object.h" />
     <ClInclude Include="Engine\module\include\module_operator.h" />
     <ClInclude Include="resource.h" />
@@ -184,7 +182,6 @@
     <ClInclude Include="Engine\data\errorvalues.h" />
     <ClInclude Include="Engine\functions\external_interaction.h" />
     <ClInclude Include="Engine\functions\function.h" />
-    <ClInclude Include="utils\include\hash.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="DynamicTokenEngine.rc" />

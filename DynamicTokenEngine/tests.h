@@ -5,6 +5,9 @@
 
 #include <Windows.h>
 
+
+
+#include "module/include/data_desc.h"
 typedef std::vector<functionfactory::basicfunction*>* (*DLLPROC)();
 struct do_win : functionfactory::function { using function::function; };
 namespace test {
@@ -22,11 +25,20 @@ namespace test {
 		THREAD_DELETE
 	};
 	static std::vector<functionfactory::basicfunction*>* dllf;// = ((DLLPROC)GetProcAddress(LoadLibrary(L"algebra.dll"), "getfunctions"))();
-	static std::vector<size_t>* sizes = new std::vector<size_t>({
-		sizeof(void*),	//8
-		sizeof(int),	//4
-		5				//5
-	});
+	static std::vector<std::pair<data_desc::typedesc*, size_t>> types = { //sizes
+		{	//int*
+			new data_desc::typedesc(token_data::token_type_to_id(L"int"), sizeof(int)),
+			0
+		},
+		{	//void*
+			new data_desc::typedesc(token_data::token_type_to_id(L"void*"), sizeof(void*)),
+			0
+		},
+		{	//type5
+			new data_desc::typedesc(token_data::token_type_to_id(L"type5"), 5),
+			0
+		}
+	};
 	static void* window = nullptr;
 	static memory::stream::stream* s;
 	static memory::stream::stream* us;
@@ -57,6 +69,8 @@ namespace test {
 		//stream
 		s = new memory::stream::stream((*dllf)[0], 0, controlstream);
 		us = new memory::stream::stream(&do_window, 0, controlstream);
+		s->maywrite = false;
+		us->maywrite = false;
 		//window
 		do_window.callings = {
 			{
@@ -78,48 +92,43 @@ namespace test {
 			}
 		};
 		us->execute(new std::vector<void*>(), nullptr, false);
-		//register type`s size
-		memory::table::registernewtype(1, 4);
 	}
 	void inline test(int testmode) {
 		switch (testmode) {
 			memory::object::iterator* i;
 			case INITMEM:
-				memory::object::memorycontroller::instance(sizes);
-				for (memory::object::typeallocator* typealloc : memory::object::memorycontroller::instance()->objects) {
-					std::cout << std::left << std::setw(6) << "size: ";
-					std::cout << std::left << std::setw(7) << typealloc->gettypesize();
-					std::cout << std::left << std::setw(8) << "length: ";
-					std::cout << typealloc->getlistsize() << std::endl;
-				}
+				std::cout << "INIT" << std::endl;
+				memory::object::memorycontroller::instance(types);
 				break;
 			case TERMMEM:
 				delete memory::object::memorycontroller::instance();
 				break;
 			case LOG:
-				memory::object::memorycontroller::instance()->objects[1]->log_data();
+				memory::object::memorycontroller::instance()->log_size(true);
 				break;
 			case RESIZEBIG:
-				memory::object::memorycontroller::instance()->objects[1]->setlistsize(15, true);
+				std::cout << "BIG" << std::endl;
+				memory::object::memorycontroller::instance()->setlistsize(15, true);
 				break;
 			case RESIZESMALL:
-				memory::object::memorycontroller::instance()->objects[1]->setlistsize(5, true);
+				std::cout << "SMALL" << std::endl;
+				memory::object::memorycontroller::instance()->setlistsize(5, true);
 				break;
 			case ADD_OBJ:
-				memory::object::memorycontroller::instance()->addobject(0x100000000, true, s);
 				std::cout << "ADD" << std::endl;
+				memory::object::memorycontroller::instance()->addobject(types[0].first, 0, s, false);
 				break;
 			case OP_INT_SET_0:
-				i = memory::object::memorycontroller::instance()->getobject(1, false);
-				*(int*)i->getpointer() = 0;
+				i = memory::object::memorycontroller::instance()->getobject(1, 4);
+				*(int*)i->getpointer(s) = 0;
 				break;
 			case OP_INT_ADD:
-				i = memory::object::memorycontroller::instance()->getobject(1, false);
-				*(int*)i->getpointer() = *(int*)i->getpointer() + 1;
+				i = memory::object::memorycontroller::instance()->getobject(1, 4);
+				*(int*)i->getpointer(s) = *(int*)i->getpointer(s) + 1;
 				break;
 			case LOG_INT_OBJ:
-				i = memory::object::memorycontroller::instance()->getobject(1, false);
-				std::cout << *(int*)i->getpointer() << std::endl;
+				i = memory::object::memorycontroller::instance()->getobject(1, 4);
+				std::cout << *(int*)i->getpointer(s) << std::endl;
 				break;
 			case THREAD_CREATE:
 				s->execute(args, nullptr, true);

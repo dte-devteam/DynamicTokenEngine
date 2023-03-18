@@ -35,6 +35,7 @@ namespace memory {
 				uint64_t getfunctionid();
 
 				std::vector<void*> iterators{};//private!!!
+				bool maywrite = false;//private!!!
 			protected:
 				std::atomic_bool alive{ false };
 				uint64_t* sharederrorcodepointer = nullptr;

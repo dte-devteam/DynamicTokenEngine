@@ -1,8 +1,6 @@
 ﻿#include <iostream>
 #include <chrono>
 
-#include "utils/include/hash.h"
-
 #include "tests.h"
 
 #include <Windows.h>
@@ -123,13 +121,12 @@ int main() {
 
     test::test(test::LOG);
     test::test(test::ADD_OBJ);
+    test::test(test::LOG);
     test::test(test::ADD_OBJ);
     test::test(test::LOG);
     test::test(test::RESIZEBIG);
-    std::cout << "BIG" << std::endl;
     test::test(test::LOG);
     test::test(test::RESIZESMALL);
-    std::cout << "SMALL" << std::endl;
     test::test(test::LOG);
     test::test(test::LOG_INT_OBJ);
     test::test(test::OP_INT_SET_0);
@@ -139,7 +136,6 @@ int main() {
         test::test(test::OP_INT_ADD);
         test::test(test::LOG_INT_OBJ);
     }
-
     test::test(test::THREAD_DELETE);
     test::test(test::LOG);
 
@@ -148,7 +144,7 @@ int main() {
         test::test(test::THREAD_CREATE);
         test::test(test::THREAD_DELETE);
     }
-
+    std::cout << "exec time: " << (clock() - t) / 1000.0 << "ms" << std::endl;
 
     test::test(test::TERMMEM);
 

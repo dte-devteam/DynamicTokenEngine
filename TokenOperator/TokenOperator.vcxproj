@@ -32,6 +32,7 @@
     <ClInclude Include="module\include\data_desc.h" />
     <ClInclude Include="target_architecture.h" />
     <ClInclude Include="token_data.h" />
+    <ClInclude Include="utils\include\utils_vector.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="data\source\values.cpp" />

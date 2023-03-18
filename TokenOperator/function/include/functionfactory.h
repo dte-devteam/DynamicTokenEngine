@@ -44,7 +44,7 @@ namespace functionfactory {
 	struct basicfunction {
 		basicfunction(uint64_t id = 0, std::vector<void*> defaultvalues = {});
 		virtual ~basicfunction() {}
-		uint64_t getid();
+		uint64_t getid() const;
 		std::vector<void*> defaultvalues;	//make this protected!
 		virtual void execute(std::vector<void*>* argumentspointer, uint64_t* errorcodepointer, bool forced, void* stream) = 0;
 		protected:
@@ -52,6 +52,7 @@ namespace functionfactory {
 			uint64_t id;
 	};
 	struct functioncaller {
+		constexpr functioncaller(basicfunction* functionpointer, std::vector<std::pair<size_t, bool>> args_indices) : functionpointer(functionpointer), args_indices(args_indices){}
 		basicfunction* functionpointer;
 		std::vector<std::pair<size_t, bool>> args_indices;
 	};
