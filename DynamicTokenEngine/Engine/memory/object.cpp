@@ -266,7 +266,7 @@ namespace memory {
 			else {
 				for (std::pair<size_t, std::vector<iterator>>& p : objects) {
 					std::cout << "len: " << p.second.size() << std::endl;
-					for (iterator i : p.second) {
+					for (iterator& i : p.second) {
 						std::cout << "size: " << p.first;
 						log_iterator(i, 16, extended);
 					}

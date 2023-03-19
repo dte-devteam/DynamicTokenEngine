@@ -28,19 +28,19 @@ namespace module_operator {
 			}
 		);
 		if (iter != end) {
-			//uninit зависимые функции (to do)
+			//uninit пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ (to do)
 			iter->second.~module();
 			modules.erase(iter);
 		}
 	}
 	module_container::module_container(std::vector<std::pair<bool, module_desc::module>> modules) : modules(modules), inited(modules.size() == 0){}
 	void module_container::initmodules(){
-		for (std::pair<bool, module_desc::module> module : modules) {
+		for (std::pair<bool, module_desc::module>& module : modules) {
 			if (!module.first) {
 				std::vector<module_desc::module*> require;
 				bool module_initiation = true;
 				std::vector<std::pair<bool, module_desc::module>>::iterator end = modules.end();
-				for (dependency_desc::module_requirement other_module : *module.second.requirements) {
+				for (dependency_desc::module_requirement& other_module : *module.second.requirements) {
 					std::vector<std::pair<bool, module_desc::module>>::iterator iter = find_if(
 						modules.begin(),
 						end,
@@ -54,10 +54,10 @@ namespace module_operator {
 				}
 
 
-				for (dependency_desc::function_data function : *module.second.functions) {
+				for (dependency_desc::function_data& function : *module.second.functions) {
 					if (!function.init_status) {
 						bool function_initiation = true;
-						for (dependency_desc::function_requirement f_r : function.requirements) {
+						for (dependency_desc::function_requirement& f_r : function.requirements) {
 							if (function_initiation) {
 								//to do
 								switch (f_r.getdesctype()) {
@@ -84,7 +84,7 @@ namespace module_operator {
 	}
 	bool module_container::function_init_setter(dependency_desc::function_data& function, dependency_desc::function_requirement& f_require, bool& function_initiation, std::vector<module_desc::module*>& require, void (*init_f)(dependency_desc::function_data&, dependency_desc::function_data&, dependency_desc::function_requirement&)) {
 		for (module_desc::module* module : require) {
-			for (dependency_desc::function_data r_function : *module->functions) {
+			for (dependency_desc::function_data& r_function : *module->functions) {
 				if (r_function.function->getid() == f_require.getname()) {
 					init_f(function, r_function, f_require);
 					return false;

@@ -74,7 +74,7 @@ namespace memory {
 				}
 				return;
 				killstream:
-				for (stream*& s : childstreams) {
+				for (stream* s : childstreams) {
 					s->killstream(this);
 				}
 				*sharederrorcodepointer = functionfactory::errorvalues::FORCE_STOP;	//change, maybe temprorary value
