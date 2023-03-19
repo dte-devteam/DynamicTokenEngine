@@ -54,6 +54,9 @@
     <ClInclude Include="utils\include\utils_vector.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
+    <ClInclude Include="utils\include\exec_time.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="function\source\functionfactory.cpp">
