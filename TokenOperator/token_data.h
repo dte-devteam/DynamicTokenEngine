@@ -6,7 +6,7 @@ namespace token_data {
 		wchar_t hash_0 = 0;
 		wchar_t hash_1 = 0;
 		bool order = true;
-		for (wchar_t c : string) {
+		for (wchar_t& c : string) {
 			if (order) {
 				hash_0 ^= c;
 			}
@@ -20,7 +20,7 @@ namespace token_data {
 	}
 	constexpr inline uint32_t token_type_to_id(std::wstring string) {
 		wchar_t hash = 0;
-		for (wchar_t c : string) {
+		for (wchar_t& c : string) {
 			hash ^= c;
 		}
 		return hash;

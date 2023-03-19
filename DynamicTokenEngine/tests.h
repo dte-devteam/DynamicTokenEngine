@@ -63,9 +63,9 @@ namespace test {
 		std::vector<functionfactory::basicfunction*>* hwndf = ((DLLPROC)GetProcAddress(LoadLibrary(L"HWND.dll"), "getfunctions"))();
 		std::copy(hwndf->begin(), hwndf->end(), std::back_inserter(*dllf));
 		//check function id`s
-		for (functionfactory::basicfunction* bf : *dllf) {
-			std::cout << bf->getid() << std::endl;
-		}
+		//for (functionfactory::basicfunction* bf : *dllf) {
+		//	std::cout << bf->getid() << std::endl;
+		//}
 		//stream
 		s = new memory::stream::stream((*dllf)[0], 0, controlstream);
 		us = new memory::stream::stream(&do_window, 0, controlstream);
@@ -97,25 +97,25 @@ namespace test {
 		switch (testmode) {
 			memory::object::iterator* i;
 			case INITMEM:
-				std::cout << "INIT" << std::endl;
+				//std::cout << "INIT" << std::endl;
 				memory::object::memorycontroller::instance(types);
 				break;
 			case TERMMEM:
 				delete memory::object::memorycontroller::instance();
 				break;
 			case LOG:
-				memory::object::memorycontroller::instance()->log_size(true);
+				memory::object::memorycontroller::instance()->log_size();
 				break;
 			case RESIZEBIG:
-				std::cout << "BIG" << std::endl;
+				//std::cout << "BIG" << std::endl;
 				memory::object::memorycontroller::instance()->setlistsize(15, true);
 				break;
 			case RESIZESMALL:
-				std::cout << "SMALL" << std::endl;
+				//std::cout << "SMALL" << std::endl;
 				memory::object::memorycontroller::instance()->setlistsize(5, true);
 				break;
 			case ADD_OBJ:
-				std::cout << "ADD" << std::endl;
+				//std::cout << "ADD" << std::endl;
 				memory::object::memorycontroller::instance()->addobject(types[0].first, 0, s, false);
 				break;
 			case OP_INT_SET_0:

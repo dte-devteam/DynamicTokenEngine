@@ -2,6 +2,7 @@
 #include <chrono>
 
 #include "tests.h"
+#include "utils/include/exec_time.h"
 
 #include <Windows.h>
 
@@ -83,7 +84,7 @@ int main() {
         &set   //mux
     };
 
-    clock_t t = clock();
+    exec_time et;
 
     int a = 2, b = 8, c = 5, r1 = 0, r2 = 0;
     float fa = 20.5f, fb = 80.3f, fr = 0.1f;
@@ -101,8 +102,7 @@ int main() {
     (*test::dllf)[7]->execute(&args4, nullptr, false, nullptr);
     std::cout << r2 << "(10/8)" << std::endl;
     
-    std::cout << "exec time: " <<  (clock() - t) / 1000.0 << "ms" << std::endl;
-    t = clock();
+    et.log();
 
     //uint64_t e = 0;
     //std::vector<void*> vec({(void*)L"algebra.dll", (void*)&dllf, 0, 0});
@@ -111,23 +111,22 @@ int main() {
     //std::cout << dllf << std::endl;
     std::cout << test::dllf->size() << std::endl;
 
-    std::cout << "exec time: " << (clock() - t) / 1000.0 << "ms" << std::endl;
-    t = clock();
+    et.log();
 
     test::test(test::THREAD_CREATE);
-    std::cout << "THREAD" << std::endl;
+    //std::cout << "THREAD" << std::endl;
 
     test::test(test::INITMEM);
-
-    test::test(test::LOG);
+    et.log();
+    //test::test(test::LOG);
     test::test(test::ADD_OBJ);
-    test::test(test::LOG);
+    //test::test(test::LOG);
     test::test(test::ADD_OBJ);
-    test::test(test::LOG);
-    test::test(test::RESIZEBIG);
-    test::test(test::LOG);
-    test::test(test::RESIZESMALL);
-    test::test(test::LOG);
+    //test::test(test::LOG);
+    //test::test(test::RESIZEBIG);
+    //test::test(test::LOG);
+    //test::test(test::RESIZESMALL);
+    //test::test(test::LOG);
     test::test(test::LOG_INT_OBJ);
     test::test(test::OP_INT_SET_0);
     test::test(test::LOG_INT_OBJ);
@@ -137,14 +136,14 @@ int main() {
         test::test(test::LOG_INT_OBJ);
     }
     test::test(test::THREAD_DELETE);
-    test::test(test::LOG);
-
+    //test::test(test::LOG);
+    et.log();
     i = 20;
     while (i--) {
         test::test(test::THREAD_CREATE);
         test::test(test::THREAD_DELETE);
     }
-    std::cout << "exec time: " << (clock() - t) / 1000.0 << "ms" << std::endl;
+    et.log();
 
     test::test(test::TERMMEM);
 
@@ -152,40 +151,10 @@ int main() {
     std::cout << "END" << std::endl;
 
     std::cout << test::dllf->size() << std::endl;
-    std::cout << "exec time: " << (clock() - t) / 1000.0 << "ms" << std::endl;
+    et.log();
 
     //std::this_thread::sleep_for(timespan);
     test::us->joinstream(test::controlstream);
-
-
-    DWORD  verHandle = 0;
-    UINT   size = 0;
-    LPBYTE lpBuffer = NULL;
-    DWORD verSize = GetFileVersionInfoSize(L"algebra.dll", &verHandle);
-
-    if (verSize != NULL){
-        LPSTR verData = new char[verSize];
-        if (GetFileVersionInfo(L"algebra.dll", verHandle, verSize, verData)){
-            if (VerQueryValue(verData, L"\\", (VOID FAR * FAR*) & lpBuffer, &size)){
-                if (size){
-                    VS_FIXEDFILEINFO* verInfo = (VS_FIXEDFILEINFO*)lpBuffer;
-                    if (verInfo->dwSignature == 0xfeef04bd){
-                        // Doesn't matter if you are on 32 bit or 64 bit,
-                        // DWORD is always 32 bits, so first two revision numbers
-                        // come from dwFileVersionMS, last two come from dwFileVersionLS
-                        printf("File Version: %d.%d.%d.%d\n",
-                            (verInfo->dwFileVersionMS >> 16) ,
-                            (verInfo->dwFileVersionMS >> 0) & 0xffff,
-                            (verInfo->dwFileVersionLS >> 16),
-                            (verInfo->dwFileVersionLS >> 0) & 0xffff
-                        );
-                    }
-                }
-            }
-        }
-        delete[] verData;
-    }
-
 
     return functionfactory::r();
 }

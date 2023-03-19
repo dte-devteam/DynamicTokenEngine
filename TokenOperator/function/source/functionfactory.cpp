@@ -31,9 +31,9 @@ namespace functionfactory {
 		*target = types;
 	}
 	bool function::callfunctions(std::vector<void*>* values, uint64_t* errorcodepointer, bool forced, void* stream) {
-		for (functioncaller func : callings) {
+		for (functioncaller& func : callings) {
 			std::vector<void*> args;
-			for (std::pair<size_t, bool> i : func.args_indices) {
+			for (std::pair<size_t, bool>& i : func.args_indices) {
 				args.push_back(i.second ? (void*)i.first : (*values)[i.first]);
 			}
 			func.functionpointer->execute(&args, errorcodepointer, forced, stream);
@@ -78,9 +78,9 @@ namespace functionfactory {
 			filldefaultvalues(argumentspointer, values);
 			filltypes(argumentspointer->begin() + size, argumentspointer->end(), &types);
 		}
-		for (functioncaller func : callings) {
+		for (functioncaller& func : callings) {
 			std::vector<void*> args;
-			for (std::pair<size_t, bool> p : func.args_indices) {
+			for (std::pair<size_t, bool>& p : func.args_indices) {
 				if (p.second) {
 					args.push_back((void*)p.first);
 				}
@@ -88,7 +88,7 @@ namespace functionfactory {
 					args.push_back(values[p.first]);
 				}
 			}
-			for (std::pair<size_t, bool> p : func.args_indices) {
+			for (std::pair<size_t, bool>& p : func.args_indices) {
 				if (p.second) {
 					args.push_back((void*)p.first);
 				}
@@ -116,7 +116,7 @@ namespace functionfactory {
 		}
 		if (index < callings.size()) {
 			std::vector<void*> args;
-			for (std::pair<size_t, bool> p : callings[index].args_indices) {
+			for (std::pair<size_t, bool>& p : callings[index].args_indices) {
 				if (p.second) {
 					args.push_back((void*)p.first);
 				}
@@ -174,7 +174,7 @@ namespace functionfactory {
 	}
 	bool typedfunction::checktypecompability(std::vector<void*>* types) {
 		for (size_t i = 0; i < valuetypes.size(); i++) {
-			for (void* arg : *types) {
+			for (void*& arg : *types) {
 				if (find_if(valuetypes[i].begin(), valuetypes[i].end(), [arg](void* value) { return value == arg; }) == valuetypes[i].end()) {
 					return true;
 				}
@@ -187,7 +187,7 @@ namespace functionfactory {
 			(*types)[i] = (void*)((size_t)(*types)[i] >> 32);
 		}
 		for (size_t i = 0; i < valuetypes.size(); i++) {
-			for (void* arg : *types) {
+			for (void*& arg : *types) {
 				if (find_if(valuetypes[i].begin(), valuetypes[i].end(), [arg](void* value) { return value == arg; }) == valuetypes[i].end()) {
 					return true;
 				}

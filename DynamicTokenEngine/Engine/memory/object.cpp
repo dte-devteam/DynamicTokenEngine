@@ -1,7 +1,7 @@
 #include "object.h"
 namespace memory {
 	namespace object {
-		iterator::iterator() : typeinstance(nullptr), id(0), flags(0), iscriticalsection(false), pointer(nullptr) {}
+		iterator::iterator() {}
 		iterator::iterator(stream::stream* caller, data_desc::typedesc* typeinstance, uint64_t id, uint32_t flags, bool iscriticalsection) : typeinstance(typeinstance), id(id), flags(flags), iscriticalsection(iscriticalsection){
 			usedbystreams.push_back(caller);
 			if (caller->maywrite) {
@@ -151,7 +151,7 @@ namespace memory {
 			std::vector<std::pair<size_t, std::vector<iterator>>>::iterator i = std::find_if(
 				objects.begin(),
 				end,
-				[typesize](std::pair<size_t, std::vector<iterator>> it) { return it.first == typesize; }
+				[typesize](std::pair<size_t, std::vector<iterator>>& it) { return it.first == typesize; }
 			);
 			if (i == end) {
 				objects.push_back({ typesize, {{ caller, typeinstance, freeid, flags, getascritical }} });
@@ -161,7 +161,7 @@ namespace memory {
 				std::vector<iterator>::iterator p_i = std::find_if(
 					i->second.begin(),
 					p_end,
-					[](iterator it) { return !it.id; }
+					[](iterator& it) { return !it.id; }
 				);
 				if (p_i == p_end) {
 					i->second.push_back({ caller, typeinstance, freeid, flags, getascritical });
@@ -190,7 +190,7 @@ namespace memory {
 						std::vector<iterator>::iterator i = std::find_if(
 							p.second.begin(),
 							end,
-							[id](iterator it) { return it.id == id; }
+							[id](iterator& it) { return it.id == id; }
 						);
 						if (i == end) {
 							return nullptr;
@@ -219,7 +219,7 @@ namespace memory {
 					std::vector<iterator>::iterator i = std::find_if(
 						p.second.begin(),
 						end,
-						[id](iterator it) { return it.id == id; }
+						[id](iterator& it) { return it.id == id; }
 					);
 					if (i == end) {
 						return nullptr;
@@ -254,7 +254,7 @@ namespace memory {
 				for (std::pair<size_t, std::vector<iterator>>& p : objects) {
 					if (p.first == size) {
 						std::cout << "len: " << p.second.size() << std::endl;
-						for (iterator i : p.second) {
+						for (iterator& i : p.second) {
 							std::cout << "size: " << p.first;
 							log_iterator(i, 0, extended);
 						}

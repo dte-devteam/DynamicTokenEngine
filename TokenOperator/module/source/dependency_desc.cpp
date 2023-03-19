@@ -2,7 +2,7 @@
 #include "token_data.h"
 namespace dependency_desc {
 	bool operator >(module_version& ver1, module_version& ver2) {
-		for (size_t i = 0; i < sizeof(module_version::versionnumbers); i++) {
+		for (size_t i = 0; i < 4; i++) {
 			if (ver1.versionnumbers[i] > ver2.versionnumbers[i]) {
 				return true;
 			}
@@ -10,7 +10,7 @@ namespace dependency_desc {
 		return false;
 	}
 	bool operator ==(module_version& ver1, module_version& ver2) {
-		for (size_t i = 0; i < sizeof(module_version::versionnumbers); i++) {
+		for (size_t i = 0; i < 4; i++) {
 			if (ver1.versionnumbers[i] != ver2.versionnumbers[i]) {
 				return false;
 			}
@@ -18,7 +18,7 @@ namespace dependency_desc {
 		return true;
 	}
 	bool operator >(module_version&& ver1, module_version&& ver2) { 
-		for (size_t i = 0; i < sizeof(module_version::versionnumbers); i++) {
+		for (size_t i = 0; i < 4; i++) {
 			if (ver1.versionnumbers[i] > ver2.versionnumbers[i]) {
 				return true;
 			}
@@ -26,7 +26,7 @@ namespace dependency_desc {
 		return false;
 	}
 	bool operator ==(module_version&& ver1, module_version&& ver2) { 
-		for (size_t i = 0; i < sizeof(module_version::versionnumbers); i++) {
+		for (size_t i = 0; i < 4; i++) {
 			if (ver1.versionnumbers[i] != ver2.versionnumbers[i]) {
 				return false;
 			}

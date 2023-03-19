@@ -182,6 +182,7 @@
     <ClInclude Include="Engine\data\errorvalues.h" />
     <ClInclude Include="Engine\functions\external_interaction.h" />
     <ClInclude Include="Engine\functions\function.h" />
+    <ClInclude Include="utils\include\exec_time.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="DynamicTokenEngine.rc" />
