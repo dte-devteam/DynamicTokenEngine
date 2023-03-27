@@ -11,12 +11,12 @@ namespace module_operator {
 		module_desc::module m = module_desc::module(dllname);
 		if (m.getlibrary()) {
 			modules.push_back({ m.requirements->size() == 0, m });
-			initmodules();
+			//initmodules();
 		}
 	}
 	void module_container::addgeneratedmodule(module_desc::module module, bool isinited) {
 		modules.push_back({ isinited, module });
-		initmodules();
+		//initmodules();
 	}
 	void module_container::freemodule(std::wstring dllname) {
 		std::vector<std::pair<bool, module_desc::module>>::iterator end = modules.end();

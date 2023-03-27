@@ -23,7 +23,6 @@ struct setter : functionfactory::basicfunction { //temp
     }
 };
 std::chrono::milliseconds timespan(5000);
-int f(int a) { return 0; }
 int main() {
     test::inittestdata();
     int_addadd addadd {

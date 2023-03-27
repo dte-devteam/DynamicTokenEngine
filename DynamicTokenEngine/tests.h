@@ -8,6 +8,7 @@
 
 
 #include "module/include/data_desc.h"
+#include "module/include/module_desc.h"
 typedef std::vector<functionfactory::basicfunction*>* (*DLLPROC)();
 struct do_win : functionfactory::function { using function::function; };
 namespace test {
@@ -24,6 +25,7 @@ namespace test {
 		THREAD_CREATE,
 		THREAD_DELETE
 	};
+	static std::vector<module_desc::module> modules;
 	static std::vector<functionfactory::basicfunction*>* dllf;// = ((DLLPROC)GetProcAddress(LoadLibrary(L"algebra.dll"), "getfunctions"))();
 	static std::vector<std::pair<data_desc::typedesc*, size_t>> types = { //sizes
 		{	//int*
@@ -39,6 +41,7 @@ namespace test {
 			0
 		}
 	};
+	static std::vector<void*> nodata;
 	static void* window = nullptr;
 	static memory::stream::stream* s;
 	static memory::stream::stream* us;
@@ -54,20 +57,34 @@ namespace test {
 		}
 	};
 	void inline inittestdata() {
+		modules.push_back({ L"algebra.dll" });
+		modules.push_back({ L"HWND.dll" });
+		for (module_desc::module& m : modules) {
+			std::wcout << m.getdllname() << std::endl;
+			if (m.functions) {
+				for (dependency_desc::function_data& fd : *m.functions) {
+					std::cout << fd.function->getid() << std::endl;
+				}
+			}
+		}
+		std::cout << "--------------" << std::endl;
+
+
+
 		DLLPROC functogetfucns;
 		std::vector<void*> vec({(void*)L"algebra.dll", &functogetfucns, 0, 0});
 		memory::function::importfunction.execute(&vec, nullptr, false, nullptr);
 		dllf = functogetfucns();
 		HMODULE hwndm = LoadLibrary(L"HWND.dll");
 		DLLPROC hwndpa = (DLLPROC)GetProcAddress(hwndm, "getfunctions");
-		std::vector<functionfactory::basicfunction*>* hwndf = ((DLLPROC)GetProcAddress(LoadLibrary(L"HWND.dll"), "getfunctions"))();
+		std::vector<functionfactory::basicfunction*>* hwndf = hwndpa();
 		std::copy(hwndf->begin(), hwndf->end(), std::back_inserter(*dllf));
 		//check function id`s
-		//for (functionfactory::basicfunction* bf : *dllf) {
-		//	std::cout << bf->getid() << std::endl;
-		//}
+		for (functionfactory::basicfunction* bf : *dllf) {
+			std::cout << bf->getid() << std::endl;
+		}
 		//stream
-		s = new memory::stream::stream((*dllf)[0], 0, controlstream);
+		s = new memory::stream::stream((*modules[0].functions)[0].function, 0, controlstream);
 		us = new memory::stream::stream(&do_window, 0, controlstream);
 		s->maywrite = false;
 		us->maywrite = false;
@@ -75,23 +92,28 @@ namespace test {
 		do_window.callings = {
 			{
 				(*dllf)[10],
+				//(*modules[1].functions)[1].function,	//10 - error
 				{
 					{0, false}
 				}
 			},
 			{
-				(*dllf)[13],
+				(*dllf)[13], 
+				//(*modules[1].functions)[4].function,	//13
 				{
 					{0, false},
 					{1, false}
 				}
 			},
 			{
-				(*dllf)[18],
+				(*dllf)[18], 
+				//(*modules[1].functions)[9].function,	//18
 				{}
 			}
 		};
-		us->execute(new std::vector<void*>(), nullptr, false);
+		std::vector<void*>* fargs = new std::vector<void*>({ &window });
+		delete fargs;
+		us->execute(&nodata, nullptr, false);
 	}
 	void inline test(int testmode) {
 		switch (testmode) {

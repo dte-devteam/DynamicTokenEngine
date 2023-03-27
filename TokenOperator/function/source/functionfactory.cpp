@@ -30,11 +30,11 @@ namespace functionfactory {
 		std::vector<void*> types(start, end);
 		*target = types;
 	}
-	bool function::callfunctions(std::vector<void*>* values, uint64_t* errorcodepointer, bool forced, void* stream) {
+	bool function::callfunctions(std::vector<void*>& values, uint64_t* errorcodepointer, bool forced, void* stream) {
 		for (functioncaller& func : callings) {
 			std::vector<void*> args;
 			for (std::pair<size_t, bool>& i : func.args_indices) {
-				args.push_back(i.second ? (void*)i.first : (*values)[i.first]);
+				args.push_back(i.second ? (void*)i.first : values[i.first]);
 			}
 			func.functionpointer->execute(&args, errorcodepointer, forced, stream);
 			if (HAS_E) {
@@ -46,7 +46,7 @@ namespace functionfactory {
 	void function::execute(std::vector<void*>* argumentspointer, uint64_t* errorcodepointer, bool forced, void* stream) {
 		std::vector<void*> values;
 		filldefaultvalues(argumentspointer, values);
-		callfunctions(&values, errorcodepointer, forced, stream);
+		callfunctions(values, errorcodepointer, forced, stream);
 	}
 	void typedfunction::execute(std::vector<void*>* argumentspointer, uint64_t* errorcodepointer, bool forced, void* stream) {
 		size_t size = defaultvalues.size();
@@ -132,19 +132,19 @@ namespace functionfactory {
 		filldefaultvalues(argumentspointer, values);
 		if (errorcodepointer) {
 			if (*errorcodepointer == 1) {
-				callfunctions(&values, errorcodepointer, true, stream);
+				callfunctions(values, errorcodepointer, true, stream);
 			}
 			else if (*errorcodepointer == 0) {
 				//to do
 				//clone data
 				*errorcodepointer = 1;
-				callfunctions(&values, errorcodepointer, true, stream);
+				callfunctions(values, errorcodepointer, true, stream);
 				//to do
 				//write from clone to data
 			}
 		}
 		else {
-			callfunctions(&values, errorcodepointer, forced, stream);
+			callfunctions(values, errorcodepointer, forced, stream);
 		}
 	}
 	void triggeredfunction::execute(std::vector<void*>* argumentspointer, uint64_t* errorcodepointer, bool forced, void* stream) {
@@ -153,7 +153,7 @@ namespace functionfactory {
 			std::vector<void*> values;
 			filldefaultvalues(argumentspointer, values);
 			if (*(bool*)values.back()) {
-				callfunctions(&values, errorcodepointer, forced, stream);
+				callfunctions(values, errorcodepointer, forced, stream);
 			}
 		}
 	}
@@ -167,7 +167,7 @@ namespace functionfactory {
 		filldefaultvalues(argumentspointer, values);
 		values.push_back(&cycletrigger);
 		while (*(bool*)values.back()) {
-			if (callfunctions(&values, errorcodepointer, forced, stream)) {
+			if (callfunctions(values, errorcodepointer, forced, stream)) {
 				return;
 			}
 		}

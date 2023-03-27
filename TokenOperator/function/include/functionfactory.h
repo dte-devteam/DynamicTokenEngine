@@ -61,7 +61,7 @@ namespace functionfactory {
 		std::vector<functioncaller> callings; //make this protected!
 		void execute(std::vector<void*>* argumentspointer, uint64_t* errorcodepointer, bool forced, void* stream);
 		protected:
-			bool callfunctions(std::vector<void*>* values, uint64_t* errorcodepointer, bool forced, void* stream);
+			bool callfunctions(std::vector<void*>& values, uint64_t* errorcodepointer, bool forced, void* stream);
 	};
 	struct typedfunction : function {
 		typedfunction(uint64_t id = 0, std::vector<void*> defaultvalues = {}, std::vector<functioncaller> callings = {}, std::vector<std::vector<void*>> valuetypes = {});

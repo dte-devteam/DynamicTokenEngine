@@ -2,7 +2,7 @@
 #include "token_data.h"
 namespace dependency_desc {
 	bool operator >(module_version& ver1, module_version& ver2) {
-		for (size_t i = 0; i < 4; i++) {
+		for (size_t i = 0; i < MODULE_VERSION_ELEMENTS; i++) {
 			if (ver1.versionnumbers[i] > ver2.versionnumbers[i]) {
 				return true;
 			}
@@ -10,7 +10,7 @@ namespace dependency_desc {
 		return false;
 	}
 	bool operator ==(module_version& ver1, module_version& ver2) {
-		for (size_t i = 0; i < 4; i++) {
+		for (size_t i = 0; i < MODULE_VERSION_ELEMENTS; i++) {
 			if (ver1.versionnumbers[i] != ver2.versionnumbers[i]) {
 				return false;
 			}
@@ -18,7 +18,7 @@ namespace dependency_desc {
 		return true;
 	}
 	bool operator >(module_version&& ver1, module_version&& ver2) { 
-		for (size_t i = 0; i < 4; i++) {
+		for (size_t i = 0; i < MODULE_VERSION_ELEMENTS; i++) {
 			if (ver1.versionnumbers[i] > ver2.versionnumbers[i]) {
 				return true;
 			}
@@ -26,16 +26,12 @@ namespace dependency_desc {
 		return false;
 	}
 	bool operator ==(module_version&& ver1, module_version&& ver2) { 
-		for (size_t i = 0; i < 4; i++) {
+		for (size_t i = 0; i < MODULE_VERSION_ELEMENTS; i++) {
 			if (ver1.versionnumbers[i] != ver2.versionnumbers[i]) {
 				return false;
 			}
 		}
 		return true;
-	}
-	module_version::module_version(uint16_t v0, uint16_t v1, uint16_t v2, uint16_t v3) : versionnumbers{v0, v1, v2, v3} {}
-	uint16_t* module_version::getversion() {
-		return versionnumbers;
 	}
 	module_requirement::module_requirement(std::wstring dllname, module_version minversion, bool critical) : dllname(dllname), minversion(minversion), critical(critical){}
 	std::wstring module_requirement::getname() {

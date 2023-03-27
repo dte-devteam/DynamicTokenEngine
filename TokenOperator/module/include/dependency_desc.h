@@ -2,6 +2,7 @@
 #include <cvt/wstring>
 #include "function/include/functionfactory.h"
 namespace dependency_desc {
+	#define MODULE_VERSION_ELEMENTS 4
 	enum class desc_type {
 		function,	//pointer for direct work with f()
 		f_call,		//pointer for calling f() (NOT FOR basicfunction!!!)
@@ -15,10 +16,12 @@ namespace dependency_desc {
 		friend bool operator >(module_version&& ver1, module_version&& ver2);
 		friend bool operator ==(module_version&& ver1, module_version&& ver2);
 		public:
-			module_version(uint16_t v0 = 0, uint16_t v1 = 0, uint16_t v2 = 0, uint16_t v3 = 0);
-			uint16_t* getversion();
+			constexpr module_version(uint16_t v0 = 0, uint16_t v1 = 0, uint16_t v2 = 0, uint16_t v3 = 0) : versionnumbers{ v0, v1, v2, v3 } {}
+			constexpr uint16_t* getversion() {
+				return versionnumbers;
+			}
 		protected:
-			uint16_t versionnumbers[4];
+			uint16_t versionnumbers[MODULE_VERSION_ELEMENTS];
 	};
 	class module_requirement {
 		public:

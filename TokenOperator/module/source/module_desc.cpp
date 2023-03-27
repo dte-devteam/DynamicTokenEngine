@@ -48,7 +48,7 @@ namespace module_desc {
         }
 	}
     void module::fetch_module_data() {
-        DLL_PROC_FD fd = (DLL_PROC_FD)GetProcAddress(library, "getfunctions");
+        DLL_PROC_FD fd = (DLL_PROC_FD)GetProcAddress(library, "getnfunctions");
         DLL_PROC_T t = (DLL_PROC_T)GetProcAddress(library, "gettypes");
         DLL_PROC_V v = (DLL_PROC_V)GetProcAddress(library, "getdata");
         DLL_PROC_MR mr = (DLL_PROC_MR)GetProcAddress(library, "getinitrequirements");
