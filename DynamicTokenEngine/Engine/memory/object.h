@@ -3,8 +3,8 @@
 #include <mutex>
 #include <iostream>	//temp
 #include <iomanip>	//temp
-#include "memory/include/stream.h"
-#include "module/include/data_desc.h"
+#include "stream/include/stream.h"
+#include "module/include/typedesc.h"
 //to do: stream defines if it can write (+basicfunction)
 /*
 * memory organisation:
@@ -45,23 +45,23 @@ namespace memory {
 				uint64_t gettype();
 				uint32_t getsupertype();
 				uint32_t getflags();
-				void settype(stream::stream* caller, data_desc::typedesc* typeinstance);
+				void settype(stream::stream* caller, module::typedesc* typeinstance);
 				void setflags(stream::stream* caller, uint32_t flags);
 				void unregisterobject(stream::stream* caller);
 			private:
-				iterator(stream::stream* caller, data_desc::typedesc* typeinstance, uint64_t id, uint32_t flags, bool iscriticalsection);
+				iterator(stream::stream* caller, module::typedesc* typeinstance, uint64_t id, uint32_t flags, bool iscriticalsection);
 				/*
 				* чтобы не запутаться:
 				* blocker это первый (по приоритету), кто может писать
 				* iscriticalsection это сигнал о том, что только blocker или поток с maywrite = false может получит доступ к объекту
 				*/
 				stream::stream* blocker = nullptr;
-				data_desc::typedesc* typeinstance = nullptr;
+				module::typedesc* typeinstance = nullptr;
 				uint64_t id = 0;
 				uint32_t flags = 0;
 				void* pointer = nullptr;
 				bool iscriticalsection = false;
-				void create_value(data_desc::typedesc* typeinstance);
+				void create_value(module::typedesc* typeinstance);
 				void kill_value();
 		};
 		class memorycontroller {
@@ -69,8 +69,8 @@ namespace memory {
 				static inline size_t defaultlistsize = 10;
 				virtual ~memorycontroller();	//почему в итоге память не высвобождается?!
 				static memorycontroller* instance();
-				static memorycontroller* instance(std::vector<std::pair<data_desc::typedesc*, size_t>> initstartmemory);
-				iterator* addobject(data_desc::typedesc* typeinstance, uint32_t flags = 0, stream::stream* caller = nullptr, bool getascritical = false);	//add stream safe (critical section or smth)
+				static memorycontroller* instance(std::vector<std::pair<module::typedesc*, size_t>> initstartmemory);
+				iterator* addobject(module::typedesc* typeinstance, uint32_t flags = 0, stream::stream* caller = nullptr, bool getascritical = false);	//add stream safe (critical section or smth)
 				iterator* getobject(uint64_t id, size_t size = 0, stream::stream* caller = nullptr, bool getascritical = false);
 				void setlistsize(size_t listsize, bool forced = false, size_t datasize = 0);
 				std::vector<std::pair<size_t, std::vector<iterator>>> objects;	//MAKE THIS PRIVATE!!!
@@ -79,7 +79,7 @@ namespace memory {
 				void log_size(bool extended = false, size_t size = 0);
 				void log_iterator(iterator& i, size_t shift, bool extended = false);
 			protected:
-				memorycontroller(std::vector<std::pair<data_desc::typedesc*, size_t>>* initstartmemory = nullptr);
+				memorycontroller(std::vector<std::pair<module::typedesc*, size_t>>* initstartmemory = nullptr);
 			private:
 				static memorycontroller* _instance;
 				uint64_t getfreeid();

@@ -14,9 +14,9 @@ using namespace utils::exec_time;
 * lib(static instances)->exe
 */
 
-struct int_addadd : functionfactory::function { using function::function; };
-struct add_funtion : functionfactory::muxfunction { using muxfunction::muxfunction; };
-struct setter : functionfactory::basicfunction { //temp
+struct int_addadd : function::function { using function::function; };
+struct add_funtion : function::muxfunction { using muxfunction::muxfunction; };
+struct setter : function::basicfunction { //temp
     using basicfunction::basicfunction;
     void execute(std::vector<void*>* argumentspointer, uint64_t* errorcodepointer, bool forced, void* stream) {
         *(size_t*)(*argumentspointer)[0] = (size_t)(*argumentspointer)[1];
@@ -156,5 +156,5 @@ int main() {
     //std::this_thread::sleep_for(timespan);
     test::us->joinstream(test::controlstream);
 
-    return functionfactory::r();
+    return 0;
 }

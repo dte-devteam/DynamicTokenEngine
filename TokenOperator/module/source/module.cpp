@@ -1,8 +1,8 @@
 #include "target_architecture.h"
 #include <libloaderapi.h>
 #include <winver.h>
-#include "../include/module_desc.h"
-namespace module_desc {
+#include "../include/module.h"
+namespace module {
 	module::module(std::wstring dllname) : dllname(dllname) {
 		library = LoadLibrary(dllname.c_str());
         fetch_module_data();
@@ -17,7 +17,7 @@ namespace module_desc {
     HMODULE module::getlibrary() {
         return library;
     }
-    dependency_desc::module_version module::getversion() {
+    module_version module::getversion() {
         return version;
     }
 	void module::search_for_version(std::wstring dllname) {
@@ -31,7 +31,7 @@ namespace module_desc {
                     if (size) {
                         VS_FIXEDFILEINFO* verInfo = (VS_FIXEDFILEINFO*)buffer;
                         if (verInfo->dwSignature == 0xfeef04bd) {
-                            version = dependency_desc::module_version(
+                            version = module_version(
                                 verInfo->dwFileVersionMS >> 16,
                                 verInfo->dwFileVersionMS & 0xffff,
                                 verInfo->dwFileVersionLS >> 16,
@@ -43,14 +43,14 @@ namespace module_desc {
                     }
                 }
             }
-            version = dependency_desc::module_version();
+            version = module_version();
             delete[] verdata;
         }
 	}
     void module::fetch_module_data() {
         DLL_PROC_FD fd = (DLL_PROC_FD)GetProcAddress(library, "getnfunctions");
-        DLL_PROC_T t = (DLL_PROC_T)GetProcAddress(library, "gettypes");
-        DLL_PROC_V v = (DLL_PROC_V)GetProcAddress(library, "getdata");
+        DLL_PROC_TD t = (DLL_PROC_TD)GetProcAddress(library, "gettypes");
+        DLL_PROC_VD v = (DLL_PROC_VD)GetProcAddress(library, "getdata");
         DLL_PROC_MR mr = (DLL_PROC_MR)GetProcAddress(library, "getinitrequirements");
         functions = fd ? fd() : nullptr;
         types = t ? t() : nullptr;

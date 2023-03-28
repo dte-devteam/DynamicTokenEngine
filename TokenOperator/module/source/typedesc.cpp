@@ -1,5 +1,5 @@
-#include "../include/data_desc.h"
-namespace data_desc {
+#include "../include/typedesc.h"
+namespace module {
 	bool operator ==(typedesc& desc, uint32_t& supertype) {
 		return desc.supertype == supertype;
 	}
@@ -21,15 +21,5 @@ namespace data_desc {
 		if (deleter) {
 			deleter(pointer);
 		}
-	}
-	valuedesc::valuedesc(typedesc type, void* pointer) : type(type), p(pointer){}
-	typedesc valuedesc::gettypedesc() {
-		return type;
-	}
-	void* vardesc::getpointer(void* getter) {
-		return p;
-	}
-	void* constdesc::getpointer(void* getter) {
-		return p && getter ? memcpy(getter, p, type.getsize()) : nullptr;
 	}
 }

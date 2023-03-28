@@ -1,5 +1,5 @@
 #include "../include/errorvalues.h"
-namespace functionfactory {
+namespace data {
 	namespace errorvalues {
 		void errorcode::execute(std::vector<void*>* argumentspointer, uint64_t* errorcodepointer, bool forced, void* stream) {
 			if (errorcodepointer) {

@@ -15,10 +15,10 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="function\include\functionfactory.h">
+    <ClInclude Include="function\include\basicfunction.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="memory\include\function.h">
+    <ClInclude Include="memory\include\functions.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
     <ClInclude Include="memory\include\external_interaction.h">
@@ -27,7 +27,7 @@
     <ClInclude Include="target_architecture.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="memory\include\stream.h">
+    <ClInclude Include="stream\include\stream.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
     <ClInclude Include="deletable_obj.h">
@@ -42,13 +42,13 @@
     <ClInclude Include="data\include\errorvalues.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="module\include\dependency_desc.h">
+    <ClInclude Include="module\include\function_requirement.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="module\include\data_desc.h">
+    <ClInclude Include="module\include\typedesc.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="module\include\module_desc.h">
+    <ClInclude Include="module\include\module.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
     <ClInclude Include="utils\include\utils_vector.h">
@@ -57,18 +57,63 @@
     <ClInclude Include="utils\include\exec_time.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
+    <ClInclude Include="function\include\functioncaller.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="function\include\function.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="function\include\typedfunction.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="function\include\subtypedfunction.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="function\include\muxfunction.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="function\include\unreliablefunction.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="function\include\triggeredfunction.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="function\include\cyclefunction.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="stream\include\absolutestreamrights.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="module\include\valuedesc.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="module\include\vardesc.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="module\include\constdesc.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="module\include\module_version.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="module\include\module_requirement.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="module\include\function_data.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="function\source\functionfactory.cpp">
+    <ClCompile Include="function\source\basicfunction.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="memory\source\function.cpp">
+    <ClCompile Include="memory\source\functions.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
     <ClCompile Include="memory\source\external_interaction.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="memory\source\stream.cpp">
+    <ClCompile Include="stream\source\stream.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
     <ClCompile Include="data\source\errorvalues.cpp">
@@ -77,13 +122,55 @@
     <ClCompile Include="data\source\values.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="module\source\dependency_desc.cpp">
+    <ClCompile Include="module\source\function_requirement.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="module\source\data_desc.cpp">
+    <ClCompile Include="module\source\typedesc.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="module\source\module_desc.cpp">
+    <ClCompile Include="module\source\module.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="function\source\function.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="function\source\cyclefunction.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="function\source\muxfunction.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="function\source\subtypedfunction.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="function\source\triggeredfunction.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="function\source\typedfunction.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="function\source\unreliablefunction.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="stream\source\absolutestreamrights.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="module\source\valuedesc.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="module\source\vardesc.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="module\source\constdesc.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="module\source\module_version.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="module\source\module_requirement.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="module\source\function_data.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
   </ItemGroup>

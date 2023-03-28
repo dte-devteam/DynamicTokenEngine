@@ -2,7 +2,7 @@
 namespace memory {
 	namespace object {
 		iterator::iterator() {}
-		iterator::iterator(stream::stream* caller, data_desc::typedesc* typeinstance, uint64_t id, uint32_t flags, bool iscriticalsection) : typeinstance(typeinstance), id(id), flags(flags), iscriticalsection(iscriticalsection){
+		iterator::iterator(stream::stream* caller, module::typedesc* typeinstance, uint64_t id, uint32_t flags, bool iscriticalsection) : typeinstance(typeinstance), id(id), flags(flags), iscriticalsection(iscriticalsection){
 			usedbystreams.push_back(caller);
 			if (caller->maywrite) {
 				blocker = caller;
@@ -27,7 +27,7 @@ namespace memory {
 		uint32_t iterator::getflags() {
 			return flags;
 		}
-		void iterator::settype(stream::stream* caller, data_desc::typedesc* typeinstance) {
+		void iterator::settype(stream::stream* caller, module::typedesc* typeinstance) {
 			if (blocker) {
 				if (!caller) {
 					return;
@@ -83,7 +83,7 @@ namespace memory {
 				iscriticalsection = false;
 			}
 		}
-		void iterator::create_value(data_desc::typedesc* typeinstance) {
+		void iterator::create_value(module::typedesc* typeinstance) {
 			this->typeinstance = typeinstance;
 			pointer = malloc(typeinstance->getsize());
 		}
@@ -101,9 +101,9 @@ namespace memory {
 
 
 		memorycontroller* memorycontroller::_instance;
-		memorycontroller::memorycontroller(std::vector<std::pair<data_desc::typedesc*, size_t>>* initstartmemory) {
+		memorycontroller::memorycontroller(std::vector<std::pair<module::typedesc*, size_t>>* initstartmemory) {
 			if (initstartmemory) {
-				for (std::pair<data_desc::typedesc*, size_t>& p : *initstartmemory) {
+				for (std::pair<module::typedesc*, size_t>& p : *initstartmemory) {
 					std::vector<std::pair<size_t, std::vector<iterator>>>::iterator end = objects.end();
 					std::vector<std::pair<size_t, std::vector<iterator>>>::iterator i = std::find_if(
 						objects.begin(),
@@ -134,13 +134,13 @@ namespace memory {
 			}
 			return _instance;
 		}
-		memorycontroller* memorycontroller::instance(std::vector<std::pair<data_desc::typedesc*, size_t>> initstartmemory) {
+		memorycontroller* memorycontroller::instance(std::vector<std::pair<module::typedesc*, size_t>> initstartmemory) {
 			if (!_instance) {
 				_instance = new memorycontroller(&initstartmemory);
 			}
 			return _instance;
 		}
-		iterator* memorycontroller::addobject(data_desc::typedesc* typeinstance, uint32_t flags, stream::stream* caller, bool getascritical) {
+		iterator* memorycontroller::addobject(module::typedesc* typeinstance, uint32_t flags, stream::stream* caller, bool getascritical) {
 			if (!caller) {
 				return nullptr;
 			}

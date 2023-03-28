@@ -1,8 +1,8 @@
 #pragma once
 #include <iostream>
-#include "function/include/functionfactory.h"
+#include "function/include/basicfunction.h"
 #include "token_data.h"
-namespace functionfactory {
+namespace data {
 	namespace errorvalues {
 		enum errorvalues {
 			NO_ERROR_NO_HANDLER,
@@ -11,7 +11,7 @@ namespace functionfactory {
 			NULLPTR,
 			INDEX_OUT_RANGE
 		};
-		struct errorcode : basicfunction {
+		struct errorcode : function::basicfunction {
 			using basicfunction::basicfunction;
 			void execute(std::vector<void*>* argumentspointer, uint64_t* errorcodepointer, bool forced, void* stream);
 			private:

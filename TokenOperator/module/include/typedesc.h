@@ -1,8 +1,7 @@
 #pragma once
 #include <stdint.h>
-#include "token_data.h"
 #include "deletable_obj.h"
-namespace data_desc {
+namespace module {
 	class typedesc {
 		friend bool operator ==(typedesc& desc, uint32_t& supertype);
 		friend bool operator ==(typedesc& desc, uint64_t& type);
@@ -16,22 +15,5 @@ namespace data_desc {
 			uint32_t supertype;
 			size_t size;
 			deletable_obj::DEL_F deleter;
-	};
-	class valuedesc {
-		public:
-			valuedesc(typedesc type, void* pointer = nullptr);
-			typedesc gettypedesc();
-			virtual void* getpointer(void* getter) = 0;
-		protected:
-			typedesc type;
-			void* p;
-	};
-	struct vardesc : valuedesc {
-		using valuedesc::valuedesc;
-		void* getpointer(void* getter = nullptr);
-	};
-	struct constdesc : valuedesc {
-		using valuedesc::valuedesc;
-		void* getpointer(void* getter = nullptr);
 	};
 }
