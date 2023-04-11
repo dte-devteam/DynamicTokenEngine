@@ -40,6 +40,7 @@
     <ClInclude Include="module\include\module_version.h" />
     <ClInclude Include="module\include\valuedesc.h" />
     <ClInclude Include="module\include\vardesc.h" />
+    <ClInclude Include="module\module_defines.h" />
     <ClInclude Include="stream\include\absolutestreamrights.h" />
     <ClInclude Include="stream\include\stream.h" />
     <ClInclude Include="module\include\function_requirement.h" />

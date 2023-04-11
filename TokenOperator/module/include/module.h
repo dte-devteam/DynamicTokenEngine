@@ -6,13 +6,14 @@
 #include "module_requirement.h"
 #include "function_data.h"
 namespace module {
-	typedef std::vector<function_data>* (*DLL_PROC_FD)();
-	typedef std::vector<typedesc>* (*DLL_PROC_TD)();
-	typedef std::vector<valuedesc*>* (*DLL_PROC_VD)();
-	typedef std::vector<module_requirement>* (*DLL_PROC_MR)();
+	typedef std::vector<function_data>* DTE_MODULE_FD;
+	typedef std::vector<typedesc>* DTE_MODULE_TD;
+	typedef std::vector<valuedesc*>* DTE_MODULE_VD;
+	typedef std::vector<module_requirement>* DTE_MODULE_MR;
 	class module {
 		public:
 			module(std::wstring dllname = std::wstring());
+			module(const module& parent);
 			virtual ~module();
 			std::wstring getdllname();
 			HMODULE getlibrary();

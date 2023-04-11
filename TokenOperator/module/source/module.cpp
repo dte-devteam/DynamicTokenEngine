@@ -8,9 +8,10 @@ namespace module {
         fetch_module_data();
         search_for_version(dllname);
 	}
+    module::module(const module& parent) : module(parent.dllname) {}
 	module::~module() {
-		FreeLibrary(library);
-	}
+        FreeLibrary(library);
+    }
     std::wstring module::getdllname() {
         return dllname;
     }
@@ -48,13 +49,9 @@ namespace module {
         }
 	}
     void module::fetch_module_data() {
-        DLL_PROC_FD fd = (DLL_PROC_FD)GetProcAddress(library, "getnfunctions");
-        DLL_PROC_TD t = (DLL_PROC_TD)GetProcAddress(library, "gettypes");
-        DLL_PROC_VD v = (DLL_PROC_VD)GetProcAddress(library, "getdata");
-        DLL_PROC_MR mr = (DLL_PROC_MR)GetProcAddress(library, "getinitrequirements");
-        functions = fd ? fd() : nullptr;
-        types = t ? t() : nullptr;
-        data = v ? v() : nullptr;
-        requirements = mr ? mr() : nullptr;
+        functions = (DTE_MODULE_FD)GetProcAddress(library, "functions");
+        types = (DTE_MODULE_TD)GetProcAddress(library, "types");
+        data = (DTE_MODULE_VD)GetProcAddress(library, "data");
+        requirements = (DTE_MODULE_MR)GetProcAddress(library, "requirements");
     }
 }

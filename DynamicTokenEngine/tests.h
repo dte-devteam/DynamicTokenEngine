@@ -59,15 +59,15 @@ namespace test {
 	void inline inittestdata() {
 		modules.push_back({ L"algebra.dll" });
 		modules.push_back({ L"HWND.dll" });
-		//for (module_desc::module& m : modules) {
-		//	std::wcout << m.getdllname() << std::endl;
-		//	if (m.functions) {
-		//		for (dependency_desc::function_data& fd : *m.functions) {
-		//			std::cout << fd.function->getid() << std::endl;
-		//		}
-		//	}
-		//}
-		//std::cout << "--------------" << std::endl;
+		for (module::module& m : modules) {
+			std::wcout << m.getdllname() << std::endl;
+			if (m.functions) {
+				for (module::function_data& fd : *m.functions) {
+					std::cout << fd.function->getid() << std::endl;
+				}
+			}
+		}
+		std::cout << "--------------" << std::endl;
 
 
 
@@ -91,23 +91,23 @@ namespace test {
 		//window
 		do_window.callings = {
 			{
-				(*dllf)[10],
-				//(*modules[1].functions)[1].function,	//10 - error
+				//(*dllf)[10],
+				(*modules[1].functions)[1].function,	//10
 				{
 					{0, false}
 				}
 			},
 			{
-				(*dllf)[13], 
-				//(*modules[1].functions)[4].function,	//13
+				//(*dllf)[13], 
+				(*modules[1].functions)[4].function,	//13
 				{
 					{0, false},
 					{1, false}
 				}
 			},
 			{
-				(*dllf)[18], 
-				//(*modules[1].functions)[9].function,	//18
+				//(*dllf)[18], 
+				(*modules[1].functions)[9].function,	//18
 				{}
 			}
 		};
