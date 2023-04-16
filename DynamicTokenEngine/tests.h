@@ -26,7 +26,6 @@ namespace test {
 		THREAD_DELETE
 	};
 	static std::vector<module::module> modules;
-	static std::vector<function::basicfunction*>* dllf;// = ((DLLPROC)GetProcAddress(LoadLibrary(L"algebra.dll"), "getfunctions"))();
 	static std::vector<std::pair<module::typedesc*, size_t>> types = { //sizes
 		{	//int*
 			new module::typedesc(token_data::token_type_to_id(L"int"), sizeof(int)),
@@ -63,7 +62,7 @@ namespace test {
 			std::wcout << m.getdllname() << std::endl;
 			if (m.functions) {
 				for (module::function_data& fd : *m.functions) {
-					std::cout << fd.function->getid() << std::endl;
+					std::cout << fd.pointer->getid() << std::endl;
 				}
 			}
 		}
@@ -71,20 +70,8 @@ namespace test {
 
 
 
-		DLLPROC functogetfucns;
-		std::vector<void*> vec({(void*)L"algebra.dll", &functogetfucns, 0, 0});
-		memory::importfunction.execute(&vec, nullptr, false, nullptr);
-		dllf = functogetfucns();
-		HMODULE hwndm = LoadLibrary(L"HWND.dll");
-		DLLPROC hwndpa = (DLLPROC)GetProcAddress(hwndm, "getfunctions");
-		std::vector<function::basicfunction*>* hwndf = hwndpa();
-		std::copy(hwndf->begin(), hwndf->end(), std::back_inserter(*dllf));
-		//check function id`s
-		//for (functionfactory::basicfunction* bf : *dllf) {
-		//	std::cout << bf->getid() << std::endl;
-		//}
 		//stream
-		s = new stream::stream((*modules[0].functions)[0].function, 0, controlstream);
+		s = new stream::stream((*modules[0].functions)[0].pointer, 0, controlstream);
 		us = new stream::stream(&do_window, 0, controlstream);
 		s->maywrite = false;
 		us->maywrite = false;
@@ -92,14 +79,14 @@ namespace test {
 		do_window.callings = {
 			{
 				//(*dllf)[10],
-				(*modules[1].functions)[1].function,	//10
+				(*modules[1].functions)[1].pointer,	//10
 				{
 					{0, false}
 				}
 			},
 			{
 				//(*dllf)[13], 
-				(*modules[1].functions)[4].function,	//13
+				(*modules[1].functions)[4].pointer,	//13
 				{
 					{0, false},
 					{1, false}
@@ -107,13 +94,12 @@ namespace test {
 			},
 			{
 				//(*dllf)[18], 
-				(*modules[1].functions)[9].function,	//18
+				(*modules[1].functions)[9].pointer,	//18
 				{}
 			}
 		};
-		std::vector<void*>* fargs = new std::vector<void*>({ &window });
-		delete fargs;
 		us->execute(&nodata, nullptr, false);
+		us->joinstream(s);
 	}
 	void inline test(int testmode) {
 		switch (testmode) {

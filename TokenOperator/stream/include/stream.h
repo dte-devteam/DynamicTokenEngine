@@ -11,7 +11,7 @@ namespace stream {
 			stream(basicfunction* function, uint64_t id, stream* caller = nullptr);
 			virtual ~stream();
 			void execute(std::vector<void*>* argumentspointer, uint64_t* errorcodepointer, bool forced, void* stream = nullptr);
-			void killstream(stream* caller);	//to do (придумать когда поток может быть убит), удалить поток и информацию о нем
+			bool killstream(stream* caller);	//to do (придумать когда поток может быть убит), удалить поток и информацию о нем
 			void joinstream(stream* caller);
 			bool isalive();
 			bool setfunction(basicfunction* func);

@@ -36,7 +36,7 @@ int main() {
         },
         {   //callings
             {
-                (*test::dllf)[0],
+                (*test::modules[0].functions)[0].pointer,
                 {
                     {0, false},
                     {1, false},
@@ -44,7 +44,7 @@ int main() {
                 }
             },
             {
-                (*test::dllf)[0],
+                (*test::modules[0].functions)[0].pointer,
                 {
                     {0, false},
                     {2, false},
@@ -65,7 +65,7 @@ int main() {
         },
         {   //callings
             {
-                (*test::dllf)[0],
+                (*test::modules[0].functions)[0].pointer,
                 {
                     {0, false},
                     {1, false},
@@ -73,7 +73,7 @@ int main() {
                 }
             },
             {
-                (*test::dllf)[1],
+                (*test::modules[0].functions)[1].pointer,
                 {
                     {0, false},
                     {1, false},
@@ -99,18 +99,9 @@ int main() {
     add.execute(&args3, nullptr, false, nullptr);
     std::cout << fr << "(20.5f+80.3f)" << std::endl;
     std::vector<void*> args4{ &r1, &b, &r2 };
-    (*test::dllf)[7]->execute(&args4, nullptr, false, nullptr);
+    (*test::modules[0].functions)[7].pointer->execute(&args4, nullptr, false, nullptr);
     std::cout << r2 << "(10/8)" << std::endl;
     
-    et.log();
-
-    //uint64_t e = 0;
-    //std::vector<void*> vec({(void*)L"algebra.dll", (void*)&dllf, 0, 0});
-    //memory::function::importfunction.execute(&vec, &e, false, nullptr);
-    //std::cout << e << std::endl;
-    //std::cout << dllf << std::endl;
-    std::cout << test::dllf->size() << std::endl;
-
     et.log();
 
     test::test(test::THREAD_CREATE);
@@ -150,7 +141,6 @@ int main() {
     
     std::cout << "END" << std::endl;
 
-    std::cout << test::dllf->size() << std::endl;
     et.log();
 
     //std::this_thread::sleep_for(timespan);

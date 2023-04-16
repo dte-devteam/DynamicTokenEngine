@@ -49,9 +49,9 @@ namespace module {
         }
 	}
     void module::fetch_module_data() {
-        functions = (DTE_MODULE_FD)GetProcAddress(library, "functions");
-        types = (DTE_MODULE_TD)GetProcAddress(library, "types");
-        data = (DTE_MODULE_VD)GetProcAddress(library, "data");
-        requirements = (DTE_MODULE_MR)GetProcAddress(library, "requirements");
+        functions = (DTE_MODULE_FD*)GetProcAddress(library, "functions");
+        types = (DTE_MODULE_TD*)GetProcAddress(library, "types");
+        data = (DTE_MODULE_VD*)GetProcAddress(library, "data");
+        requirements = (DTE_MODULE_MR*)GetProcAddress(library, "requirements");
     }
 }

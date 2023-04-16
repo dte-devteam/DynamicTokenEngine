@@ -84,13 +84,13 @@
     <ClInclude Include="stream\include\absolutestreamrights.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="module\include\valuedesc.h">
+    <ClInclude Include="data\include\value.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="module\include\vardesc.h">
+    <ClInclude Include="data\include\varvalue.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="module\include\constdesc.h">
+    <ClInclude Include="data\include\constvalue.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
     <ClInclude Include="module\include\module_version.h">
@@ -99,10 +99,16 @@
     <ClInclude Include="module\include\module_requirement.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="module\include\function_data.h">
+    <ClInclude Include="module\module_defines.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="module\module_defines.h">
+    <ClInclude Include="module\include\value_data.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="module\include\desc_type.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="module\include\export_data.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
   </ItemGroup>
@@ -120,9 +126,6 @@
       <Filter>Исходные файлы</Filter>
     </ClCompile>
     <ClCompile Include="data\source\errorvalues.cpp">
-      <Filter>Исходные файлы</Filter>
-    </ClCompile>
-    <ClCompile Include="data\source\values.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
     <ClCompile Include="module\source\function_requirement.cpp">
@@ -158,22 +161,19 @@
     <ClCompile Include="stream\source\absolutestreamrights.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="module\source\valuedesc.cpp">
+    <ClCompile Include="data\source\value.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="module\source\vardesc.cpp">
+    <ClCompile Include="data\source\varvalue.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="module\source\constdesc.cpp">
+    <ClCompile Include="data\source\constvalue.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
     <ClCompile Include="module\source\module_version.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
     <ClCompile Include="module\source\module_requirement.cpp">
-      <Filter>Исходные файлы</Filter>
-    </ClCompile>
-    <ClCompile Include="module\source\function_data.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
   </ItemGroup>

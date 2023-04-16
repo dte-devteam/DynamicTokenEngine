@@ -39,22 +39,22 @@ namespace stream {
 			*errorcodepointer = 7658;	//change error code (to do): cant execute nullptr of function
 		}
 	}
-	void stream::killstream(stream* caller) {
+	bool stream::killstream(stream* caller) {
 		if (alive.load()) {
 			if (caller) {
 				if (this->id == caller->id) {
-					return;
+					return false;
+				}
+				if (caller->rights->getkillrights()) {
+					goto killstream;
 				}
 				if (this->caller) {
 					if (caller->id == this->caller->id) {
 						goto killstream;
 					}
 				}
-				if (caller->rights->getkillrights()) {
-					goto killstream;
-				}
 			}
-			return;
+			return false;
 			killstream:
 			for (stream* s : childstreams) {
 				s->killstream(this);
@@ -67,22 +67,18 @@ namespace stream {
 			//}
 			iterators.clear();
 		}
+		return true;
 	}
 	void stream::joinstream(stream* caller) {
 		if (alive.load()) {
+			if (!caller) {
+				return;
+			}
 			if (caller->id == this->id) {
 				return;
 			}
-			if (!(this->caller && caller)) {
-				return;
-			}
 			if (thread.joinable()) {
-				if (caller->id == this->caller->id) {
-					return thread.join();
-				}
-				if (caller->rights->getjoinrights()) {
-					return thread.join();
-				}
+				return thread.join();	//if will be called from few thread will lead data race (to do, mutex?)
 			}
 		}
 	}

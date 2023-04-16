@@ -34,12 +34,14 @@
     <ClInclude Include="function\include\unreliablefunction.h" />
     <ClInclude Include="memory\include\external_interaction.h" />
     <ClInclude Include="memory\include\functions.h" />
-    <ClInclude Include="module\include\constdesc.h" />
-    <ClInclude Include="module\include\function_data.h" />
+    <ClInclude Include="data\include\constvalue.h" />
+    <ClInclude Include="module\include\desc_type.h" />
+    <ClInclude Include="module\include\export_data.h" />
     <ClInclude Include="module\include\module_requirement.h" />
     <ClInclude Include="module\include\module_version.h" />
-    <ClInclude Include="module\include\valuedesc.h" />
-    <ClInclude Include="module\include\vardesc.h" />
+    <ClInclude Include="data\include\value.h" />
+    <ClInclude Include="data\include\varvalue.h" />
+    <ClInclude Include="module\include\value_data.h" />
     <ClInclude Include="module\module_defines.h" />
     <ClInclude Include="stream\include\absolutestreamrights.h" />
     <ClInclude Include="stream\include\stream.h" />
@@ -52,7 +54,6 @@
     <ClInclude Include="utils\include\utils_vector.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="data\source\values.cpp" />
     <ClCompile Include="data\source\errorvalues.cpp" />
     <ClCompile Include="function\source\basicfunction.cpp" />
     <ClCompile Include="function\source\cyclefunction.cpp" />
@@ -64,12 +65,11 @@
     <ClCompile Include="function\source\unreliablefunction.cpp" />
     <ClCompile Include="memory\source\external_interaction.cpp" />
     <ClCompile Include="memory\source\functions.cpp" />
-    <ClCompile Include="module\source\constdesc.cpp" />
-    <ClCompile Include="module\source\function_data.cpp" />
+    <ClCompile Include="data\source\constvalue.cpp" />
     <ClCompile Include="module\source\module_requirement.cpp" />
     <ClCompile Include="module\source\module_version.cpp" />
-    <ClCompile Include="module\source\valuedesc.cpp" />
-    <ClCompile Include="module\source\vardesc.cpp" />
+    <ClCompile Include="data\source\value.cpp" />
+    <ClCompile Include="data\source\varvalue.cpp" />
     <ClCompile Include="stream\source\absolutestreamrights.cpp" />
     <ClCompile Include="stream\source\stream.cpp" />
     <ClCompile Include="module\source\function_requirement.cpp" />

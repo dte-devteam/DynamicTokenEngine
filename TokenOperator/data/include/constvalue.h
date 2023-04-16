@@ -1,9 +1,9 @@
 #pragma once
 #include <vcruntime_string.h>	//for memcpy
-#include "valuedesc.h"
-namespace module {
-	struct constdesc : valuedesc {
-		using valuedesc::valuedesc;
+#include "value.h"
+namespace data {
+	struct constvalue : value {
+		using value::value;
 		void* getpointer(void* getter = nullptr);
 	};
 }

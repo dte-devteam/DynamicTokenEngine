@@ -16,7 +16,5 @@ namespace module_operator {
 			std::vector<std::pair<bool, module::module>> modules;
 			bool inited;
 			void initmodules();
-			bool function_init_setter(module::function_data& function, module::function_requirement& f_require, bool& function_initiation, std::vector<module::module*>& require, void (*init_f)(module::function_data&, module::function_data&, module::function_requirement&));
-			static void init_function_pointer(module::function_data& function_to_init, module::function_data& function_to_require, module::function_requirement& require_destination);
 	};
 }
