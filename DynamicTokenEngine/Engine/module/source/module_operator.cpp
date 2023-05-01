@@ -7,15 +7,15 @@ namespace module_operator {
 		}
 		return _instance;
 	}
-	bool module_container::loadmodule(std::wstring dllname, bool init_immedeatly) {
-		return addgeneratedmodule(module::module(dllname), init_immedeatly);
+	bool module_container::loadmodule(std::wstring dllname, std::wstring path, bool init_immedeatly) {
+		return addgeneratedmodule(module::module(dllname, path), init_immedeatly);
 	}
 	bool module_container::addgeneratedmodule(module::module module, bool init_immedeatly) {
 		std::vector<module_unit>::iterator end = modules.end();
 		std::vector<module_unit>::iterator iter = find_if(
 			modules.begin(),
 			end,
-			[&module](module_unit mu) {
+			[&module](module_unit& mu) {
 				return module.getdllname() == mu.module_intance.getdllname();
 			}
 		);
@@ -33,7 +33,7 @@ namespace module_operator {
 		std::vector<module_unit>::iterator iter = find_if(
 			modules.begin(),
 			end,
-			[dllname](module_unit mu) {
+			[dllname](module_unit& mu) {
 				return dllname == mu.module_intance.getdllname();
 			}
 		);
@@ -44,7 +44,7 @@ namespace module_operator {
 			modules.erase(iter);
 		}
 	}
-	module_container::module_container(std::vector<module_unit> modules) : modules(modules){}
+	module_container::module_container(std::vector<module_unit>& modules) : modules(modules){}
 	void module_container::initmodule(module_unit& module) {
 		//intiation can be called is requirements are not empty and pointer to them isn`t null
 		if (!module.init_status) {
