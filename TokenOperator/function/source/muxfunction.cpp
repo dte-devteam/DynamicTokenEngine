@@ -8,7 +8,7 @@ namespace function {
 		filldefaultvalues(argumentspointer, values);
 		size_t index = callings.size();
 		std::vector<void*> mux_args{ &index };
-		std::copy(argumentspointer->begin() + values.size() - 1, argumentspointer->end(), std::back_inserter(mux_args));
+		std::copy(argumentspointer->begin(), argumentspointer->end(), std::back_inserter(mux_args));
 		mux->execute(&mux_args, errorcodepointer, forced, stream);
 		if (HAS_E) {
 			return;

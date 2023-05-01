@@ -1,13 +1,13 @@
 #include "../include/module_requirement.h"
 namespace module {
-	module_requirement::module_requirement(std::wstring dllname, module_version minversion, bool critical) : dllname(dllname), minversion(minversion), critical(critical) {}
+	module_requirement::module_requirement(std::wstring dllname, module_version minversion, module_version maxversion) : dllname(dllname), versions{ minversion, maxversion } {}
 	std::wstring module_requirement::getname() {
 		return dllname;
 	}
 	module_version module_requirement::getminversion() {
-		return minversion;
+		return versions[0];
 	}
-	bool module_requirement::iscritical() {
-		return critical;
+	module_version module_requirement::getmaxversion() {
+		return versions[1];
 	}
 }

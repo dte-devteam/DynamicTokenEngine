@@ -42,7 +42,7 @@
     <ClInclude Include="data\include\errorvalues.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="module\include\function_requirement.h">
+    <ClInclude Include="module\include\export_requirement.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
     <ClInclude Include="module\include\typedesc.h">
@@ -102,9 +102,6 @@
     <ClInclude Include="module\module_defines.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="module\include\value_data.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
     <ClInclude Include="module\include\desc_type.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
@@ -128,7 +125,7 @@
     <ClCompile Include="data\source\errorvalues.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="module\source\function_requirement.cpp">
+    <ClCompile Include="module\source\export_requirement.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
     <ClCompile Include="module\source\typedesc.cpp">

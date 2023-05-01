@@ -19,7 +19,7 @@ struct add_funtion : function::muxfunction { using muxfunction::muxfunction; };
 struct setter : function::basicfunction { //temp
     using basicfunction::basicfunction;
     void execute(std::vector<void*>* argumentspointer, uint64_t* errorcodepointer, bool forced, void* stream) {
-        *(size_t*)(*argumentspointer)[0] = (size_t)(*argumentspointer)[1];
+        *(size_t*)(*argumentspointer)[0] = (size_t)(*argumentspointer)[4];
     }
 };
 std::chrono::milliseconds timespan(5000);

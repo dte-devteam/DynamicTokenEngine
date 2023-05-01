@@ -176,6 +176,7 @@
     <ClInclude Include="Engine\memory\function.h" />
     <ClInclude Include="Engine\memory\object.h" />
     <ClInclude Include="Engine\module\include\module_operator.h" />
+    <ClInclude Include="Engine\module\include\module_unit.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="tests.h" />
     <ClInclude Include="Engine\data\defaultvalues.h" />

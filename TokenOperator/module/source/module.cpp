@@ -3,16 +3,17 @@
 #include <winver.h>
 #include "../include/module.h"
 namespace module {
-	module::module(std::wstring dllname) : dllname(dllname) {
-		library = LoadLibrary(dllname.c_str());
+	module::module(std::wstring dllname, std::wstring path) : dllname(dllname) {
+        std::wstring fullpath = path + dllname;
+		library = LoadLibrary(fullpath.c_str());
         fetch_module_data();
-        search_for_version(dllname);
+        search_for_version(fullpath);
 	}
     module::module(const module& parent) : module(parent.dllname) {}
 	module::~module() {
         FreeLibrary(library);
     }
-    std::wstring module::getdllname() {
+    std::wstring module::getdllname() const {
         return dllname;
     }
     HMODULE module::getlibrary() {
@@ -21,22 +22,22 @@ namespace module {
     module_version module::getversion() {
         return version;
     }
-	void module::search_for_version(std::wstring dllname) {
-        DWORD verhandle = NULL, versize = GetFileVersionInfoSize(dllname.c_str(), &verhandle);
+	void module::search_for_version(std::wstring& fullpath) {
+        DWORD verhandle = NULL, versize = GetFileVersionInfoSize(fullpath.c_str(), &verhandle);
         if (versize) {
             UINT size = 0;
             LPBYTE buffer = nullptr;
             LPSTR verdata = new char[versize];
-            if (GetFileVersionInfo(dllname.c_str(), verhandle, versize, verdata)) {
+            if (GetFileVersionInfo(fullpath.c_str(), verhandle, versize, verdata)) {
                 if (VerQueryValue(verdata, L"\\", (VOID FAR* FAR*) &buffer, &size)) {
                     if (size) {
                         VS_FIXEDFILEINFO* verInfo = (VS_FIXEDFILEINFO*)buffer;
                         if (verInfo->dwSignature == 0xfeef04bd) {
                             version = module_version(
                                 verInfo->dwFileVersionMS >> 16,
-                                verInfo->dwFileVersionMS & 0xffff,
+                                verInfo->dwFileVersionMS & 0xFFFF,
                                 verInfo->dwFileVersionLS >> 16,
-                                verInfo->dwFileVersionLS & 0xffff
+                                verInfo->dwFileVersionLS & 0xFFFF
                             );
                             delete[] verdata;
                             return;

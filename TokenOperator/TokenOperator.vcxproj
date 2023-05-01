@@ -41,11 +41,10 @@
     <ClInclude Include="module\include\module_version.h" />
     <ClInclude Include="data\include\value.h" />
     <ClInclude Include="data\include\varvalue.h" />
-    <ClInclude Include="module\include\value_data.h" />
     <ClInclude Include="module\module_defines.h" />
     <ClInclude Include="stream\include\absolutestreamrights.h" />
     <ClInclude Include="stream\include\stream.h" />
-    <ClInclude Include="module\include\function_requirement.h" />
+    <ClInclude Include="module\include\export_requirement.h" />
     <ClInclude Include="module\include\module.h" />
     <ClInclude Include="module\include\typedesc.h" />
     <ClInclude Include="target_architecture.h" />
@@ -72,7 +71,7 @@
     <ClCompile Include="data\source\varvalue.cpp" />
     <ClCompile Include="stream\source\absolutestreamrights.cpp" />
     <ClCompile Include="stream\source\stream.cpp" />
-    <ClCompile Include="module\source\function_requirement.cpp" />
+    <ClCompile Include="module\source\export_requirement.cpp" />
     <ClCompile Include="module\source\typedesc.cpp" />
     <ClCompile Include="module\source\module.cpp" />
   </ItemGroup>
