@@ -22,6 +22,12 @@ namespace module {
     module_version module::getversion() {
         return version;
     }
+    bool module::operator ==(module& module_instance) {
+        return module_instance.getdllname() == dllname && module_instance.getversion() == version;
+    }
+    bool module::operator ==(module&& module_instance) {
+        return module_instance.getdllname() == dllname && module_instance.getversion() == version;
+    }
 	void module::search_for_version(std::wstring& fullpath) {
         DWORD verhandle = NULL, versize = GetFileVersionInfoSize(fullpath.c_str(), &verhandle);
         if (versize) {
@@ -34,10 +40,10 @@ namespace module {
                         VS_FIXEDFILEINFO* verInfo = (VS_FIXEDFILEINFO*)buffer;
                         if (verInfo->dwSignature == 0xfeef04bd) {
                             version = module_version(
-                                verInfo->dwFileVersionMS >> 16,
-                                verInfo->dwFileVersionMS & 0xFFFF,
+                                verInfo->dwFileVersionLS & 0xFFFF,
                                 verInfo->dwFileVersionLS >> 16,
-                                verInfo->dwFileVersionLS & 0xFFFF
+                                verInfo->dwFileVersionMS & 0xFFFF,
+                                verInfo->dwFileVersionMS >> 16
                             );
                             delete[] verdata;
                             return;

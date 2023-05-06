@@ -66,7 +66,6 @@
     <ClCompile Include="memory\source\functions.cpp" />
     <ClCompile Include="data\source\constvalue.cpp" />
     <ClCompile Include="module\source\module_requirement.cpp" />
-    <ClCompile Include="module\source\module_version.cpp" />
     <ClCompile Include="data\source\value.cpp" />
     <ClCompile Include="data\source\varvalue.cpp" />
     <ClCompile Include="stream\source\absolutestreamrights.cpp" />

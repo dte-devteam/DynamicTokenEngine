@@ -167,9 +167,6 @@
     <ClCompile Include="data\source\constvalue.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="module\source\module_version.cpp">
-      <Filter>Исходные файлы</Filter>
-    </ClCompile>
     <ClCompile Include="module\source\module_requirement.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>

@@ -22,6 +22,9 @@ struct setter : function::basicfunction { //temp
         *(size_t*)(*argumentspointer)[0] = (size_t)(*argumentspointer)[4];
     }
 };
+void f(int& v) {
+    v = 100;
+}
 std::chrono::milliseconds timespan(5000);
 int main() {
     test::inittestdata();

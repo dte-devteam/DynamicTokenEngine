@@ -22,6 +22,8 @@ namespace module {
 			DTE_MODULE_VD* data;
 			DTE_MODULE_MR* requirements;
 			module_version getversion();
+			bool operator ==(module& module_instance);
+			bool operator ==(module&& module_instance);
 		protected:
 			std::wstring dllname;
 			HMODULE library;
