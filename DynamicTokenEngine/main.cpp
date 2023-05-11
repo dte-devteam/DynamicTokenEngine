@@ -39,7 +39,7 @@ int main() {
         },
         {   //callings
             {
-                (*test::modules[0].functions)[0].pointer,
+                (function::basicfunction*)(*test::modules[0].functions)[0].pointer,
                 {
                     {0, false},
                     {1, false},
@@ -47,7 +47,7 @@ int main() {
                 }
             },
             {
-                (*test::modules[0].functions)[0].pointer,
+                (function::basicfunction*)(*test::modules[0].functions)[0].pointer,
                 {
                     {0, false},
                     {2, false},
@@ -68,7 +68,7 @@ int main() {
         },
         {   //callings
             {
-                (*test::modules[0].functions)[0].pointer,
+                (function::basicfunction*)(*test::modules[0].functions)[0].pointer,
                 {
                     {0, false},
                     {1, false},
@@ -76,7 +76,7 @@ int main() {
                 }
             },
             {
-                (*test::modules[0].functions)[1].pointer,
+                (function::basicfunction*)(*test::modules[0].functions)[1].pointer,
                 {
                     {0, false},
                     {1, false},

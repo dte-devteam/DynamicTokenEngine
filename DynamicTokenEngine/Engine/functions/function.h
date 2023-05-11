@@ -1,5 +1,5 @@
 #pragma once
-#include "memory/include/functions.h"
+#include "token/memory/include/functions.h"
 #include "external_interaction.h"
 namespace memory {
 	static importfunctionstruct importfunction{

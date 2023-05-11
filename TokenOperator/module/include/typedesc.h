@@ -1,6 +1,6 @@
 #pragma once
 #include <stdint.h>
-#include "deletable_obj.h"
+#include "token/deletable_obj.h"
 namespace module {
 	class typedesc {
 		friend bool operator ==(typedesc& desc, uint32_t& supertype);

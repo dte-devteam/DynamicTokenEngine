@@ -77,10 +77,10 @@ namespace module_operator {
 	void module_container::initmoduleunit(std::vector<size_t>& modulespace, module_unit& module) {
 		bool module_init_status = true;
 		if (module.module_instance.functions) {
+			std::vector<size_t> inited_indeces;
 			for (module::function_data& fd : *module.module_instance.functions) {
 				bool init_status = true;
 				bool stack_status = true;
-				std::vector<size_t> inited_indeces;
 				size_t size = fd.requirements.size();
 				for (size_t i = 0; i < size && init_status; i++) {
 					initexportrequirement(fd.requirements[i], modulespace, inited_indeces, init_status, stack_status, i);
@@ -96,5 +96,24 @@ namespace module_operator {
 	}
 	void module_container::initexportrequirement(module::export_requirement& er, std::vector<size_t>& modulespace, std::vector<size_t>& inited_indeces, bool& init_status, bool& stack_status, size_t index) {
 		//to do requirement init
+		switch (er.getexport_unit().second) {
+			case module::desc_type::FUNCTION:
+				for (size_t i : modulespace) {
+					if (modules[i].module_instance.functions) {
+						for (module::function_data& fd : *modules[i].module_instance.functions) {
+							if (fd.pointer->getid() == er.getexport_unit().first) {
+								er.gettarget() = fd.pointer;
+								stack_status = fd.init_status && fd.stack_status;
+								inited_indeces.push_back(index);
+								return;
+							}
+						}
+					}
+				}
+				break;
+			default:
+				break;
+		}
+		init_status = false;
 	}
 }

@@ -1,7 +1,7 @@
 #pragma once
 #include "target_architecture.h"
 #include <libloaderapi.h>
-#include "function/include/basicfunction.h"
+#include "token/function/include/basicfunction.h"
 namespace memory {
 	namespace external {
 		typedef std::vector<function::basicfunction*>* (*F_LOADER)();

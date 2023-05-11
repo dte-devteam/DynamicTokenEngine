@@ -8,14 +8,14 @@ namespace module {
 	//whenbecomescritical defines which indices should be uninited to make this export_requirement (which isn`t normaly critical) critical
 	class export_requirement {
 		public:
-			export_requirement(std::vector<std::pair<uint64_t, desc_type>> export_units, void*& target, bool critial = true, std::vector<std::vector<size_t>> whenbecomescritical = {});
-			std::vector<std::pair<uint64_t, desc_type>> getexport_units();
+			export_requirement(std::pair<uint64_t, desc_type> export_unit, void*& target, bool critial = true, std::vector<std::vector<size_t>> whenbecomescritical = {});
+			std::pair<uint64_t, desc_type> getexport_unit();
 			std::vector<std::vector<size_t>> getwhenbecomescritical();
 			void*& gettarget();
 			bool iscritial();
 			bool becomescritical(std::vector<size_t>& inited_requirements);
 		protected:
-			std::vector<std::pair<uint64_t, desc_type>> export_units;
+			std::pair<uint64_t, desc_type> export_unit;
 			std::vector<std::vector<size_t>> whenbecomescritical;
 			void*& target;
 			bool critial;

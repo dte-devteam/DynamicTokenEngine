@@ -5,6 +5,7 @@
 #include <iterator>
 #include <algorithm>
 #include "../../deletable_obj.h"
+#include "../../object.h"
 #define RAW_HAS_E *errorcodepointer > 1
 #define RAW_HAS_CRIT_E *errorcodepointer > 2
 #define HAS_E errorcodepointer ? RAW_HAS_E : false
@@ -40,14 +41,11 @@
 * [2] - is class (list of pointers to another iterators)
 */
 namespace function {
-	struct basicfunction {
+	struct basicfunction : object {
 		basicfunction(uint64_t id = 0, std::vector<void*> defaultvalues = {});
-		virtual ~basicfunction() {}
-		uint64_t getid() const;
 		std::vector<void*> defaultvalues;	//make this protected!
 		virtual void execute(std::vector<void*>* argumentspointer, uint64_t* errorcodepointer, bool forced, void* stream) = 0;
 		protected:
 			void filldefaultvalues(std::vector<void*>* argumentspointer, std::vector<void*> &target);
-			uint64_t id;
 	};
 }

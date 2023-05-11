@@ -1,5 +1,5 @@
 #pragma once
-#include "memory/include/external_interaction.h"
+#include "token/memory/include/external_interaction.h"
 namespace memory {
 	namespace external {
 		static importdllstructure importdll {

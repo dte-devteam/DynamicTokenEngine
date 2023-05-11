@@ -3,7 +3,7 @@
 #include <mutex>
 #include <iostream>	//temp
 #include <iomanip>	//temp
-#include "stream/include/stream.h"
+#include "token/stream/include/stream.h"
 #include "module/include/typedesc.h"
 //to do: stream defines if it can write (+basicfunction)
 /*

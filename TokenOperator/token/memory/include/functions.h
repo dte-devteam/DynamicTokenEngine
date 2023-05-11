@@ -1,7 +1,7 @@
 #pragma once
-#include "function/include/basicfunction.h"
-#include "function/include/typedfunction.h"
-#include "function/include/muxfunction.h"
+#include "token/function/include/basicfunction.h"
+#include "token/function/include/typedfunction.h"
+#include "token/function/include/muxfunction.h"
 namespace memory {
 	struct importfunctionstruct : function::typedfunction {
 		using typedfunction::typedfunction;

@@ -2,8 +2,8 @@
 #include <stdint.h>
 #include <thread>
 #include <atomic>
-#include "function/include/basicfunction.h"
-#include "data/include/errorvalues.h"
+#include "token/function/include/basicfunction.h"
+#include "token/data/include/errorvalues.h"
 #include "absolutestreamrights.h"
 namespace stream {
 	struct stream : function::basicfunction {

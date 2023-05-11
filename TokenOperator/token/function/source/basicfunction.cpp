@@ -1,9 +1,6 @@
 #include "../include/basicfunction.h"
 namespace function {
-	basicfunction::basicfunction(uint64_t id, std::vector<void*> defaultvalues) : id(id), defaultvalues(defaultvalues) {}
-	uint64_t basicfunction::getid() const {
-		return id;
-	}
+	basicfunction::basicfunction(uint64_t id, std::vector<void*> defaultvalues) : object(id), defaultvalues(defaultvalues) {}
 	void basicfunction::filldefaultvalues(std::vector<void*>* argumentspointer, std::vector<void*> &target) {
 		std::vector<void*> values(defaultvalues);
 		if (!argumentspointer) {

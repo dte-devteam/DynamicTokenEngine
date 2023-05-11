@@ -1,12 +1,12 @@
 #include "../include/export_requirement.h"
 #include "token_data.h"
 namespace module {
-	export_requirement::export_requirement(std::vector<std::pair<uint64_t, desc_type>> export_units, void*& target, bool critial, std::vector<std::vector<size_t>> whenbecomescritical) : export_units(export_units), target(target), critial(critial), whenbecomescritical(whenbecomescritical) {}
+	export_requirement::export_requirement(std::pair<uint64_t, desc_type> export_unit, void*& target, bool critial, std::vector<std::vector<size_t>> whenbecomescritical) : export_unit(export_unit), target(target), critial(critial), whenbecomescritical(whenbecomescritical) {}
 	std::vector<std::vector<size_t>> export_requirement::getwhenbecomescritical() {
 		return whenbecomescritical;
 	}
-	std::vector<std::pair<uint64_t, desc_type>> export_requirement::getexport_units() {
-		return export_units;
+	std::pair<uint64_t, desc_type> export_requirement::getexport_unit() {
+		return export_unit;
 	}
 	void*& export_requirement::gettarget() {
 		return target;

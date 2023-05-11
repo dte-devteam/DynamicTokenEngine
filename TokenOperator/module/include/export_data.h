@@ -1,10 +1,12 @@
 #pragma once
 #include <vector>
 #include "export_requirement.h"
-#include "function/include/basicfunction.h"
-#include "data/include/value.h"
+#include "token/function/include/basicfunction.h"
+#include "token/data/include/value.h"
 namespace module {
 	template<class P>
+	concept exportable_obj = std::is_base_of<object, P>::value;
+	template<exportable_obj P>
 	struct export_data {
 		export_data(P* pointer, std::vector<export_requirement> requirements = {}) : pointer(pointer), requirements(requirements), init_status(!requirements.size()){
 			stack_status = init_status;

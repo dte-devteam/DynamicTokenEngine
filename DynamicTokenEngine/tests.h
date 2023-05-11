@@ -1,6 +1,6 @@
 #pragma once
 #include "Engine/memory/object.h"
-#include "stream/include/stream.h"
+#include "token/stream/include/stream.h"
 #include "Engine/functions/function.h"
 
 #include <Windows.h>
