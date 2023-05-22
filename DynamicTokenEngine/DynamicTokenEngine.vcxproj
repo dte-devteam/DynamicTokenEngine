@@ -160,9 +160,6 @@
     </ProjectReference>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="compiler\source\function.cpp" />
-    <ClCompile Include="Engine\memory\object.cpp" />
-    <ClCompile Include="Engine\module\source\module_operator.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -171,18 +168,8 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="compiler\include\function.h" />
-    <ClInclude Include="Engine\base.h" />
-    <ClInclude Include="Engine\memory\function.h" />
-    <ClInclude Include="Engine\memory\object.h" />
-    <ClInclude Include="Engine\module\include\module_operator.h" />
-    <ClInclude Include="Engine\module\include\module_unit.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="tests.h" />
-    <ClInclude Include="Engine\data\defaultvalues.h" />
-    <ClInclude Include="Engine\data\errorvalues.h" />
-    <ClInclude Include="Engine\functions\external_interaction.h" />
-    <ClInclude Include="Engine\functions\function.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="DynamicTokenEngine.rc" />

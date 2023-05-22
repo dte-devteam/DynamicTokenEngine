@@ -20,59 +20,16 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="token\data\include\values.h" />
-    <ClInclude Include="token\data\include\errorvalues.h" />
-    <ClInclude Include="token\function\include\basicfunction.h" />
-    <ClInclude Include="token\deletable_obj.h" />
-    <ClInclude Include="token\function\include\cyclefunction.h" />
-    <ClInclude Include="token\function\include\function.h" />
-    <ClInclude Include="token\function\include\functioncaller.h" />
-    <ClInclude Include="token\function\include\muxfunction.h" />
-    <ClInclude Include="token\function\include\subtypedfunction.h" />
-    <ClInclude Include="token\function\include\triggeredfunction.h" />
-    <ClInclude Include="token\function\include\typedfunction.h" />
-    <ClInclude Include="token\function\include\unreliablefunction.h" />
-    <ClInclude Include="token\memory\include\external_interaction.h" />
-    <ClInclude Include="token\memory\include\functions.h" />
-    <ClInclude Include="token\data\include\constvalue.h" />
-    <ClInclude Include="module\include\desc_type.h" />
-    <ClInclude Include="module\include\export_data.h" />
-    <ClInclude Include="module\include\module_requirement.h" />
-    <ClInclude Include="module\include\module_version.h" />
-    <ClInclude Include="token\data\include\value.h" />
-    <ClInclude Include="token\data\include\varvalue.h" />
-    <ClInclude Include="module\module_defines.h" />
-    <ClInclude Include="token\object.h" />
-    <ClInclude Include="token\stream\include\absolutestreamrights.h" />
-    <ClInclude Include="token\stream\include\stream.h" />
-    <ClInclude Include="module\include\export_requirement.h" />
-    <ClInclude Include="module\include\module.h" />
-    <ClInclude Include="module\include\typedesc.h" />
     <ClInclude Include="target_architecture.h" />
+    <ClInclude Include="token\data\include\type.h" />
+    <ClInclude Include="token\data\include\value.h" />
+    <ClInclude Include="token\function\include\basicfunction.h" />
+    <ClInclude Include="token\object.h" />
+    <ClInclude Include="token\stream\include\stream.h" />
     <ClInclude Include="token_data.h" />
-    <ClInclude Include="utils\include\exec_time.h" />
-    <ClInclude Include="utils\include\utils_vector.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="token\data\source\errorvalues.cpp" />
     <ClCompile Include="token\function\source\basicfunction.cpp" />
-    <ClCompile Include="token\function\source\cyclefunction.cpp" />
-    <ClCompile Include="token\function\source\function.cpp" />
-    <ClCompile Include="token\function\source\muxfunction.cpp" />
-    <ClCompile Include="token\function\source\subtypedfunction.cpp" />
-    <ClCompile Include="token\function\source\triggeredfunction.cpp" />
-    <ClCompile Include="token\function\source\typedfunction.cpp" />
-    <ClCompile Include="token\function\source\unreliablefunction.cpp" />
-    <ClCompile Include="token\memory\source\external_interaction.cpp" />
-    <ClCompile Include="token\data\source\constvalue.cpp" />
-    <ClCompile Include="module\source\module_requirement.cpp" />
-    <ClCompile Include="token\data\source\value.cpp" />
-    <ClCompile Include="token\data\source\varvalue.cpp" />
-    <ClCompile Include="token\stream\source\absolutestreamrights.cpp" />
-    <ClCompile Include="token\stream\source\stream.cpp" />
-    <ClCompile Include="module\source\export_requirement.cpp" />
-    <ClCompile Include="module\source\typedesc.cpp" />
-    <ClCompile Include="module\source\module.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

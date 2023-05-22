@@ -1,14 +1,19 @@
 #pragma once
-#include "../../object.h"
-#include "module/include/typedesc.h"
-namespace data {
-	class value : object {
+#include "token/object.h"
+#include "type.h"
+namespace tokenoperator::token::data {
+	template<class V>
+	struct value : object {
 		public:
-			value(uint64_t id, module::typedesc* type, void* pointer = nullptr);
-			module::typedesc* gettypedesc();
-			virtual void* getpointer(void* getter) = 0;
+			value(uint64_t ID) : object(ID), t(ID) {}
+			//will behave like a pointer
+			V& operator *() { return v; }
+			V* operator->() { return &v; }
+			type<V> t;
 		protected:
-			module::typedesc* type;
-			void* p;
+			V v;
+			//type<V> t;
 	};
+	template<class V>
+	value<V>* create(uint64_t ID) { return new value<V>(ID); }
 }
