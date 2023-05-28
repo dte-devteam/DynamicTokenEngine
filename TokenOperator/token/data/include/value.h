@@ -1,19 +1,27 @@
 #pragma once
-#include "token/object.h"
 #include "type.h"
-namespace tokenoperator::token::data {
-	template<class V>
+namespace tokenoperator::dte_token::data {
+	typedef object* (*create_value_function)(uint64_t);
+	template<typename V>
 	struct value : object {
 		public:
-			value(uint64_t ID) : object(ID), t(ID) {}
+			value(uint64_t ID = 0) : object(ID), t(ID) {}
 			//will behave like a pointer
-			V& operator *() { return v; }
-			V* operator->() { return &v; }
-			type<V> t;
+			V& operator *() { 
+				return v; 
+			}
+			V* operator->() { 
+				return &v; 
+			}
+			type<V> get_type() const { 
+				return t; 
+			}
 		protected:
 			V v;
-			//type<V> t;
+			type<V> t;
 	};
-	template<class V>
-	value<V>* create(uint64_t ID) { return new value<V>(ID); }
+	template<typename V>
+	value<V>* create(uint64_t ID) { 
+		return new value<V>(ID); 
+	}
 }

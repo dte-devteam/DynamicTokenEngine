@@ -21,7 +21,7 @@
     <ClInclude Include="token_data.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="token\function\include\basicfunction.h">
+    <ClInclude Include="token\function\include\basic_function.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
     <ClInclude Include="token\object.h">
@@ -36,9 +36,33 @@
     <ClInclude Include="token\data\include\type.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
+    <ClInclude Include="module\include\module_version.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="module\include\module_info.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="token\data\include\complex_value.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="token\data\include\complex_type.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="token\function\source\basicfunction.cpp">
+    <ClCompile Include="token\function\source\basic_function.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="module\source\module_version.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="module\source\module_info.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="token\data\source\complex_type.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="token\data\source\complex_value.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
   </ItemGroup>
