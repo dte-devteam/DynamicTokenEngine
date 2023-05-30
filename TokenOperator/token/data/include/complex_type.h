@@ -11,7 +11,7 @@ namespace tokenoperator::dte_token::data {
 			complex_type(uint64_t ID = 0);
 			complex_type(const complex_type& ct);
 			~complex_type();
-			complex_type& operator =(const complex_type& ct);
+			//complex_type& operator =(const complex_type& ct);
 			size_t get_number_of_fields() const;
 			complex_type generate_child(size_t fields_to_add, object* types_to_add, create_value_function* constructors_of_types, uint64_t ID = 0) const;
 		protected:

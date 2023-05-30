@@ -3,6 +3,13 @@ using namespace tokenoperator::dte_token::data;
 complex_type::complex_type(uint64_t ID) : value<std::pair<type<void>, create_value_function>*>(ID), number_of_fields(0) {
 	v = nullptr;
 }
+complex_type::complex_type(const complex_type& ct) {
+	v = new std::pair<type<void>, create_value_function>[ct.number_of_fields];
+	size_t i = 0;
+	while (i < number_of_fields) {
+		v[i++] = ct.v[i];
+	}
+}
 complex_type::~complex_type() {
 	delete[] v;
 }

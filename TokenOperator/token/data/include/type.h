@@ -11,7 +11,7 @@ namespace tokenoperator::dte_token::data {
 				raw_name = _strdup(typeid(V).raw_name());
 				hash_code = typeid(V).hash_code();
 			}
-			type(const type<V>& t) : object(t.ID) { 
+			type(const type<V>& t) : object(t.ID) {
 				name = _strdup(t.name); 
 				raw_name = _strdup(t.raw_name); 
 				hash_code = t.hash_code; 
@@ -27,9 +27,9 @@ namespace tokenoperator::dte_token::data {
 				hash_code = t.hash_code;
 				return *this;
 			}
-			~type() { 
+			~type() {
 				free(name); 
-				free(raw_name); 
+				free(raw_name);
 			}
 			char* get_name() const { 
 				return _strdup(name); 

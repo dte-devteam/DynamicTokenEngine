@@ -14,7 +14,7 @@ namespace tokenoperator::dte_token::data {
 				return &v; 
 			}
 			type<V> get_type() const { 
-				return t; 
+				return type(t); 
 			}
 		protected:
 			V v;
