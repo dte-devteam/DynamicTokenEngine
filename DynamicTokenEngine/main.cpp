@@ -3,8 +3,6 @@
 #include "tests.h"
 
 #include "token/data/include/value.h"
-#include "token/data/include/complex_type.h"
-#include "token/data/include/complex_value.h"
 using namespace tokenoperator::dte_token;
 
 #include "module/include/module_version.h"
@@ -19,35 +17,19 @@ using namespace tokenoperator::dte_module;
 std::chrono::milliseconds timespan(5000);
 
 data::create_value_function v_create[] = {
-	(data::create_value_function)data::create<float>,
-	(data::create_value_function)data::create<float>,
-	(data::create_value_function)data::create<float>,
-	(data::create_value_function)data::create<float>,
-	(data::create_value_function)data::create<float>,
-	(data::create_value_function)data::create<float>,
-	(data::create_value_function)data::create<float>,
-	(data::create_value_function)data::create<float>,
-	(data::create_value_function)data::create<float>,
-	(data::create_value_function)data::create<float>
+	(data::create_value_function)data::create_value<float>,
+	(data::create_value_function)data::create_value<float>,
+	(data::create_value_function)data::create_value<float>,
+	(data::create_value_function)data::create_value<float>,
+	(data::create_value_function)data::create_value<float>,
+	(data::create_value_function)data::create_value<float>,
+	(data::create_value_function)data::create_value<float>,
+	(data::create_value_function)data::create_value<float>,
+	(data::create_value_function)data::create_value<float>,
+	(data::create_value_function)data::create_value<float>
 };
 void func1() {
-	data::type<float>* types = new data::type<float>[10];
-	data::complex_type ect = data::NEW_COMPLEX_TYPE(10, types, v_create, 4000);
-	size_t _i = 0;
-	while (_i < ect.get_number_of_fields()) {
-		std::cout << (*ect)[_i++].first.get_name() << std::endl;
-	}
-	data::type<int>* types2 = new data::type<int>[5];
-	data::complex_type ect2 = ect.generate_child(5, types2, v_create, 5000);
-	_i = 0;
-	std::cout << ect2.get_number_of_fields() << std::endl;
-	while (_i < ect2.get_number_of_fields()) {
-		std::cout << (*ect2)[_i++].first.get_name() << std::endl;
-	}
-	delete[] types;
-	delete[] types2;
-	data::complex_value cv(ect, 6000);
-	std::cout << (*cv)[0] << std::endl;	//values are not created, crashes (???)
+
 }
 int main() {
 	float f = 1.5f;

@@ -6,22 +6,21 @@ namespace tokenoperator::dte_token::data {
 	struct value : object {
 		public:
 			value(uint64_t ID = 0) : object(ID), t(ID) {}
-			//will behave like a pointer
-			V& operator *() { 
+			V& operator*() { 
 				return v; 
 			}
 			V* operator->() { 
 				return &v; 
 			}
 			type<V> get_type() const { 
-				return type(t); 
+				return t;
 			}
 		protected:
 			V v;
 			type<V> t;
 	};
 	template<typename V>
-	value<V>* create(uint64_t ID) { 
+	value<V>* create_value(uint64_t ID) { 
 		return new value<V>(ID); 
 	}
 }

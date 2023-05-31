@@ -16,7 +16,7 @@ namespace tokenoperator::dte_token::data {
 				raw_name = _strdup(t.raw_name); 
 				hash_code = t.hash_code; 
 			}
-			type& operator = (const type<V>& t) {
+			type& operator=(const type<V>& t) {
 				if (this == &t) {
 					return *this;
 				}

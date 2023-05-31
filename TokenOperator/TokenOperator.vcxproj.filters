@@ -42,10 +42,10 @@
     <ClInclude Include="module\include\module_info.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="token\data\include\complex_value.h">
+    <ClInclude Include="token\data\include\complex_type.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="token\data\include\complex_type.h">
+    <ClInclude Include="token\data\include\complex_value.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
   </ItemGroup>
@@ -57,12 +57,6 @@
       <Filter>Исходные файлы</Filter>
     </ClCompile>
     <ClCompile Include="module\source\module_info.cpp">
-      <Filter>Исходные файлы</Filter>
-    </ClCompile>
-    <ClCompile Include="token\data\source\complex_type.cpp">
-      <Filter>Исходные файлы</Filter>
-    </ClCompile>
-    <ClCompile Include="token\data\source\complex_value.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
   </ItemGroup>
