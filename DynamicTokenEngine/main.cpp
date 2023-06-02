@@ -2,7 +2,7 @@
 #include <chrono>
 #include "tests.h"
 
-#include "token/data/include/value.h"
+#include "token/data/include/complex_value.h"
 using namespace tokenoperator::dte_token;
 
 #include "module/include/module_version.h"
@@ -19,7 +19,7 @@ std::chrono::milliseconds timespan(5000);
 data::create_value_function v_create[] = {
 	(data::create_value_function)data::create_value<float>,
 	(data::create_value_function)data::create_value<float>,
-	(data::create_value_function)data::create_value<float>,
+	(data::create_value_function)data::create_value<int>,
 	(data::create_value_function)data::create_value<float>,
 	(data::create_value_function)data::create_value<float>,
 	(data::create_value_function)data::create_value<float>,
@@ -29,7 +29,21 @@ data::create_value_function v_create[] = {
 	(data::create_value_function)data::create_value<float>
 };
 void func1() {
-
+	data::type<float>* ftp = new data::type<float>[10];
+	data::complex_type ct(10, ftp, v_create, 321);
+	delete[] ftp; //complex_type is independant
+	std::cout << ct.getID() << " " << ct.get_number_of_fields() << std::endl;
+	data::complex_type ct2(ct);
+	std::cout << ct2.getID() << " " << ct2.get_number_of_fields() << std::endl;
+	std::cout << (*ct2)->first.get_name() << std::endl;
+	data::complex_type ct3(ct, ct2, 4321);
+	std::cout << ct3.getID() << " " << ct3.get_number_of_fields() << std::endl;
+	std::cout << (*ct3)[10].first.get_name() << std::endl;
+	//ok^^^
+	data::complex_value cv(ct, 54321);
+	std::cout << (*cv)[1]->getID() << " " << ((data::value<char>*)(*cv)[1])->get_type().get_name() << std::endl;
+	std::cout << (*cv)[2]->getID() << " " << ((data::value<char>*)(*cv)[2])->get_type().get_name() << std::endl;
+	//fucking yes, finnaly no problems!!!^^^
 }
 int main() {
 	float f = 1.5f;
