@@ -2,6 +2,8 @@
 #include "token/object.h"
 #include <string.h>
 #include <corecrt_malloc.h>
+#include <utility>
+#include <memory>
 namespace tokenoperator::dte_token::data {
 	template<typename V>
 	struct type : object {

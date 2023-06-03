@@ -1,5 +1,6 @@
 #include "../include/module_info.h"
 #include <winver.h>
+//module_info::module_info();
 using namespace tokenoperator::dte_module;
 void module_info::search_for_version(std::wstring& fullpath) {
     DWORD verhandle = NULL, versize = GetFileVersionInfoSize(fullpath.c_str(), &verhandle);

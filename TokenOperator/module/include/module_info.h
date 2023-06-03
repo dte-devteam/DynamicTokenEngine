@@ -1,11 +1,13 @@
 #pragma once
+#include "token/object.h"
 #include "module_version.h"
-#include "token/function/include/basic_function.h"
 #include "target_architecture.h"
 #include <minwindef.h>
 #include <cvt/wstring>
 namespace tokenoperator::dte_module {
 	struct module_info : dte_token::object {
+		public:
+			//module_info();
 		protected:
 			//std::wstring dllname;
 			HMODULE library;
