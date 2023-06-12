@@ -1,7 +1,8 @@
 #pragma once
-#include "../include/complex_type.h"
+#include "complex_type.h"
+#include "scope.h"
 namespace tokenoperator::dte_token::data {
-	struct complex_value : value<object**> {
+	struct complex_value : scope {
 		public:
 			complex_value(complex_type heap, uint64_t ID = 0);
 			complex_value(const complex_value& cv);

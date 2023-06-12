@@ -1,7 +1,14 @@
 #include "../include/module_info.h"
 #include <winver.h>
-//module_info::module_info();
+#include <libloaderapi.h>
 using namespace tokenoperator::dte_module;
+module_info::module_info(std::wstring dllname, uint64_t ID) : object(ID), dllname(dllname), library(LoadLibrary(dllname.c_str())) {
+    search_for_version(dllname);
+    fetch_module_data();
+}
+module_info::~module_info() {
+    FreeLibrary(library);
+}
 void module_info::search_for_version(std::wstring& fullpath) {
     DWORD verhandle = NULL, versize = GetFileVersionInfoSize(fullpath.c_str(), &verhandle);
     if (versize) {
@@ -31,4 +38,14 @@ void module_info::search_for_version(std::wstring& fullpath) {
         );
         delete[] verdata;
     }
+}
+void module_info::fetch_module_data() {
+    //DLL_PROC_FD fd = (DLL_PROC_FD)GetProcAddress(library, "getfunctions");
+    //DLL_PROC_T t = (DLL_PROC_T)GetProcAddress(library, "gettypes");
+    //DLL_PROC_V v = (DLL_PROC_V)GetProcAddress(library, "getdata");
+    //DLL_PROC_MR mr = (DLL_PROC_MR)GetProcAddress(library, "getinitrequirements");
+    //functions = fd ? fd() : nullptr;
+    //types = t ? t() : nullptr;
+    //data = v ? v() : nullptr;
+    //requirements = mr ? mr() : nullptr;
 }

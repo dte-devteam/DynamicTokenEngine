@@ -52,6 +52,8 @@ void func1() {
 	std::cout << (*cv2)[1]->getID() << " " << ((data::value<char>*)(*cv2)[1])->get_type().get_name() << std::endl;
 	std::cout << (*cv2)[2]->getID() << " " << ((data::value<char>*)(*cv2)[2])->get_type().get_name() << std::endl;
 	//ok^^^
+	std::cout << cv2[3]->getID() << std::endl;
+	//ok^^^
 }
 int main() {
 	float f = 1.5f;
@@ -79,7 +81,7 @@ int main() {
 
 	func1();
 
-	data::value<char>* vc = (data::value<char>*)data::copy_value<float>(fv1, fv1->getID());
+	data::value<char>* vc = (data::value<char>*)data::copy_value<float>(fv1, 9999);
 	std::cout << vc->get_type().get_name() << std::endl;
 	std::cout << **(data::value<float>*)vc << " " << vc->getID() << std::endl;
     return 0;

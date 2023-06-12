@@ -3,35 +3,36 @@
 namespace tokenoperator::dte_token::data {
 	typedef object* (*create_value_function)(uint64_t);
 	typedef object* (*copy_value_function)(object*, uint64_t);
-	template<typename V>
+	typedef std::pair<create_value_function, copy_value_function> value_functions;
+	template<typename T>
 	struct value : object {
 		public:
 			value(uint64_t ID = 0) : object(ID), t(ID) {}
-			V& operator*() { 
+			T& operator*() { 
 				return v; 
 			}
-			V* operator->() { 
+			T* operator->() { 
 				return &v; 
 			}
-			type<V> get_type() const { 
+			type<T> get_type() { 
 				return t;
 			}
 		protected:
-			V v;
-			type<V> t;
+			T v;
+			type<T> t;
 	};
-	template<typename V>
-	value<V>* create_value(uint64_t ID) { 
-		return new value<V>(ID); 
+	template<typename T>
+	value<T>* create_value(uint64_t ID) { 
+		return new value<T>(ID); 
 	}
-	template<typename V>
-	value<V>* copy_value(object* source, uint64_t ID) {
-		value<V>* new_value = new value<V>(ID);
-		**new_value = **((value<V>*)source);
+	template<typename T>
+	value<T>* copy_value(object* source, uint64_t ID) {
+		value<T>* new_value = new value<T>(ID);
+		**new_value = **(value<T>*)source;
 		return new_value;
 	}
-	template<typename V>
-	std::pair<create_value_function, copy_value_function> create_copy_value_pair() {
-		return std::make_pair((create_value_function)create_value<V>, (copy_value_function)copy_value<V>);
+	template<typename T>
+	value_functions create_copy_value_pair() {
+		return std::make_pair((create_value_function)create_value<T>, (copy_value_function)copy_value<T>);
 	}
 }

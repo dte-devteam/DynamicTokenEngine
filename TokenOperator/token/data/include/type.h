@@ -1,51 +1,34 @@
 #pragma once
 #include "token/object.h"
-#include <string.h>
+#include <xstring>
 #include <corecrt_malloc.h>
 #include <utility>
 #include <memory>
 namespace tokenoperator::dte_token::data {
-	template<typename V>
+	//typeid output exists as long as RTTI does (so type will copy RTTI data)
+	template<typename T>
 	struct type : object {
 		public:
 			type(uint64_t ID = 0) : object(ID) {
-				name = _strdup(typeid(V).name());
-				raw_name = _strdup(typeid(V).raw_name());
-				hash_code = typeid(V).hash_code();
+				name = typeid(T).name();
+				raw_name = typeid(T).raw_name();
+				hash_code = typeid(T).hash_code();
 			}
-			type(const type<V>& t) : object(t.ID) {
-				name = _strdup(t.name); 
-				raw_name = _strdup(t.raw_name); 
-				hash_code = t.hash_code; 
+			bool operator==(const type<T>& t) {
+				return hash_code == t.hash_code;
 			}
-			type& operator=(const type<V>& t) {
-				if (this == &t) {
-					return *this;
-				}
-				free(name);
-				free(raw_name);
-				name = _strdup(t.name);
-				raw_name = _strdup(t.raw_name);
-				hash_code = t.hash_code;
-				return *this;
+			std::string get_name() {
+				return name; 
 			}
-			~type() {
-				free(name); 
-				free(raw_name);
+			std::string get_raw_name() {
+				return raw_name; 
 			}
-			char* get_name() const { 
-				return _strdup(name); 
-			}
-			char* get_raw_name() const { 
-				return _strdup(raw_name); 
-			}
-			size_t get_hash() const {
+			size_t get_hash() {
 				return hash_code; 
 			}
 		protected:
-			//typeid output exists as long as RTTI does (need _strdup for copying)
-			char* name;
-			char* raw_name;
+			std::string name;
+			std::string raw_name;
 			size_t hash_code;
 	};
 }
