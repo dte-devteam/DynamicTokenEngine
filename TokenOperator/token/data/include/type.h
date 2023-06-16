@@ -4,7 +4,10 @@
 #include <corecrt_malloc.h>
 #include <utility>
 #include <memory>
+#include <type_traits>
 namespace tokenoperator::dte_token::data {
+	template<class T>
+	concept pointer = std::is_pointer<T>::value;
 	//typeid output exists as long as RTTI does (so type will copy RTTI data)
 	template<typename T>
 	struct type : object {

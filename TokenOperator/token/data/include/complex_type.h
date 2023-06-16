@@ -1,5 +1,5 @@
 #pragma once
-#include "../include/value.h"
+#include "value.h"
 namespace tokenoperator::dte_token::data {
 	struct complex_type : value<std::pair<type<void>, value_functions>*> {
 		public:

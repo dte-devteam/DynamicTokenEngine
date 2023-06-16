@@ -11,7 +11,7 @@ namespace tokenoperator::dte_token::data {
 			scope(const scope& sc);
 			~scope();
 			void resize_to_prefered_size();
-			void add_object(object* obj);
+			bool add_object(object* obj);
 			bool remove_object(uint64_t ID = 0);
 			object* get_object(scope_path s, size_t shift = 0);
 			object* operator[](uint64_t ID);

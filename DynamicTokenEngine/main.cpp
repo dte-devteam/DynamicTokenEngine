@@ -3,9 +3,11 @@
 #include "tests.h"
 
 #include "token/data/include/complex_value.h"
+#include "token/data/include/smart_object_pointer.h"
 using namespace tokenoperator::dte_token;
 
 #include "module/include/module_version.h"
+#include "module/include/module_source_requirement.h"
 using namespace tokenoperator::dte_module;
 
 /*
@@ -54,6 +56,11 @@ void func1() {
 	//ok^^^
 	std::cout << cv2[3]->getID() << std::endl;
 	//ok^^^
+	module_source_requirement<void*> msr(nullptr, { 0 });
+	module_source_requirement<void*> msr_copy(msr);
+}
+data::smart_object_pointer func2() {
+	return data::smart_object_pointer(new object(9876));
 }
 int main() {
 	float f = 1.5f;
@@ -80,6 +87,17 @@ int main() {
 	std::cout << mv.getID() << std::endl;
 
 	func1();
+	data::smart_object_pointer sop2(func2());
+	data::smart_object_pointer sop3(sop2);
+	std::cout << sop3 << ":" << sop3.get_owner_num() << std::endl;
+	std::cout << sop2 << ":" << sop2.get_owner_num() << std::endl;
+	sop2 = nullptr;
+	std::cout << sop3 << ":" << sop3.get_owner_num() << std::endl;
+	std::cout << sop2 << ":" << sop2.get_owner_num() << std::endl;
+	sop2 = sop3;
+	std::cout << sop3 << ":" << sop3.get_owner_num() << std::endl;
+	std::cout << sop2 << ":" << sop2.get_owner_num() << std::endl;
+	std::cout << sop2->getID() << std::endl;
 
 	data::value<char>* vc = (data::value<char>*)data::copy_value<float>(fv1, 9999);
 	std::cout << vc->get_type().get_name() << std::endl;

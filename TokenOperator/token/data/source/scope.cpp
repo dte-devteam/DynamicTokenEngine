@@ -33,13 +33,16 @@ void scope::resize_to_prefered_size() {
 	v = buffer;
 	delete[] temp;
 }
-void scope::add_object(object* obj) {
+bool scope::add_object(object* obj) {
 	if (obj) {
 		size_t i = size;
 		while (i) {
 			if (!v[--i]) {
 				v[i] = obj;
-				return;
+				return true;
+			}
+			else if (v[i]->getID() == obj->getID()) {
+				return false;
 			}
 		}
 		object** buffer = new object*[++size];
@@ -52,6 +55,7 @@ void scope::add_object(object* obj) {
 		v = buffer;
 		delete[] temp;
 	}
+	return true;
 }
 bool scope::remove_object(uint64_t ID) {
 	size_t i = size;

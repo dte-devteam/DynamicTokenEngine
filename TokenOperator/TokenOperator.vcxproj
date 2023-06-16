@@ -31,6 +31,7 @@
     <ClInclude Include="token\data\include\complex_value.h" />
     <ClInclude Include="token\data\include\scope.h" />
     <ClInclude Include="token\data\include\scope_path.h" />
+    <ClInclude Include="token\data\include\smart_object_pointer.h" />
     <ClInclude Include="token\data\include\type.h" />
     <ClInclude Include="token\data\include\value.h" />
     <ClInclude Include="token\function\include\basic_function.h" />
@@ -45,6 +46,7 @@
     <ClCompile Include="token\data\source\complex_type.cpp" />
     <ClCompile Include="token\data\source\complex_value.cpp" />
     <ClCompile Include="token\data\source\scope.cpp" />
+    <ClCompile Include="token\data\source\smart_object_pointer.cpp" />
     <ClCompile Include="token\function\source\basic_function.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
@@ -134,7 +136,7 @@
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <ConformanceMode>true</ConformanceMode>
+      <ConformanceMode>false</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <AdditionalIncludeDirectories>$(SolutionDir)TokenOperator</AdditionalIncludeDirectories>
       <Optimization>Disabled</Optimization>
@@ -142,6 +144,7 @@
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <FavorSizeOrSpeed>Neither</FavorSizeOrSpeed>
       <CallingConvention>FastCall</CallingConvention>
+      <LanguageStandard_C>Default</LanguageStandard_C>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -158,13 +161,14 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <ConformanceMode>true</ConformanceMode>
+      <ConformanceMode>false</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <AdditionalIncludeDirectories>$(SolutionDir)TokenOperator</AdditionalIncludeDirectories>
       <CallingConvention>FastCall</CallingConvention>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <Optimization>MaxSpeed</Optimization>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <LanguageStandard_C>Default</LanguageStandard_C>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
