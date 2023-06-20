@@ -95,5 +95,8 @@
     <ClCompile Include="token\data\source\smart_object_pointer.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
+    <ClCompile Include="token\data\source\scope_path.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

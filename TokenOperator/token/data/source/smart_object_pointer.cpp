@@ -4,7 +4,7 @@ using namespace tokenoperator::dte_token::data;
 smart_object_pointer::smart_object_pointer(object* pointer, uint64_t ID) : value<object*>(ID), owner_num(new size_t[]{1}) {
 	v = pointer;
 }
-smart_object_pointer::smart_object_pointer(const smart_object_pointer& sop) : value<object*>(ID), owner_num(sop.owner_num) {	
+smart_object_pointer::smart_object_pointer(const smart_object_pointer& sop) : value<object*>(sop.ID), owner_num(sop.owner_num) {	
 	v = sop.v;
 	++*owner_num;
 }
@@ -18,6 +18,7 @@ smart_object_pointer& smart_object_pointer::operator=(const smart_object_pointer
 	if (this == &sop) {
 		return *this;
 	}
+	ID = sop.ID;
 	if (v != sop.v) {
 		if (!--*owner_num) {
 			delete v;
@@ -40,7 +41,7 @@ smart_object_pointer& smart_object_pointer::operator=(object* pointer) {
 	}
 	return *this;
 }
-explicit smart_object_pointer::operator object* () {
+smart_object_pointer::operator object* () {
 	return v;
 }
 object* smart_object_pointer::operator*() {

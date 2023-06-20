@@ -1,5 +1,6 @@
 ﻿#include <iostream>
 #include <chrono>
+
 #include "tests.h"
 
 #include "token/data/include/complex_value.h"
@@ -44,23 +45,49 @@ void func1() {
 	std::cout << (*ct3)[10].first.get_name() << std::endl;
 	//ok^^^
 	data::complex_value cv(ct, 54321);
-	std::cout << (*cv)[1]->getID() << " " << ((data::value<char>*)(*cv)[1])->get_type().get_name() << std::endl;
-	std::cout << (*cv)[2]->getID() << " " << ((data::value<char>*)(*cv)[2])->get_type().get_name() << std::endl;
+	data::value<int>* vp = (data::value<int>*)*(*cv)[2];
+	**vp = 8080;
+	std::cout << (*cv)[0]->getID() << " " << ((data::value<char>*)*(*cv)[0])->get_type().get_name() << std::endl;
+	std::cout << (*cv)[1]->getID() << " " << ((data::value<char>*)*(*cv)[1])->get_type().get_name() << std::endl;
+	std::cout << (*cv)[2]->getID() << " " << ((data::value<char>*)*(*cv)[2])->get_type().get_name() << std::endl;
+	std::cout << (*cv)[9]->getID() << " " << ((data::value<char>*)*(*cv)[9])->get_type().get_name() << std::endl;
+	std::cout << **(data::value<int>*)*(*cv)[2] << std::endl;
 	//fucking yes, finnaly no problems!!!^^^
 	data::complex_type ctcopy = ct;
 	std::cout << ctcopy.getID() << " " << ctcopy.get_number_of_fields() << std::endl;
 	//ok^^^
+	**vp = 9090;
 	data::complex_value cv2(cv);
-	std::cout << (*cv2)[1]->getID() << " " << ((data::value<char>*)(*cv2)[1])->get_type().get_name() << std::endl;
-	std::cout << (*cv2)[2]->getID() << " " << ((data::value<char>*)(*cv2)[2])->get_type().get_name() << std::endl;
+	std::cout << (*cv2)[1]->getID() << " " << ((data::value<char>*)*(*cv2)[1])->get_type().get_name() << std::endl;
+	std::cout << (*cv2)[2]->getID() << " " << ((data::value<char>*)*(*cv2)[2])->get_type().get_name() << std::endl;
+	std::cout << (*cv2)[2]->getID() << std::endl;
 	//ok^^^
-	std::cout << cv2[3]->getID() << std::endl;
+	std::cout << **(data::value<int>*)*(*cv)[2] << std::endl;
+	std::cout << **(data::value<int>*)*(*cv2)[2] << std::endl;
+	**vp = 7070;
+	std::cout << **(data::value<int>*)*(*cv)[2] << std::endl;
+	std::cout << **(data::value<int>*)*(*cv2)[2] << std::endl;
 	//ok^^^
-	module_source_requirement<void*> msr(nullptr, { 0 });
+	module_source_requirement<void*> msr(nullptr, { 0, 0 });
 	module_source_requirement<void*> msr_copy(msr);
+	//ok^^^
+	data::smart_object_pointer sop = cv2.deep_copy(0, 0);
+	data::value<int>* vp2 = (data::value<int>*)*(*cv2)[2];
+	**vp2 = 1010;
+	std::cout << **(data::value<int>*)*(**(data::complex_value*)*sop)[2] << std::endl;
+	std::cout << **(data::value<int>*)*(*cv2)[2] << std::endl;
 }
 data::smart_object_pointer func2() {
 	return data::smart_object_pointer(new object(9876));
+}
+void func3() {
+	uint64_t* IDinit = new uint64_t[]{50,45,40,35,30,25,20,15,10,5};
+	data::scope_path sc(10, IDinit, 7887);
+	std::cout << "path is:" << std::endl;
+	for (size_t i = 0; i < sc.get_size(); i++) {
+		std::cout << i << "->" << (*sc)[i] << std::endl;
+	}
+	//ok^^^
 }
 int main() {
 	float f = 1.5f;
@@ -98,6 +125,8 @@ int main() {
 	std::cout << sop3 << ":" << sop3.get_owner_num() << std::endl;
 	std::cout << sop2 << ":" << sop2.get_owner_num() << std::endl;
 	std::cout << sop2->getID() << std::endl;
+	std::cout << ((data::type<void*>*)*sop2)->getID() << std::endl;
+	func3();
 
 	data::value<char>* vc = (data::value<char>*)data::copy_value<float>(fv1, 9999);
 	std::cout << vc->get_type().get_name() << std::endl;

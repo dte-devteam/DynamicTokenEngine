@@ -46,6 +46,7 @@
     <ClCompile Include="token\data\source\complex_type.cpp" />
     <ClCompile Include="token\data\source\complex_value.cpp" />
     <ClCompile Include="token\data\source\scope.cpp" />
+    <ClCompile Include="token\data\source\scope_path.cpp" />
     <ClCompile Include="token\data\source\smart_object_pointer.cpp" />
     <ClCompile Include="token\function\source\basic_function.cpp" />
   </ItemGroup>

@@ -9,7 +9,9 @@ namespace tokenoperator::dte_token::data {
 			~complex_type();
 			complex_type& operator=(const complex_type& ct);
 			size_t get_number_of_fields();
+			bool is_copyable();
 		protected:
 			size_t number_of_fields;
+			bool copyable;
 	};
 }

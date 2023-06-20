@@ -11,7 +11,7 @@ namespace tokenoperator::dte_token::data {
 			T& operator*() { 
 				return v; 
 			}
-			T* operator->() { 
+			T* operator->() {
 				return &v; 
 			}
 			type<T> get_type() { 
