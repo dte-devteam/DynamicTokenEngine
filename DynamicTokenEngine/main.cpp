@@ -31,51 +31,66 @@ std::pair<data::create_value_function, data::copy_value_function> v_create_and_c
 	data::create_copy_value_pair<float>(),
 	data::create_copy_value_pair<float>()
 };
-
+bool is_base_of_scope[] = {
+	false,
+	false,
+	false,
+	false,
+	false,
+	false,
+	false,
+	false,
+	false,
+	false
+};
 void func1() {
-	data::type<float>* ftp = new data::type<float>[10];
-	data::complex_type ct(10, ftp, v_create_and_copy, 321);
-	delete[] ftp; //complex_type is independant
+	data::complex_type ct(10, v_create_and_copy, is_base_of_scope, 321);
 	std::cout << ct.getID() << " " << ct.get_number_of_fields() << std::endl;
 	data::complex_type ct2(ct);
 	std::cout << ct2.getID() << " " << ct2.get_number_of_fields() << std::endl;
-	std::cout << (*ct2)->first.get_name() << std::endl;
 	data::complex_type ct3(ct, ct2, 4321);
 	std::cout << ct3.getID() << " " << ct3.get_number_of_fields() << std::endl;
-	std::cout << (*ct3)[10].first.get_name() << std::endl;
 	//ok^^^
 	data::complex_value cv(ct, 54321);
-	data::value<int>* vp = (data::value<int>*)*(*cv)[2];
+	data::value<int>* vp = (data::value<int>*)*(*cv)[2].first;
 	**vp = 8080;
-	std::cout << (*cv)[0]->getID() << " " << ((data::value<char>*)*(*cv)[0])->get_type().get_name() << std::endl;
-	std::cout << (*cv)[1]->getID() << " " << ((data::value<char>*)*(*cv)[1])->get_type().get_name() << std::endl;
-	std::cout << (*cv)[2]->getID() << " " << ((data::value<char>*)*(*cv)[2])->get_type().get_name() << std::endl;
-	std::cout << (*cv)[9]->getID() << " " << ((data::value<char>*)*(*cv)[9])->get_type().get_name() << std::endl;
-	std::cout << **(data::value<int>*)*(*cv)[2] << std::endl;
+	std::cout << (*cv)[0].first->getID() << " " << ((data::value<char>*)*(*cv)[0].first)->get_type().get_name() << std::endl;
+	std::cout << (*cv)[1].first->getID() << " " << ((data::value<char>*)*(*cv)[1].first)->get_type().get_name() << std::endl;
+	std::cout << (*cv)[2].first->getID() << " " << ((data::value<char>*)*(*cv)[2].first)->get_type().get_name() << std::endl;
+	std::cout << (*cv)[9].first->getID() << " " << ((data::value<char>*)*(*cv)[9].first)->get_type().get_name() << std::endl;
+	std::cout << **(data::value<int>*)*(*cv)[2].first << std::endl;
 	//fucking yes, finnaly no problems!!!^^^
 	data::complex_type ctcopy = ct;
 	std::cout << ctcopy.getID() << " " << ctcopy.get_number_of_fields() << std::endl;
 	//ok^^^
 	**vp = 9090;
 	data::complex_value cv2(cv);
-	std::cout << (*cv2)[1]->getID() << " " << ((data::value<char>*)*(*cv2)[1])->get_type().get_name() << std::endl;
-	std::cout << (*cv2)[2]->getID() << " " << ((data::value<char>*)*(*cv2)[2])->get_type().get_name() << std::endl;
-	std::cout << (*cv2)[2]->getID() << std::endl;
+	std::cout << (*cv2)[1].first->getID() << " " << ((data::value<char>*)*(*cv2)[1].first)->get_type().get_name() << std::endl;
+	std::cout << (*cv2)[2].first->getID() << " " << ((data::value<char>*)*(*cv2)[2].first)->get_type().get_name() << std::endl;
+	std::cout << (*cv2)[2].first->getID() << std::endl;
 	//ok^^^
-	std::cout << **(data::value<int>*)*(*cv)[2] << std::endl;
-	std::cout << **(data::value<int>*)*(*cv2)[2] << std::endl;
+	std::cout << **(data::value<int>*)*(*cv)[2].first << std::endl;
+	std::cout << **(data::value<int>*)*(*cv2)[2].first << std::endl;
 	**vp = 7070;
-	std::cout << **(data::value<int>*)*(*cv)[2] << std::endl;
-	std::cout << **(data::value<int>*)*(*cv2)[2] << std::endl;
+	std::cout << **(data::value<int>*)*(*cv)[2].first << std::endl;
+	std::cout << **(data::value<int>*)*(*cv2)[2].first << std::endl;
 	//ok^^^
 	module_source_requirement<void*> msr(nullptr, { 0, 0 });
 	module_source_requirement<void*> msr_copy(msr);
 	//ok^^^
 	data::smart_object_pointer sop = cv2.deep_copy(0, 0);
-	data::value<int>* vp2 = (data::value<int>*)*(*cv2)[2];
+	data::value<int>* vp2 = (data::value<int>*)*(*cv2)[2].first;
 	**vp2 = 1010;
-	std::cout << **(data::value<int>*)*(**(data::complex_value*)*sop)[2] << std::endl;
-	std::cout << **(data::value<int>*)*(*cv2)[2] << std::endl;
+	std::cout << **(data::value<int>*)*(**(data::complex_value*)*sop)[2].first << std::endl;
+	std::cout << **(data::value<int>*)*(*cv2)[2].first << std::endl;
+	//ok^^^
+	(*cv2)[0].first = new data::complex_value(ct, 77);
+	data::complex_value* cvp = new data::complex_value(ct, 88);
+	(**(data::complex_value*)*(*cv2)[0].first)[0].first = cvp;
+	cvp = new data::complex_value(ct, 99);
+	(**(data::complex_value*)*(**(data::complex_value*)*(*cv2)[0].first)[0].first)[0].first = cvp;
+	data::scope_path sp(3, new uint64_t[]{ 77,88,99 });
+	std::cout << cv2.get_object(sp)->getID() << std::endl;
 }
 data::smart_object_pointer func2() {
 	return data::smart_object_pointer(new object(9876));

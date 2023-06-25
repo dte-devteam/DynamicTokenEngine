@@ -8,10 +8,11 @@ namespace tokenoperator::dte_token::data {
 			~smart_object_pointer();
 			smart_object_pointer& operator=(const smart_object_pointer& sop);
 			smart_object_pointer& operator=(object* pointer);
-			operator object* ();
-			object* operator*();
-			object* operator->();
-			size_t get_owner_num() { return *owner_num; }
+			bool operator==(const smart_object_pointer& sop);
+			operator object*() const;
+			object* operator*() const;
+			object* operator->() const;
+			size_t get_owner_num() const;
 		protected:
 			size_t* owner_num;
 	};

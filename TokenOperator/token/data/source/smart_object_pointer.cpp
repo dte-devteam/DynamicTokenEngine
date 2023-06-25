@@ -41,12 +41,18 @@ smart_object_pointer& smart_object_pointer::operator=(object* pointer) {
 	}
 	return *this;
 }
-smart_object_pointer::operator object* () {
+bool smart_object_pointer::operator==(const smart_object_pointer& sop) {
+	return owner_num == sop.owner_num;
+}
+smart_object_pointer::operator object*() const {
 	return v;
 }
-object* smart_object_pointer::operator*() {
+object* smart_object_pointer::operator*() const {
 	return v;
 }
-object* smart_object_pointer::operator->() {
+object* smart_object_pointer::operator->() const {
 	return v;
+}
+size_t smart_object_pointer::get_owner_num() const { 
+	return *owner_num; 
 }

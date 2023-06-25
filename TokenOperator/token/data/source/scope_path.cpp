@@ -28,6 +28,22 @@ scope_path::scope_path(const scope_path& path1, const scope_path& path2, uint64_
 scope_path::~scope_path() {
 	delete[] v;
 }
+scope_path& scope_path::operator=(const scope_path& sp) {
+	if (this == &sp) {
+		return *this;
+	}
+	ID = sp.ID;
+	if (size != sp.size) {
+		delete[] v;
+		size = sp.size;
+		v = new uint64_t[size];
+	}
+	size_t i = size;
+	while (i) {
+		v[i] = sp.v[--i];
+	}
+	return *this;
+}
 size_t scope_path::get_size() {
 	return size;
 }
