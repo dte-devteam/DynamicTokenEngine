@@ -66,7 +66,7 @@
     <ClInclude Include="module\include\module_source.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="token\data\include\smart_object_pointer.h">
+    <ClInclude Include="token\data\include\smart_pointer.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
   </ItemGroup>
@@ -90,9 +90,6 @@
       <Filter>Исходные файлы</Filter>
     </ClCompile>
     <ClCompile Include="token\data\source\scope.cpp">
-      <Filter>Исходные файлы</Filter>
-    </ClCompile>
-    <ClCompile Include="token\data\source\smart_object_pointer.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
     <ClCompile Include="token\data\source\scope_path.cpp">

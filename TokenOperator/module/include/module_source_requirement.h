@@ -1,9 +1,8 @@
 #pragma once
-#include "token/data/include/value.h"
 #include "token/data/include/scope_path.h"
 /*
 *iscritical defines if requirement must be met
-*may be there is reason to recreate OR = { AND = { i1, i2, ... } } structure of "iscritical"
+*may be there is reason to recreate OR = { AND = { i1, i2, ... } ... } structure of "iscritical"
 */
 namespace tokenoperator::dte_module {
 	template<dte_token::data::pointer T>

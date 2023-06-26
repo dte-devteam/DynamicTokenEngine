@@ -1,11 +1,11 @@
 #include "../include/scope.h"
 using namespace tokenoperator::dte_token;
 using namespace tokenoperator::dte_token::data;
-scope::scope(size_t size, size_t prefered_size, uint64_t ID) : value<std::pair<smart_object_pointer, bool>*>(ID), size(size), prefered_size(prefered_size) {
-	v = new std::pair<smart_object_pointer, bool>[size];
+scope::scope(size_t size, size_t prefered_size, uint64_t ID) : value<std::pair<smart_pointer<object>, bool>*>(ID), size(size), prefered_size(prefered_size) {
+	v = new std::pair<smart_pointer<object>, bool>[size];
 }
-scope::scope(const scope& sc) : value<std::pair<smart_object_pointer, bool>*>(sc.ID), size(sc.size), prefered_size(sc.prefered_size) {
-	v = new std::pair<smart_object_pointer, bool>[size];
+scope::scope(const scope& sc) : value<std::pair<smart_pointer<object>, bool>*>(sc.ID), size(sc.size), prefered_size(sc.prefered_size) {
+	v = new std::pair<smart_pointer<object>, bool>[size];
 	size_t i = size;
 	while (i) {
 		v[i] = sc.v[--i];
@@ -22,7 +22,7 @@ void scope::resize_to_prefered_size() {
 		}
 	}
 	size_t new_size = min_size > prefered_size ? min_size : prefered_size;
-	std::pair<smart_object_pointer, bool>* buffer = new std::pair<smart_object_pointer, bool>[new_size];
+	std::pair<smart_pointer<object>, bool>* buffer = new std::pair<smart_pointer<object>, bool>[new_size];
 	i = size;
 	ii = new_size;
 	while (i) {
@@ -33,7 +33,7 @@ void scope::resize_to_prefered_size() {
 	delete[] v;
 	v = buffer;
 }
-bool scope::add_object(smart_object_pointer obj, bool is_base_of_scope) {
+bool scope::add_object(smart_pointer<object> obj, bool is_base_of_scope) {
 	if (obj) {
 		size_t i = size;
 		while (i) {
@@ -49,7 +49,7 @@ bool scope::add_object(smart_object_pointer obj, bool is_base_of_scope) {
 				return false;
 			}
 		}
-		std::pair<smart_object_pointer, bool>* buffer = new std::pair<smart_object_pointer, bool>[++size];
+		std::pair<smart_pointer<object>, bool>* buffer = new std::pair<smart_pointer<object>, bool>[++size];
 		i = size - 1;
 		while (i) {
 			buffer[i] = v[--i];
@@ -68,6 +68,7 @@ bool scope::remove_object(uint64_t ID) {
 			if (v[i].first->getID() == ID) {
 				if (v[i].second) {
 					//to do (revome from child pointer to this)
+					v[i].second = false;
 				}
 				v[i].first = nullptr;
 				return true;
@@ -76,31 +77,35 @@ bool scope::remove_object(uint64_t ID) {
 	}
 	return false;
 }
-smart_object_pointer scope::get_object(scope_path sp, size_t shift) {
-	smart_object_pointer o = (*this)[(*sp)[shift]];
+smart_pointer<object> scope::get_object_forward(scope_path sp, size_t shift) {
+	std::pair<smart_pointer<object>, bool> sop_b_pair = (*this)[(*sp)[shift]];
 	if (++shift < sp.get_size()) {
-		return o ? ((scope*)*o)->get_object(sp, shift) : o;
+		if (!sop_b_pair.second) {	//for debub and stability, but should be upgraded
+			return nullptr;
+		}
+		return sop_b_pair.first.get_pointer() ? ((scope*)sop_b_pair.first.get_pointer())->get_object_forward(sp, shift) : sop_b_pair.first;
 	}
-	return o;
+	return sop_b_pair.first;
 }
-smart_object_pointer scope::operator[](uint64_t ID) {
+//smart_pointer<object> scope::get_object_backward(scope_path sp, size_t shift)
+std::pair<smart_pointer<object>, bool> scope::operator[](uint64_t ID) {
 	size_t i = size;
 	while (i) {
 		if (v[--i].first) {
 			if (v[i].first->getID() == ID) {
-				return v[i].first;
+				return v[i];
 			}
 		}
 	}
-	return nullptr;
+	return { nullptr, false };
 }
-scope& scope::operator=(const scope& sñ) {
-	if (this == &sñ) {
+scope& scope::operator=(const scope& sï¿½) {
+	if (this == &sï¿½) {
 		return *this;
 	}
 	size_t i = size;
 	while (i) {
-		v[i] = sñ.v[--i];
+		v[i] = sï¿½.v[--i];
 	}
 	return *this;
 }
