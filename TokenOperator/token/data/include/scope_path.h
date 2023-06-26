@@ -2,9 +2,9 @@
 #include "value.h"
 //to do (data for fast access in scope)
 namespace tokenoperator::dte_token::data {
-	struct scope_path : value<uint64_t*> {
+	struct scope_path : value<std::pair<uint64_t, bool>*> {
 		public:	//protected:
-			scope_path(size_t num_of_IDs, uint64_t* paths, uint64_t ID = 0);
+			scope_path(size_t num_of_paths, std::pair<uint64_t, bool>* paths, uint64_t ID = 0);
 			scope_path(const scope_path& path);
 			scope_path(const scope_path& path1, const scope_path& path2, uint64_t ID = 0);
 			~scope_path();

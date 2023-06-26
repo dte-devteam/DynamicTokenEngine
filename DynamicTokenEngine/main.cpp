@@ -78,19 +78,30 @@ void func1() {
 	(**(data::complex_value*)(*cv2)[0].first.get_pointer())[0].first = cvp;
 	cvp = new data::complex_value(ct, 99);
 	(**(data::complex_value*)(**(data::complex_value*)(*cv2)[0].first.get_pointer())[0].first.get_pointer())[0].first = cvp;
-	data::scope_path sp(3, new uint64_t[]{ 77,88,99 });
+	data::scope_path sp(3, new std::pair<uint64_t, bool>[] {{77,false}, {88,false},{99,false}});
 	std::cout << cv2.get_object_forward(sp)->getID() << std::endl;
 	//ok^^^
 }
-data::smart_pointer<object> func2() {
-	return data::smart_pointer<object>(new object(9876));
+data::smart_pointer<data::smart_pointer<object>> func2() {
+	return data::smart_pointer<data::smart_pointer<object>>(new data::smart_pointer<object>(nullptr, 9876));
 }
 void func3() {
-	uint64_t* IDinit = new uint64_t[]{50,45,40,35,30,25,20,15,10,5};
-	data::scope_path sc(10, IDinit, 7887);
+	std::pair<uint64_t, bool>* paths = new std::pair<uint64_t, bool>[]{
+		{50, false},
+		{45, false},
+		{40, false},
+		{35, false},
+		{30, false},
+		{25, false},
+		{20, false},
+		{15, false},
+		{10, false},
+		{5, false}
+	};
+	data::scope_path sc(10, paths, 7887);
 	std::cout << "path is:" << std::endl;
 	for (size_t i = 0; i < sc.get_size(); i++) {
-		std::cout << i << "->" << (*sc)[i] << std::endl;
+		std::cout << i << "->" << (*sc)[i].first << ":" << (*sc)[i].second << std::endl;
 	}
 	//ok^^^
 }
@@ -119,8 +130,8 @@ int main() {
 	std::cout << mv.getID() << std::endl;
 
 	func1();
-	data::smart_pointer<object> sop2(func2());
-	data::smart_pointer<object> sop3(sop2);
+	data::smart_pointer<data::smart_pointer<object>> sop2(func2());
+	data::smart_pointer<data::smart_pointer<object>> sop3(sop2);
 	std::cout << sop3 << ":" << sop3.get_owner_num() << std::endl;
 	std::cout << sop2 << ":" << sop2.get_owner_num() << std::endl;
 	sop2 = nullptr;
@@ -131,6 +142,13 @@ int main() {
 	std::cout << sop2 << ":" << sop2.get_owner_num() << std::endl;
 	std::cout << sop2->getID() << std::endl;
 	std::cout << ((data::type<void*>*)sop2.get_pointer())->getID() << std::endl;
+
+	//fuck yes :) code below will allow to create other instantiation of smart_pointer template
+	data::smart_pointer<object> sop4(sop3);
+	std::cout << sop4 << ":" << sop4.get_owner_num() << std::endl;
+	std::cout << sop4->getID() << std::endl;
+	std::cout << (sop4 == sop3) << std::endl;
+
 	func3();
 
 	data::value<char>* vc = (data::value<char>*)data::copy_value<float>(fv1, 9999);

@@ -78,16 +78,25 @@ bool scope::remove_object(uint64_t ID) {
 	return false;
 }
 smart_pointer<object> scope::get_object_forward(scope_path sp, size_t shift) {
-	std::pair<smart_pointer<object>, bool> sop_b_pair = (*this)[(*sp)[shift]];
+	if ((*sp)[shift].second) {
+		return get_object_backward(sp, shift);
+	}
+	std::pair<smart_pointer<object>, bool> sop_b_pair = (*this)[(*sp)[shift].first];
 	if (++shift < sp.get_size()) {
-		if (!sop_b_pair.second) {	//for debub and stability, but should be upgraded
-			return nullptr;
+		if (sop_b_pair.second && sop_b_pair.first.get_pointer()) {
+			return ((scope*)sop_b_pair.first.get_pointer())->get_object_forward(sp, shift);
 		}
-		return sop_b_pair.first.get_pointer() ? ((scope*)sop_b_pair.first.get_pointer())->get_object_forward(sp, shift) : sop_b_pair.first;
+		return nullptr;
 	}
 	return sop_b_pair.first;
 }
-//smart_pointer<object> scope::get_object_backward(scope_path sp, size_t shift)
+smart_pointer<object> scope::get_object_backward(scope_path sp, size_t shift) {
+	if (!(*sp)[shift].second) {
+		return get_object_forward(sp, shift);
+	}
+	//to do code
+	return nullptr;
+}
 std::pair<smart_pointer<object>, bool> scope::operator[](uint64_t ID) {
 	size_t i = size;
 	while (i) {
@@ -99,13 +108,13 @@ std::pair<smart_pointer<object>, bool> scope::operator[](uint64_t ID) {
 	}
 	return { nullptr, false };
 }
-scope& scope::operator=(const scope& s�) {
-	if (this == &s�) {
+scope& scope::operator=(const scope& sc) {
+	if (this == &sc) {
 		return *this;
 	}
 	size_t i = size;
 	while (i) {
-		v[i] = s�.v[--i];
+		v[i] = sc.v[--i];
 	}
 	return *this;
 }

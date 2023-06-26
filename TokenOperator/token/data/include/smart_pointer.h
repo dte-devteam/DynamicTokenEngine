@@ -1,51 +1,63 @@
 #pragma once
 #include "value.h"
+
+#include <iostream>
 namespace tokenoperator::dte_token::data {
 	template<typename T>
 	struct smart_pointer : value<T*>{
+		template <typename U> friend struct smart_pointer;
 		public:
 			smart_pointer(T* pointer = nullptr, uint64_t ID = 0) : value<T*>(ID), owner_num(new size_t[]{1}) {
 				v = pointer;
 			}
-			smart_pointer(const smart_pointer<T>& sop) : value<T*>(sop.ID), owner_num(sop.owner_num) {
-				v = sop.v;
-				++* owner_num;
+			smart_pointer(const smart_pointer<T>& sp) : value<T*>(sp.ID), owner_num(sp.owner_num) {
+				v = sp.v;
+				++*owner_num;
+			}
+			template<typename U>
+			smart_pointer(const smart_pointer<U>& sp) : value<T*>(sp.getID()), owner_num(sp.owner_num) {
+				static_assert(
+					std::is_convertible<U, T>::value || std::is_base_of<T, U>::value,
+					"can create smart_pointer<T> from smart_pointer<U> only if: T and U are convertible or T is base of U"
+				);
+				v = static_cast<T*>(sp.v);
+				++*owner_num;
 			}
 			~smart_pointer() {
-				if (!-- * owner_num) {
+				if (!--*owner_num) {
 					delete v;
 					delete[] owner_num;
 				}
 			}
-			smart_pointer& operator=(const smart_pointer<T>& sop) {
-				if (this == &sop) {
+			smart_pointer& operator=(const smart_pointer<T>& sp) {
+				if (this == &sp) {
 					return *this;
 				}
-				ID = sop.ID;
-				if (v != sop.v) {
-					if (!-- * owner_num) {
+				if (v != sp.v) {
+					if (!--*owner_num) {
 						delete v;
 						delete[] owner_num;
 					}
-					v = sop.v;
-					owner_num = sop.owner_num;
-					++* owner_num;
+					v = sp.v;
+					owner_num = sp.owner_num;
+					++*owner_num;
 				}
 				return *this;
 			}
 			smart_pointer& operator=(T* pointer) {
 				if (v != pointer) {
-					if (!-- * owner_num) {
+					if (!--*owner_num) {
 						delete v;
 						delete[] owner_num;
 					}
 					v = pointer;
-					owner_num = new size_t[]{ 1 };
+					owner_num = new size_t[]{1};
 				}
 				return *this;
 			}
-			bool operator==(const smart_pointer<T>& sop) {
-				return owner_num == sop.owner_num;
+			template<typename U>
+			bool operator==(const smart_pointer<U>& sp) {
+				return owner_num == sp.owner_num;
 			}
 			operator T*() const {
 				return v;
@@ -64,5 +76,6 @@ namespace tokenoperator::dte_token::data {
 			}
 		protected:
 			size_t* owner_num;
+			//smart_pointer(const smart_pointer<T>& sp);
 	};
 }

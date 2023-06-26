@@ -1,21 +1,21 @@
 #include "../include/scope_path.h"
 using namespace tokenoperator::dte_token::data;
-scope_path::scope_path(size_t num_of_IDs, uint64_t* paths, uint64_t ID) : value<uint64_t*>(ID), size(num_of_IDs) {
-	v = new uint64_t[size];
+scope_path::scope_path(size_t num_of_paths, std::pair<uint64_t, bool>* paths, uint64_t ID) : value<std::pair<uint64_t, bool>*>(ID), size(num_of_paths) {
+	v = new std::pair<uint64_t, bool>[size];
 	size_t i = size;
 	while (i) {
 		v[i] = paths[--i];
 	}
 }
-scope_path::scope_path(const scope_path& path) : value<uint64_t*>(path.ID), size(path.size) {
-	v = new uint64_t[size];
+scope_path::scope_path(const scope_path& path) : value<std::pair<uint64_t, bool>*>(path.ID), size(path.size) {
+	v = new std::pair<uint64_t, bool>[size];
 	size_t i = size;
 	while (i) {
 		v[i] = path.v[--i];
 	}
 }
-scope_path::scope_path(const scope_path& path1, const scope_path& path2, uint64_t ID) : value<uint64_t*>(ID), size(path1.size + path2.size) {
-	v = new uint64_t[size];
+scope_path::scope_path(const scope_path& path1, const scope_path& path2, uint64_t ID) : value<std::pair<uint64_t, bool>*>(ID), size(path1.size + path2.size) {
+	v = new std::pair<uint64_t, bool>[size];
 	size_t i = size, ii = path2.size;
 	while (ii) {
 		v[--i] = path2.v[--ii];
@@ -36,7 +36,7 @@ scope_path& scope_path::operator=(const scope_path& sp) {
 	if (size != sp.size) {
 		delete[] v;
 		size = sp.size;
-		v = new uint64_t[size];
+		v = new std::pair<uint64_t, bool>[size];
 	}
 	size_t i = size;
 	while (i) {
@@ -55,9 +55,9 @@ void scope_path::clip(size_t from_index, size_t to_index) {
 		to_index = size;
 	}
 	size_t new_size = to_index - from_index;
-	uint64_t* buffer = new uint64_t[size];
-	size_t i = new_size, ii = from_index;
-	while (i) {
+	std::pair<uint64_t, bool>* buffer = new std::pair<uint64_t, bool>[new_size];
+	size_t i = to_index, ii = new_size;
+	while (ii) {
 		buffer[--i] = v[--ii];
 	}
 	delete[] v;
