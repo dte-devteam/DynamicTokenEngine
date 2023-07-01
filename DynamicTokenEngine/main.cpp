@@ -31,8 +31,9 @@ std::pair<data::create_value_function, data::copy_value_function> v_create_and_c
 	data::create_copy_value_pair<float>(),
 	data::create_copy_value_pair<float>()
 };
-bool* is_base_of_scope = new bool[10]{ true };
+bool* is_base_of_scope = new bool[10]{ false }; //temp (for cv2.get_object_forward(sp)->getID())
 void func1() {
+	//is_base_of_scope[0] = true;
 	data::complex_type ct(10, v_create_and_copy, is_base_of_scope, 321);
 	std::cout << ct.getID() << " " << ct.get_number_of_fields() << std::endl;
 	data::complex_type ct2(ct);
@@ -64,10 +65,10 @@ void func1() {
 	std::cout << **(data::value<int>*)(*cv)[2].first.get_pointer() << std::endl;
 	std::cout << **(data::value<int>*)(*cv2)[2].first.get_pointer() << std::endl;
 	//ok^^^
-	module_source_requirement<void*> msr(nullptr, { 0, 0 });
-	module_source_requirement<void*> msr_copy(msr);
+	module_source_requirement msr(nullptr, { 0, 0 });
+	module_source_requirement msr_copy(msr);
 	//ok^^^
-	data::smart_pointer<object> sop = cv2.deep_copy(0, 0);
+	data::smart_pointer<object> sop = cv2.deep_copy(8, 0);
 	data::value<int>* vp2 = (data::value<int>*)(*cv2)[2].first.get_pointer();
 	**vp2 = 1010;
 	std::cout << **(data::value<int>*)(**(data::complex_value*)sop.get_pointer())[2].first.get_pointer() << std::endl;
@@ -79,7 +80,7 @@ void func1() {
 	cvp = new data::complex_value(ct, 99);
 	(**(data::complex_value*)(**(data::complex_value*)(*cv2)[0].first.get_pointer())[0].first.get_pointer())[0].first = cvp;
 	data::scope_path sp(3, new std::pair<uint64_t, bool>[] {{77,false}, {88,false},{99,false}});
-	std::cout << cv2.get_object_forward(sp)->getID() << std::endl;
+	//std::cout << cv2.get_object_forward(sp)->getID() << std::endl;
 	//ok^^^
 }
 data::smart_pointer<data::smart_pointer<object>> func2() {

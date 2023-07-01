@@ -16,10 +16,13 @@ namespace tokenoperator::dte_token::data {
 			smart_pointer<object> get_object_forward(scope_path sp, size_t shift = 0);
 			smart_pointer<object> get_object_backward(scope_path sp, size_t shift = 0);
 			std::pair<smart_pointer<object>, bool> operator[](uint64_t ID);
-			scope& operator=(const scope& s�);
+			scope& operator=(const scope& sc);
 			size_t get_size();
 			size_t get_prefered_size();
 		protected:
+			void add_root(smart_pointer<object>& root);
+			void remove_root(smart_pointer<object>& root);
+			smart_pointer<object> get_smart_pointer_to_this();
 			size_t size, prefered_size;
 	};
 }

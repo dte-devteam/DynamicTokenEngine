@@ -33,7 +33,6 @@ complex_type& complex_type::operator=(const complex_type& ct) {
 	if (this == &ct) {
 		return *this;
 	}
-	ID = ct.ID;
 	if (number_of_fields != ct.number_of_fields){
 		delete[] v;
 		number_of_fields = ct.number_of_fields;

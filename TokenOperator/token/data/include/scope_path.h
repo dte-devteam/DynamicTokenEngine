@@ -2,6 +2,7 @@
 #include "value.h"
 //to do (data for fast access in scope)
 namespace tokenoperator::dte_token::data {
+	#define EMPTY_SCOPE_PATH(ID) scope_path(0, nullptr, ID)
 	struct scope_path : value<std::pair<uint64_t, bool>*> {
 		public:	//protected:
 			scope_path(size_t num_of_paths, std::pair<uint64_t, bool>* paths, uint64_t ID = 0);

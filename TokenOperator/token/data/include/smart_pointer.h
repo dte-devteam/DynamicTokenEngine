@@ -1,7 +1,5 @@
 #pragma once
 #include "value.h"
-
-#include <iostream>
 namespace tokenoperator::dte_token::data {
 	template<typename T>
 	struct smart_pointer : value<T*>{
@@ -15,7 +13,7 @@ namespace tokenoperator::dte_token::data {
 				++*owner_num;
 			}
 			template<typename U>
-			smart_pointer(const smart_pointer<U>& sp) : value<T*>(sp.getID()), owner_num(sp.owner_num) {
+			smart_pointer(const smart_pointer<U>& sp) : value<T*>(sp.ID), owner_num(sp.owner_num) {
 				static_assert(
 					std::is_convertible<U, T>::value || std::is_base_of<T, U>::value,
 					"can create smart_pointer<T> from smart_pointer<U> only if: T and U are convertible or T is base of U"
@@ -29,7 +27,7 @@ namespace tokenoperator::dte_token::data {
 					delete[] owner_num;
 				}
 			}
-			smart_pointer& operator=(const smart_pointer<T>& sp) {
+			smart_pointer<T>& operator=(const smart_pointer<T>& sp) {
 				if (this == &sp) {
 					return *this;
 				}
@@ -44,7 +42,7 @@ namespace tokenoperator::dte_token::data {
 				}
 				return *this;
 			}
-			smart_pointer& operator=(T* pointer) {
+			smart_pointer<T>& operator=(T* pointer) {
 				if (v != pointer) {
 					if (!--*owner_num) {
 						delete v;
@@ -58,6 +56,10 @@ namespace tokenoperator::dte_token::data {
 			template<typename U>
 			bool operator==(const smart_pointer<U>& sp) {
 				return owner_num == sp.owner_num;
+			}
+			template<typename U>
+			bool operator!=(const smart_pointer<U>& sp) {
+				return owner_num != sp.owner_num;
 			}
 			operator T*() const {
 				return v;
@@ -76,6 +78,5 @@ namespace tokenoperator::dte_token::data {
 			}
 		protected:
 			size_t* owner_num;
-			//smart_pointer(const smart_pointer<T>& sp);
 	};
 }

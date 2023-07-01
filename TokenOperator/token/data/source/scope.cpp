@@ -12,6 +12,14 @@ scope::scope(const scope& sc) : value<std::pair<smart_pointer<object>, bool>*>(s
 	}
 }
 scope::~scope() {
+	size_t i = size;
+	while (i) {
+		if (v[--i].first.get_pointer()) {
+			if (v[i].second) {
+				//to do
+			}
+		}
+	}
 	delete[] v;
 }
 void scope::resize_to_prefered_size() {
@@ -26,7 +34,7 @@ void scope::resize_to_prefered_size() {
 	i = size;
 	ii = new_size;
 	while (i) {
-		if (!v[--i].first) {
+		if (!v[--i].first.get_pointer()) {
 			buffer[--ii] = v[i];
 		}
 	}
@@ -34,14 +42,17 @@ void scope::resize_to_prefered_size() {
 	v = buffer;
 }
 bool scope::add_object(smart_pointer<object> obj, bool is_base_of_scope) {
-	if (obj) {
-		size_t i = size;
+	if (obj.get_pointer()) {
+		if (obj.get_pointer() == this) {	//scope can`t own itself
+			return false;
+		}
+		size_t i = size, end;
 		while (i) {
-			if (!v[--i].first) {
+			if (!v[--i].first.get_pointer()) {
 				v[i].first = obj;
 				v[i].second = is_base_of_scope;
 				if (is_base_of_scope) {
-					//to add this to child
+					//to do
 				}
 				return true;
 			}
@@ -50,12 +61,15 @@ bool scope::add_object(smart_pointer<object> obj, bool is_base_of_scope) {
 			}
 		}
 		std::pair<smart_pointer<object>, bool>* buffer = new std::pair<smart_pointer<object>, bool>[++size];
-		i = size - 1;
+		end = i = size - 1;
 		while (i) {
 			buffer[i] = v[--i];
 		}
-		buffer[size].first = obj;
-		buffer[size].second = is_base_of_scope;
+		buffer[end].first = obj;
+		buffer[end].second = is_base_of_scope;
+		if (is_base_of_scope) {
+			//to do
+		}
 		delete[] v;
 		v = buffer;
 	}
@@ -64,10 +78,10 @@ bool scope::add_object(smart_pointer<object> obj, bool is_base_of_scope) {
 bool scope::remove_object(uint64_t ID) {
 	size_t i = size;
 	while (i) {
-		if (v[--i].first) {
+		if (v[--i].first.get_pointer()) {
 			if (v[i].first->getID() == ID) {
 				if (v[i].second) {
-					//to do (revome from child pointer to this)
+					//to do
 					v[i].second = false;
 				}
 				v[i].first = nullptr;
@@ -123,4 +137,14 @@ size_t scope::get_size() {
 }
 size_t scope::get_prefered_size() {
 	return prefered_size;
+}
+void scope::add_root(smart_pointer<object>& root) {
+	//to do
+}
+void scope::remove_root(smart_pointer<object>& root) {
+	//to do
+}
+smart_pointer<object> scope::get_smart_pointer_to_this() {
+	//to do
+	return nullptr;
 }

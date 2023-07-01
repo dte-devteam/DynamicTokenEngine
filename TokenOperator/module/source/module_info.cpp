@@ -1,10 +1,12 @@
 #include "../include/module_info.h"
 using namespace tokenoperator::dte_module;
 using namespace tokenoperator::dte_token::data;
-module_info::module_info(std::wstring dllname, uint64_t ID) : object(ID), dllname(dllname), library(LoadLibrary(dllname.c_str())) {
+module_info::module_info(std::wstring dllname, uint64_t ID) : value<std::pair<module_source*, size_t>>(ID), dllname(dllname), library(LoadLibrary(dllname.c_str())) {
     search_for_version(dllname);
-    smart_pointer<object>* module_scope_pointer = (smart_pointer<object>*)GetProcAddress(library, "module_scope");
-    module_scope = module_scope_pointer ? *module_scope_pointer : nullptr;
+    module_source** module_source_pointer = (module_source**)GetProcAddress(library, "module_sources");
+    size_t* module_source_num_pointer = (size_t*)GetProcAddress(library, "module_scope");
+    v.first = module_source_pointer ? *module_source_pointer : nullptr;
+    v.second = module_source_num_pointer ? *module_source_num_pointer : 0;
 }
 module_info::~module_info() {
     FreeLibrary(library);

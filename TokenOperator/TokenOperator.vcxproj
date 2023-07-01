@@ -42,6 +42,8 @@
   <ItemGroup>
     <ClCompile Include="module\source\module_info.cpp" />
     <ClCompile Include="module\source\module_requirement.cpp" />
+    <ClCompile Include="module\source\module_source.cpp" />
+    <ClCompile Include="module\source\module_source_requirement.cpp" />
     <ClCompile Include="module\source\module_version.cpp" />
     <ClCompile Include="token\data\source\complex_type.cpp" />
     <ClCompile Include="token\data\source\complex_value.cpp" />
