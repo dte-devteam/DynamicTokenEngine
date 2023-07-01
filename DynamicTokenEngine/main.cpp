@@ -31,7 +31,7 @@ std::pair<data::create_value_function, data::copy_value_function> v_create_and_c
 	data::create_copy_value_pair<float>(),
 	data::create_copy_value_pair<float>()
 };
-bool* is_base_of_scope = new bool[10]{ false }; //temp (for cv2.get_object_forward(sp)->getID())
+bool* is_base_of_scope = new bool[10]{ false };
 void func1() {
 	//is_base_of_scope[0] = true;
 	data::complex_type ct(10, v_create_and_copy, is_base_of_scope, 321);
@@ -79,8 +79,6 @@ void func1() {
 	(**(data::complex_value*)(*cv2)[0].first.get_pointer())[0].first = cvp;
 	cvp = new data::complex_value(ct, 99);
 	(**(data::complex_value*)(**(data::complex_value*)(*cv2)[0].first.get_pointer())[0].first.get_pointer())[0].first = cvp;
-	data::scope_path sp(3, new std::pair<uint64_t, bool>[] {{77,false}, {88,false},{99,false}});
-	//std::cout << cv2.get_object_forward(sp)->getID() << std::endl;
 	//ok^^^
 }
 data::smart_pointer<data::smart_pointer<object>> func2() {
@@ -105,6 +103,9 @@ void func3() {
 		std::cout << i << "->" << (*sc)[i].first << ":" << (*sc)[i].second << std::endl;
 	}
 	//ok^^^
+}
+void func4() {
+
 }
 int main() {
 	float f = 1.5f;
@@ -151,6 +152,7 @@ int main() {
 	std::cout << (sop4 == sop3) << std::endl;
 
 	func3();
+	func4();
 
 	data::value<char>* vc = (data::value<char>*)data::copy_value<float>(fv1, 9999);
 	std::cout << vc->get_type().get_name() << std::endl;
