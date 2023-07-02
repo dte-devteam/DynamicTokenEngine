@@ -105,7 +105,29 @@ void func3() {
 	//ok^^^
 }
 void func4() {
+	data::scope_path sp1(2, new std::pair<uint64_t, bool>[]{{2222, false}, {3333, false}});
+	data::scope_path sp2(2, new std::pair<uint64_t, bool>[]{{2222, true}, {1111, true}});
+	data::smart_pointer<object> sop_root = new data::scope(0, 0, 0);
+	data::smart_pointer<object> sop1 = new data::scope(0, 0, 1111);
+	data::smart_pointer<object> sop2 = new data::scope(1, 1, 2222);
+	data::smart_pointer<object> sop3 = new data::scope(0, 0, 3333);
+	((data::scope*)sop_root.get_pointer())->add_object(sop1, true);
+	((data::scope*)sop1.get_pointer())->add_object(sop2, true);
+	((data::scope*)sop2.get_pointer())->add_object(sop3, true);
+	std::cout << ((data::scope*)sop1.get_pointer())->root_num << std::endl;
+	std::cout << ((data::scope*)sop1.get_pointer())->roots[0]->getID() << std::endl;
+	std::cout << ((data::scope*)sop2.get_pointer())->root_num << std::endl;
+	std::cout << ((data::scope*)sop2.get_pointer())->roots[0]->getID() << std::endl;
+	std::cout << ((data::scope*)sop3.get_pointer())->root_num << std::endl;
+	std::cout << ((data::scope*)sop3.get_pointer())->roots[0]->getID() << std::endl;
 
+	std::cout << "----------" << std::endl;
+	std::cout << ((data::scope*)sop1.get_pointer())->get_object(sp1)->getID() << std::endl;
+	std::cout << ((data::scope*)sop3.get_pointer())->get_object(sp2)->getID() << std::endl;
+	std::cout << "----------" << std::endl;
+
+	((data::scope*)sop2.get_pointer())->remove_object(sop3->getID());
+	std::cout << ((data::scope*)sop3.get_pointer())->root_num << std::endl;
 }
 int main() {
 	float f = 1.5f;

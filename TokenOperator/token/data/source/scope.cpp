@@ -51,7 +51,7 @@ bool scope::add_object(smart_pointer<object> obj, bool is_base_of_scope) {
 				v[i].first = obj;
 				v[i].second = is_base_of_scope;
 				if (is_base_of_scope) {
-					((scope*)v[i].first.get_pointer())->add_root(this);
+					((scope*)obj.get_pointer())->add_root(this);
 				}
 				return true;
 			}
@@ -67,7 +67,7 @@ bool scope::add_object(smart_pointer<object> obj, bool is_base_of_scope) {
 		buffer[end].first = obj;
 		buffer[end].second = is_base_of_scope;
 		if (is_base_of_scope) {
-			((scope*)v[i].first.get_pointer())->add_root(this);
+			((scope*)obj.get_pointer())->add_root(this);
 		}
 		delete[] v;
 		v = buffer;
@@ -90,24 +90,34 @@ bool scope::remove_object(uint64_t ID) {
 	}
 	return false;
 }
-smart_pointer<object> scope::get_object_forward(scope_path sp, size_t shift) {
-	if ((*sp)[shift].second) {
-		return get_object_backward(sp, shift);
-	}
-	std::pair<smart_pointer<object>, bool> sop_b_pair = (*this)[(*sp)[shift].first];
-	if (++shift < sp.get_size()) {
-		if (sop_b_pair.second && sop_b_pair.first.get_pointer()) {
-			return ((scope*)sop_b_pair.first.get_pointer())->get_object_forward(sp, shift);
+smart_pointer<object> scope::get_object(scope_path sp, size_t shift) {
+	if ((*sp)[shift].second) {//back
+		size_t shift_pp = shift + 1;
+		if (shift < sp.get_size()) {
+			size_t i = root_num;
+			while (i) {
+				if (roots[--i]->ID == (*sp)[shift].first) {
+					smart_pointer<object> sop = roots[i]->get_object(sp, shift_pp);
+					if (sop.get_pointer()) {
+						return sop;
+					}
+				}
+			}
 		}
-		return nullptr;
+		else if (root_num) {
+			return (*roots[0])[ID].first;
+		}
 	}
-	return sop_b_pair.first;
-}
-smart_pointer<object> scope::get_object_backward(scope_path sp, size_t shift) {
-	if (!(*sp)[shift].second) {
-		return get_object_forward(sp, shift);
+	else {//forward
+		std::pair<smart_pointer<object>, bool> sop_b_pair = (*this)[(*sp)[shift].first];
+		if (++shift < sp.get_size()) {
+			if (sop_b_pair.second) {
+				return ((scope*)sop_b_pair.first.get_pointer())->get_object(sp, shift);
+			}
+			return nullptr;
+		}
+		return sop_b_pair.first;
 	}
-	//to do code
 	return nullptr;
 }
 std::pair<smart_pointer<object>, bool> scope::operator[](uint64_t ID) {
@@ -144,6 +154,8 @@ void scope::add_root(scope* root) {
 		buffer[i] = roots[--i];
 	}
 	buffer[end] = root;
+	delete[] roots;
+	roots = buffer;
 }
 void scope::remove_root(scope* root) {
 	size_t i = root_num, ii;
@@ -152,7 +164,14 @@ void scope::remove_root(scope* root) {
 			i = root_num;
 			ii = --root_num;
 			scope** buffer = new scope*[ii];
-			//to do
+			while (i) {
+				if (roots[--i] != root) {
+					buffer[--i] = roots[i];
+				}
+			}
+			delete[] roots;
+			roots = buffer;
+			return;
 		}
 	}
 }
