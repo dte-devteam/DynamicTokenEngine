@@ -11,6 +11,9 @@ using namespace tokenoperator::dte_token;
 #include "module/include/module_source_requirement.h"
 using namespace tokenoperator::dte_module;
 
+#include "utils/include/hash.h"
+using namespace utils;
+
 /*
 * future structure:
 * lib(functions)-------->dll(any module, may be multiple)
@@ -129,6 +132,36 @@ void func4() {
 	((data::scope*)sop2.get_pointer())->remove_object(sop3->getID());
 	std::cout << ((data::scope*)sop3.get_pointer())->root_num << std::endl;
 }
+void func5() {
+	std::cout << pearson_hash<char, int>(new char[] {'f'}, 1) << std::endl;
+	std::cout << pearson_hash<int, int>(new int[] {123}, 1) << std::endl;
+	std::cout << pearson_hash<wchar_t, int>(L"text", 4) << std::endl;
+	
+
+	wchar_t i = 0;
+	uint64_t ii = 0;
+	std::cout << type_in_type_capasity<decltype(i), decltype(ii)>() << std::endl;
+
+	wchar_t* _str = L"wwwwwwww/.z\\y/.x";
+	wchar_t* wstr = L"ww";
+	wchar_t* zstr = L"z";
+	wchar_t* ystr = L"y";
+	wchar_t* xstr = L"x";
+	data::scope_path sp = data::token_path(_str, std::wcslen(_str), 0);
+	std::cout << "----------" << std::endl;
+	std::cout << pearson_hash<wchar_t, int>(wstr, std::wcslen(wstr)) << std::endl;
+	std::cout << (*sp)[0].first << ":" << (*sp)[0].second << std::endl;
+	std::cout << "----------" << std::endl;
+	std::cout << pearson_hash<wchar_t, int>(zstr, std::wcslen(zstr)) << std::endl;
+	std::cout << (*sp)[1].first << ":" << (*sp)[1].second << std::endl;
+	std::cout << "----------" << std::endl;
+	std::cout << pearson_hash<wchar_t, int>(ystr, std::wcslen(ystr)) << std::endl;
+	std::cout << (*sp)[2].first << ":" << (*sp)[2].second << std::endl;
+	std::cout << "----------" << std::endl;
+	std::cout << pearson_hash<wchar_t, int>(xstr, std::wcslen(xstr)) << std::endl;
+	std::cout << (*sp)[3].first << ":" << (*sp)[3].second << std::endl;
+	std::cout << "----------" << std::endl;
+}
 int main() {
 	float f = 1.5f;
 	int i = 1000;
@@ -173,11 +206,15 @@ int main() {
 	std::cout << sop4->getID() << std::endl;
 	std::cout << (sop4 == sop3) << std::endl;
 
+	std::cout << "func3:" << std::endl;
 	func3();
+	std::cout << "func4:" << std::endl;
 	func4();
+	std::cout << "func5:" << std::endl;
+	func5();
 
 	data::value<char>* vc = (data::value<char>*)data::copy_value<float>(fv1, 9999);
 	std::cout << vc->get_type().get_name() << std::endl;
 	std::cout << **(data::value<float>*)vc << " " << vc->getID() << std::endl;
-    return 0;
+	return 0;
 }

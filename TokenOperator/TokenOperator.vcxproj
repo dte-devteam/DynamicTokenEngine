@@ -37,7 +37,10 @@
     <ClInclude Include="token\function\include\basic_function.h" />
     <ClInclude Include="token\object.h" />
     <ClInclude Include="token\stream\include\stream.h" />
+    <ClInclude Include="token\stream\include\stream_rights.h" />
     <ClInclude Include="token_data.h" />
+    <ClInclude Include="utils\include\hash.h" />
+    <ClInclude Include="utils\include\type_info.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="module\source\module_info.cpp" />

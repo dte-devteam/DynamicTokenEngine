@@ -20,7 +20,7 @@ namespace tokenoperator::dte_token {
 		struct basic_function : object {
 			public:
 				basic_function(uint64_t ID = 0, args defaultvalues = {});
-				virtual void execute(args* argumentspointer, uint64_t* errorcodepointer, bool forced, stack* callstack = nullptr, stream::stream* caller = nullptr) = 0;
+				virtual void execute(args* argumentspointer, uint64_t* errorcodepointer = nullptr, bool forced = false, stack* callstack = nullptr, stream::stream* caller = nullptr) = 0;
 			protected:
 				args defaultvalues;
 				void form_argument(args* argumentspointer, args& target) const;
