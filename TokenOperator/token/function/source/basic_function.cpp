@@ -1,21 +1,15 @@
 #include "token/function/include/basic_function.h"
 using namespace tokenoperator::dte_token::function;
-basic_function::basic_function(uint64_t ID, args defaultvalues) : object(ID), defaultvalues(defaultvalues) {}
-void basic_function::form_argument(args* argumentspointer, args& target) const {
+basic_function::basic_function(uint64_t ID, bf_args defaultvalues) : object(ID), defaultvalues(defaultvalues) {}
+bf_args basic_function::form_argument(bf_args* argumentspointer) const {
 	if (argumentspointer) {
-		size_t dv_size = defaultvalues.size();
-		size_t a_size = argumentspointer->size();
-		args arguments{a_size > dv_size ? a_size + 1 : dv_size + 1};
-		size_t i = 0;
-		while (i < a_size) {
-			arguments[i++] = (*argumentspointer)[i];
-		}
-		while (i < dv_size) {
-			arguments[i++] = defaultvalues[i];
-		}
-		target = arguments;
+		size_t args_size = std::max(argumentspointer->get_size(), defaultvalues.get_size());
+		bf_args arguments{args_size};
+		object** target = arguments.get_data();
+		
+		//to do
+
+		return arguments;
 	}
-	else {
-		target = defaultvalues;
-	}
+	return defaultvalues;
 }

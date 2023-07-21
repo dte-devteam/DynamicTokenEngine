@@ -8,6 +8,9 @@ module_info::module_info(std::wstring dllname, uint64_t ID) : value<std::pair<mo
     v.first = module_source_pointer ? *module_source_pointer : nullptr;
     v.second = module_source_num_pointer ? *module_source_num_pointer : 0;
 }
+module_info::module_info(const module_info& mi) : value<std::pair<module_source*, size_t>>(mi.ID), dllname(mi.dllname), library(LoadLibrary(mi.dllname.c_str())) {
+    v = mi.v;
+}
 module_info::~module_info() {
     FreeLibrary(library);
 }

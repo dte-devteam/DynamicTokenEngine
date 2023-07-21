@@ -28,7 +28,7 @@ void scope::resize_to_prefered_size() {
 			min_size++;
 		}
 	}
-	size_t new_size = min_size > prefered_size ? min_size : prefered_size;
+	size_t new_size = std::max(min_size, prefered_size);
 	std::pair<smart_pointer<object>, bool>* buffer = new std::pair<smart_pointer<object>, bool>[new_size];
 	i = size;
 	ii = new_size;
@@ -42,7 +42,7 @@ void scope::resize_to_prefered_size() {
 }
 bool scope::add_object(smart_pointer<object> obj, bool is_base_of_scope) {
 	if (obj.get_pointer()) {	//we can`t store nullptr, only a smart_pointer<object> that contains nullptr as value
-		if (obj.get_pointer() == this) {	//scope can`t own itself
+		if (obj.get_pointer() == this) {	//scope can`t own itself (memory protection)
 			return false;
 		}
 		size_t i = size, end;
@@ -135,6 +135,7 @@ scope& scope::operator=(const scope& sc) {
 	if (this == &sc) {
 		return *this;
 	}
+	//to do (sizes can be !=)
 	size_t i = size;
 	while (i) {
 		v[i] = sc.v[--i];
@@ -146,6 +147,9 @@ size_t scope::get_size() {
 }
 size_t scope::get_prefered_size() {
 	return prefered_size;
+}
+void scope::set_prefered_size(size_t pref_size) {
+	prefered_size = pref_size;
 }
 void scope::add_root(scope* root) {
 	size_t i = root_num, end = root_num;

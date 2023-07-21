@@ -1,7 +1,8 @@
 #pragma once
-#include "token/object.h"
+#include "bf_args.h"
 #include <vector>
 namespace tokenoperator::dte_token {
+	#define USE_STACK if (callstack) { callstack->push_back(this); }
 	namespace stream {
 		struct stream;
 	}
@@ -15,15 +16,14 @@ namespace tokenoperator::dte_token {
 		* it`s recomended for any function
 		*/
 		struct basic_function;
-		using args = std::vector<object*>;
 		using stack = std::vector<basic_function*>;
 		struct basic_function : object {
 			public:
-				basic_function(uint64_t ID = 0, args defaultvalues = {});
-				virtual void execute(args* argumentspointer, uint64_t* errorcodepointer = nullptr, bool forced = false, stack* callstack = nullptr, stream::stream* caller = nullptr) = 0;
+				basic_function(uint64_t ID = 0, bf_args defaultvalues = {0, nullptr});
+				virtual void execute(bf_args* argumentspointer, uint64_t* errorcodepointer = nullptr, bool forced = false, stack* callstack = nullptr, stream::stream* caller = nullptr) = 0;
 			protected:
-				args defaultvalues;
-				void form_argument(args* argumentspointer, args& target) const;
+				bf_args defaultvalues;
+				bf_args form_argument(bf_args* argumentspointer) const;
 		};
 	}
 }

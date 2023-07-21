@@ -10,12 +10,11 @@ namespace tokenoperator::dte_module {
 		public:
 			module_source_requirement(void* target, dte_token::data::scope_path source, bool iscritical = true, uint64_t ID = 0);
 			module_source_requirement(const module_source_requirement& msr);
+			module_source_requirement() : module_source_requirement(0, dte_token::data::EMPTY_SCOPE_PATH(0)) {}
 			dte_token::data::scope_path get_source();
 			bool iscritical();
 		protected:
 			dte_token::data::scope_path source;
 			bool critical;
-		private:
-			module_source_requirement();
 	};
 }

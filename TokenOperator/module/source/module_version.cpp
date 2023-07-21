@@ -6,3 +6,4 @@ module_version::module_version(uint64_t ID, uint16_t v0, uint16_t v1, uint16_t v
 	v[2] = v2;
 	v[3] = v3;
 }
+module_version::module_version(const module_version& mv) : module_version(mv.ID, mv.v[0], mv.v[1], mv.v[2], mv.v[3]) {}

@@ -34,11 +34,13 @@
     <ClInclude Include="token\data\include\smart_pointer.h" />
     <ClInclude Include="token\data\include\type.h" />
     <ClInclude Include="token\data\include\value.h" />
+    <ClInclude Include="token\function\error_codes.h" />
     <ClInclude Include="token\function\include\basic_function.h" />
+    <ClInclude Include="token\function\include\bf_args.h" />
     <ClInclude Include="token\object.h" />
     <ClInclude Include="token\stream\include\stream.h" />
-    <ClInclude Include="token\stream\include\stream_rights.h" />
     <ClInclude Include="token_data.h" />
+    <ClInclude Include="utils\include\exec_time.h" />
     <ClInclude Include="utils\include\hash.h" />
     <ClInclude Include="utils\include\type_info.h" />
   </ItemGroup>
@@ -53,6 +55,9 @@
     <ClCompile Include="token\data\source\scope.cpp" />
     <ClCompile Include="token\data\source\scope_path.cpp" />
     <ClCompile Include="token\function\source\basic_function.cpp" />
+    <ClCompile Include="token\function\source\bf_args.cpp" />
+    <ClCompile Include="token\stream\source\stream.cpp" />
+    <ClCompile Include="utils\source\exec_time.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

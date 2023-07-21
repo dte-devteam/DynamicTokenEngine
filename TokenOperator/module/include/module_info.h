@@ -9,6 +9,7 @@ namespace tokenoperator::dte_module {
 	struct module_info : dte_token::data::value<std::pair<module_source*, size_t>> {
 		public:
 			module_info(std::wstring dllname, uint64_t ID = 0);
+			module_info(const module_info& mi);
 			~module_info();
 		protected:
 			std::wstring dllname;

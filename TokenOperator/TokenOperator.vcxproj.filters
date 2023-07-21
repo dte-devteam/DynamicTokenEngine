@@ -75,7 +75,13 @@
     <ClInclude Include="utils\include\type_info.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="token\stream\include\stream_rights.h">
+    <ClInclude Include="utils\include\exec_time.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="token\function\error_codes.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="token\function\include\bf_args.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
   </ItemGroup>
@@ -108,6 +114,15 @@
       <Filter>Исходные файлы</Filter>
     </ClCompile>
     <ClCompile Include="module\source\module_source.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="token\stream\source\stream.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="utils\source\exec_time.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="token\function\source\bf_args.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
   </ItemGroup>

@@ -1,7 +1,7 @@
 #include "../include/module_source.h"
 using namespace tokenoperator::dte_module;
 using namespace tokenoperator::dte_token::data;
-module_source::module_source(object* source, size_t requirement_num, module_source_requirement* requirements, scope_path path_to_set, uint64_t ID) : value<smart_pointer<object>>(ID), init_status{ false, false }, requirement_num(requirement_num), requirements(new module_source_requirement[requirement_num]), path_to_set(path_to_set) {
+module_source::module_source(object* source, module_source_requirement* requirements, size_t requirement_num, scope_path path_to_set, uint64_t ID) : value<smart_pointer<object>>(ID), init_status{ false, false }, requirement_num(requirement_num), requirements(new module_source_requirement[requirement_num]), path_to_set(path_to_set) {
 	v = source;
 	size_t i = requirement_num;
 	while (i) {

@@ -18,6 +18,7 @@ namespace tokenoperator::dte_token::data {
 			scope& operator=(const scope& sc);
 			size_t get_size();
 			size_t get_prefered_size();
+			void set_prefered_size(size_t pref_size);
 		//protected:
 			void add_root(scope* root);
 			void remove_root(scope* root);
