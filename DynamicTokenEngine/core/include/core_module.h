@@ -16,7 +16,7 @@ namespace dte_core {
 	//execute stream
 
 	//instances
-	tokenoperator::dte_module::module_source core_module_sources[] = {
+	inline tokenoperator::dte_module::module_source core_module_sources[] = {
 		new tokenoperator::dte_module::module_source(new add_module_struct		(	tokenoperator::dte_token::token_name(L"add_module",		10))),
 		new tokenoperator::dte_module::module_source(new remove_module_struct	(	tokenoperator::dte_token::token_name(L"remove_module",	13)))
 	};
