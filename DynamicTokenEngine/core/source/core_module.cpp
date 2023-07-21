@@ -1,4 +1,4 @@
-#include "../include/core_module_2.h"
+#include "../include/core_module.h"
 using namespace dte_core;
 using namespace tokenoperator::dte_token::function;
 using namespace tokenoperator::dte_token::stream;
