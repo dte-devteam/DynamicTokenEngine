@@ -8,6 +8,7 @@ stream::~stream() {
 	killstream();
 }
 void stream::execute(bf_args* argumentspointer, uint64_t* errorcodepointer, bool forced, stack* callstack, stream* caller) {
+	USE_STACK
 	//to do collect caller data
 	if (isalive()) {
 		if (errorcodepointer) {
