@@ -166,6 +166,7 @@
     </ProjectReference>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="core\source\core_module.cpp" />
     <ClCompile Include="core\source\root_scope.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
@@ -177,7 +178,6 @@
   <ItemGroup>
     <ClInclude Include="core\include\core_module.h" />
     <ClInclude Include="core\include\root_scope.h" />
-    <ClInclude Include="core\source\core_module.cpp" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="tests.h" />
   </ItemGroup>

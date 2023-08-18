@@ -17,7 +17,7 @@ DTE модуль - исключительно динамическая библ�
 #include "module/module_defines.h"
 struct my_function : basicfunction {
 	using basicfunction::basicfunction;
-	void execute(std::vector<void*>* argumentspointer, uint64_t* errorcodepointer, bool forced, void* stream) {
+	void execute(std::vector<void*>* argument_pointer, uint64_t* errorcodepointer, bool forced, void* stream) {
 		//code to execute
 	}
 }

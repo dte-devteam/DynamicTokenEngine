@@ -27,6 +27,6 @@ size_t module_source::get_requirement_num() {
 module_source_requirement& module_source::operator[](size_t i) {
 	return requirements[i];
 }
-scope_path module_source::get_path_to_set() {
-	return path_to_set;
+scope_path* module_source::get_path_to_set() {
+	return &path_to_set;
 }

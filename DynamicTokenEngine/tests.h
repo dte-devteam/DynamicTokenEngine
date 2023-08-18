@@ -1,6 +1,8 @@
 ﻿#pragma once
 #include <iostream>
 
+#include "token/function/include/basic_function.h"
+
 #include "token/data/include/complex_value.h"
 #include "token/data/include/smart_pointer.h"
 #include "token/function/include/basic_function.h"
@@ -24,9 +26,9 @@ using namespace utils;
 
 struct int_add : function::basic_function {
 	using basic_function::basic_function;
-	void execute(function::bf_args* argumentspointer, uint64_t* errorcodepointer = nullptr, bool forced = false, function::stack* callstack = nullptr, stream::stream* caller = nullptr) {
-		std::cout << ++(*(int*)(argumentspointer->get_data())[0]) << std::endl;
-		//std::cout << argumentspointer->size() << std::endl;
+	void execute(stream::stream* caller, function::bf_args* argument_pointer, bool forced = false) {
+		std::cout << ++(*(int*)(argument_pointer->get_data())[0]) << std::endl;
+		//std::cout << argument_pointer->size() << std::endl;
 	}
 };
 
@@ -150,8 +152,8 @@ void func5() {
 	uint64_t ii = 0;
 	std::cout << type_in_type_capasity<decltype(i), decltype(ii)>() << std::endl;
 
-	wchar_t* _str = L"wwwwwwww/.z\\y/.x";
-	wchar_t* wstr = L"ww";
+	const wchar_t* _str = L"wwwwwwww/.z\\y/.x";
+	wchar_t* wstr = L"wwwwwwww";
 	wchar_t* zstr = L"z";
 	wchar_t* ystr = L"y";
 	wchar_t* xstr = L"x";
@@ -172,7 +174,9 @@ void func5() {
 }
 void func6() {
 	data::smart_pointer<object> adder = new int_add();
+	stream::stream s_helper = stream::stream(nullptr, 0);
 	stream::stream s = stream::stream(adder, 0);
+	s_helper.callstack = new std::stack<uint64_t>();
 	int a = 0, b = 0;
 	object* _args_a[] = {
 		(object*)&a
@@ -182,17 +186,40 @@ void func6() {
 	};
 	function::bf_args args_a{ 1, _args_a };
 	function::bf_args args_b{ 2, _args_b };
-	size_t i = 100;
+	size_t i = 10;
 	exec_time et;
 	while (i--) {
-		s.execute(&args_a);
+		s.execute(&s_helper, &args_a, false);
 		s.joinstream();
-		s.execute(&args_b);
+		s.execute(&s_helper, &args_b, false);
 		s.joinstream();
 	}
 	std::cout << "dt: " << et.get_dt() << std::endl;
 }
 void func7() {
+	function::bf_args bfa1(6, new object*[]{
+		(object*)1,
+		(object*)0,
+		(object*)3,
+		(object*)0,
+		(object*)5,
+		(object*)12
+	});
+	function::bf_args bfa2(5, new object*[]{
+		(object*)6,
+		(object*)7,
+		(object*)8,
+		(object*)9,
+		(object*)10
+	});
+	function::bf_args bfa3(bfa1, bfa2);
+	//output should be: 1,7,3,9,5,12
+	size_t i = 0;
+	while (i < bfa3.get_size()) {
+		std::cout << (uint64_t)bfa3.get_data()[i++] << std::endl;
+	}
+}
+void func8() {
 	float f = 1.5f;
 	int i = 1000;
 
@@ -255,5 +282,9 @@ void test() {
 	func5();
 	std::cout << "func6:" << std::endl;
 	func6();
+	std::cout << "func7:" << std::endl;
+	func7();
+	std::cout << "func8:" << std::endl;
+	func8();
 	std::cout << "**********" << std::endl;
 }

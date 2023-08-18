@@ -14,7 +14,10 @@ namespace tokenoperator::dte_token::data {
 			T* operator->() {
 				return &v; 
 			}
-			type<T> get_type() { 
+			T* get_pointer() {
+				return &v;
+			}
+			type<T> get_type() const { 
 				return t;
 			}
 		protected:

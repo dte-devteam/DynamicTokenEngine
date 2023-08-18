@@ -1,25 +1,27 @@
 #pragma once
-#include "token/function/error_codes.h"
 #include "token/function/include/basic_function.h"
 #include "token/data/include/smart_pointer.h"
 #include <thread>
 #include <atomic>
+#include <stack>
 namespace tokenoperator::dte_token::stream {
 	struct stream : function::basic_function {
+		friend struct stream_data;
 		public:
 			stream(data::smart_pointer<object> function, uint64_t ID = 0);
 			~stream();
-			void execute(function::bf_args* argumentspointer, uint64_t* errorcodepointer = nullptr, bool forced = false, function::stack* callstack = nullptr, stream* caller = nullptr);
+			void execute(stream* caller, function::bf_args* argument_pointer, bool forced = false);
 			uint64_t getfunctionID() const;
 			void killstream();
 			void joinstream();
 			bool isalive();
+			//make below protected later (to do)
+			data::smart_pointer<std::stack<uint64_t>> callstack;
+			uint64_t errorcode;
 		protected:
 			data::smart_pointer<object> function;
 			std::thread thread;
 			std::atomic_bool alive;
-			uint64_t generatederrorcode;
-			uint64_t* stream_errorcodepointer;
 			void free_stream_data();
 			//to do thread requested data (smart_pointer<object>)
 	};

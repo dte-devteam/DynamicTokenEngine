@@ -10,7 +10,7 @@ namespace tokenoperator::dte_module {
 			bool get_stack_status();
 			size_t get_requirement_num();
 			module_source_requirement& operator[](size_t i);
-			dte_token::data::scope_path get_path_to_set();
+			dte_token::data::scope_path* get_path_to_set();
 		protected:
 			bool init_status[2];	//init + stack
 			size_t requirement_num;
