@@ -19,7 +19,7 @@ namespace tokenoperator::dte_token::data {
 			size_t get_size();
 			size_t get_prefered_size();
 			void set_prefered_size(size_t pref_size);
-		//protected:
+		//protected: //temp for debug (std::cout)
 			void add_root(scope* root);
 			void remove_root(scope* root);
 			size_t size, prefered_size, root_num;

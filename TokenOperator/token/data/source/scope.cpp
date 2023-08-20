@@ -39,6 +39,7 @@ void scope::resize_to_prefered_size() {
 	}
 	delete[] v;
 	v = buffer;
+	size = new_size;
 }
 bool scope::add_object(smart_pointer<object> obj, bool is_base_of_scope) {
 	if (obj.get_pointer()) {	//we can`t store nullptr, only a smart_pointer<object> that contains nullptr as value

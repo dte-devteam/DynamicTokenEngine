@@ -5,6 +5,7 @@ namespace tokenoperator::dte_token::function {
 		DTE_EC_OK = 0,	//OK
 
 		DTE_EC_DATA_NULLPTR = 0,				//ERROR: can`t access memory (nullptr)
+		DTE_EC_DATA_ACCESS_VIOLATION = 0,		//ERROR: can`t access memory properly
 
 		DTE_EC_LOW_ARG_NUM = 0,					//ERROR: function got args less than expected
 

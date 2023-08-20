@@ -18,5 +18,8 @@ int main(int argc, char* argv[]) {
 	stream::stream s(nullptr, 0);	//to do main function
 	s.callstack = new std::stack<uint64_t>();
 	dte_core::init_root_scope(0, 0, 0, &s);
+	std::cout << "root size (core): " << dte_core::root_scope->get_size() << std::endl;
+	tokenoperator::dte_token::function::basic_function* bfp = (tokenoperator::dte_token::function::basic_function*)(*dte_core::root_scope)[tokenoperator::dte_token::TOKEN_NAME(L"test_core")].first.get_pointer();
+	bfp->execute(&s, nullptr);
 	return 0;
 }

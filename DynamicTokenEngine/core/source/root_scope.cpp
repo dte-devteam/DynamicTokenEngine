@@ -9,6 +9,6 @@ namespace dte_core {
 		*core_module_info = { core_module_sources, ARRAYSIZE(core_module_sources) };
 		tokenoperator::dte_token::object* core_pointer[] = { &core_module_info };
 		bf_args args(ARRAYSIZE(core_pointer), core_pointer);
-		((basic_function*)(*core_module_sources[1]).get_pointer())->execute(caller, &args, false); //to do (load core_module_info)
+		((basic_function*)(*core_module_sources[1]).first.get_pointer())->execute(caller, &args, false); //to do (load core_module_info)
 	}
 }

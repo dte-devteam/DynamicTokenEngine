@@ -1,6 +1,5 @@
 #pragma once
 #include "token/object.h"
-#include <xstring>
 #include <corecrt_malloc.h>
 #include <utility>
 #include <memory>
