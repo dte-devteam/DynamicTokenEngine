@@ -14,6 +14,9 @@ module_info::module_info(const module_info& mi) : value<std::pair<module_source*
 module_info::~module_info() {
     FreeLibrary(library);
 }
+std::wstring module_info::get_dllname() {
+    return dllname;
+}
 void module_info::search_for_version(std::wstring& fullpath) {
     DWORD verhandle = NULL, versize = GetFileVersionInfoSize(fullpath.c_str(), &verhandle);
     if (versize) {

@@ -11,6 +11,7 @@ namespace tokenoperator::dte_module {
 			module_info(std::wstring dllname, uint64_t ID = 0);
 			module_info(const module_info& mi);
 			~module_info();
+			std::wstring get_dllname();
 		protected:
 			std::wstring dllname;
 			HMODULE library;
