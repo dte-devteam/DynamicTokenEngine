@@ -44,6 +44,18 @@ scope_path& scope_path::operator=(const scope_path& sp) {
 	}
 	return *this;
 }
+bool scope_path::operator==(const scope_path& sp) {
+	if (size == sp.size) {
+		size_t i = size;
+		while (i) {
+			if (v[i] != sp.v[--i]) {
+				return false;
+			}
+		}
+		return true;
+	}
+	return false;
+}
 size_t scope_path::get_size() {
 	return size;
 }

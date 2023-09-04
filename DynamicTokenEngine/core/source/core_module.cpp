@@ -8,18 +8,18 @@ using namespace tokenoperator::dte_token::data;
 using namespace tokenoperator::dte_token::stream;
 using namespace tokenoperator::dte_module;
 void use_scope_struct::execute(stream* caller, bf_args* argument_pointer, bool forced) {
-	//[0] - scope			(relative root)				can`t be NULL
+	//[0] - scope			(relative root)				NULL - root scope will be used
 	//[1] - scope_path		(path to create)			can`t be NULL
 	//[2] - scope*			(scope output, optional)	NULL - result won`t be returned
 	ENTER_STACK
 	REQUIRE_ARGS
 	REQUIRE_ARG_NUM(2)
 	scope* root = (scope*)argument_pointer->get_data()[0];
+	if (!root) {
+		root = root_scope;
+	}
 	scope_path* path = (scope_path*)argument_pointer->get_data()[1];
 	scope** result = argument_pointer->get_size() > 2 ? (scope**)argument_pointer->get_data()[2] : nullptr;
-	if (!root) {
-		RAISE_ERROR(DTE_EC_DATA_NULLPTR);
-	}
 	if (!path) {
 		RAISE_ERROR(DTE_EC_DATA_NULLPTR);
 	}
@@ -110,32 +110,48 @@ void add_module_struct::execute(stream* caller, bf_args* argument_pointer, bool 
 void import_module_struct::execute(stream* caller, bf_args* argument_pointer, bool forced) {
 	//[0] - value<std::wstring>		(module name for import)	can`t be NULL
 	ENTER_STACK
-	smart_pointer<module_info> mi = new module_info(**(value<std::wstring>*)argument_pointer->get_data()[0]);
-	object* objs[] = {
-		mi
-	};
-	bf_args args(ARRAYSIZE(objs), objs);
-	((basic_function*)(*core_module_sources[2]).first.get_pointer())->execute(caller, &args, forced);
-	//to do add to special scope to stroe module data
+	value<std::wstring>* module_name = (value<std::wstring>*)argument_pointer->get_data()[0];
+	smart_pointer<module_info> mi = new module_info(**module_name, tokenoperator::dte_token::TOKEN_NAME((*module_name)->c_str()));
+	/*
+	* if module already imported - we can`t duplicate (collision will happen)
+	* module is defined by name hash
+	* for reimporting - unload, than load module
+	*/
+	if (((scope*)(*core_module_sources[6]).first.get_pointer())->add_object(mi)) {
+		object* objs[] = {
+			mi
+		};
+		bf_args args(ARRAYSIZE(objs), objs);
+		((basic_function*)(*core_module_sources[2]).first.get_pointer())->execute(caller, &args, forced);
+	}
+	else {
+		RAISE_ERROR(DTE_EC_DATA_COLLISION)
+	}
 	EXIT_STACK
 }
 void execute_function_struct::execute(stream* caller, bf_args* argument_pointer, bool forced) {
-	//[0] - scope			(relative root)				NULL - root_scope will be used
-	//[1] - scope_path		(destination, where to add)	NULL - scope will be taken as function (DO NOT ALLOW [0] & [1] = NULL - this will cause scope execution!)
+	//[0] - scope			(root)						NULL - root_scope will be used
+	//[1] - scope_path		(final destination)			can`t be NULL
 	//[2] - stream			(caller)					can`t be NULL
 	//[3] - bf_args			(function arguments)		can be NULL
-	//to do (should get module data for safe launch)
+	//WARNING!
+	//This function doesn`t check function init status (because it can be imported, or created)
 	ENTER_STACK
 	REQUIRE_ARGS
 	REQUIRE_ARG_NUM(4)
+	if (!argument_pointer->get_data()[1]) {
+		RAISE_ERROR(DTE_EC_DATA_NULLPTR)
+	}
 	if (!argument_pointer->get_data()[2]) {
 		RAISE_ERROR(DTE_EC_DATA_NULLPTR)
 	}
 	object* root = argument_pointer->get_data()[0] ? argument_pointer->get_data()[0] : root_scope;
-	basic_function* function = (basic_function*)(argument_pointer->get_data()[1] ? ((scope*)root)->get_object(*(scope_path*)argument_pointer->get_data()[1]).get_pointer() : root);
+	basic_function* function = (basic_function*)((scope*)root)->get_object(*(scope_path*)argument_pointer->get_data()[1]).get_pointer();
+	if (!function) {
+		RAISE_ERROR(DTE_EC_DATA_ACCESS_VIOLATION)
+	}
 	function->execute((stream*)argument_pointer->get_data()[2], (bf_args*)argument_pointer->get_data()[3], forced);
 	EXIT_STACK
-	//to do, wrap in stream and execute
 }
 void test_core_struct::execute(stream* caller, bf_args* argument_pointer, bool forced) {
 	ENTER_STACK

@@ -9,6 +9,7 @@ namespace tokenoperator::dte_token::data {
 			scope_path(const scope_path& path1, const scope_path& path2, uint64_t ID = 0);
 			~scope_path();
 			scope_path& operator=(const scope_path& sp);
+			bool operator==(const scope_path& sp);
 			size_t get_size();
 			void clip(size_t from_index, size_t to_index);
 		protected:
