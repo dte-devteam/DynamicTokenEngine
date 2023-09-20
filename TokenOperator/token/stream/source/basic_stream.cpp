@@ -1,11 +1,11 @@
-#include "../include/stream.h"
+#include "../include/basic_stream.h"
 using namespace tokenoperator::dte_token::function;
 using namespace tokenoperator::dte_token::stream;
-stream::stream(data::smart_pointer<object> function, uint64_t ID) : basic_function(ID), function(function), thread(std::thread()), alive(false), errorcode(0) {}
-stream::~stream() {
+basic_stream::basic_stream(data::smart_pointer<object> function, uint64_t ID) : basic_function(ID), function(function), thread(std::thread()), alive(false), errorcode(0) {}
+basic_stream::~basic_stream() {
 	killstream();
 }
-void stream::execute(stream* caller, bf_args* argument_pointer, bool forced) {
+void basic_stream::execute(basic_stream* caller, bf_args* argument_pointer, bool forced) {
 	ENTER_STACK
 	//to do collect caller data
 	if (isalive()) {
@@ -29,21 +29,21 @@ void stream::execute(stream* caller, bf_args* argument_pointer, bool forced) {
 	}
 	EXIT_STACK
 }
-uint64_t stream::getfunctionID() const {
+uint64_t basic_stream::getfunctionID() const {
 	return function.get_pointer() ? function->getID() : 0;
 }
-void stream::killstream() {
+void basic_stream::killstream() {
 	errorcode = DTE_EC_STREAM_FORCE_THREAD_STOP;
 	joinstream();
 }
-void stream::joinstream() {
+void basic_stream::joinstream() {
 	if (thread.joinable()) {
 		thread.join();
 	}
 }
-bool stream::isalive() {
+bool basic_stream::isalive() {
 	return alive.load();
 }
-void stream::free_stream_data() {
+void basic_stream::free_stream_data() {
 	//to do (remove all smart_pointer<object>)
 }

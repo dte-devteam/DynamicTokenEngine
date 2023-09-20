@@ -27,7 +27,7 @@
     <ClInclude Include="token\object.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="token\stream\include\stream.h">
+    <ClInclude Include="token\stream\include\basic_stream.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
     <ClInclude Include="token\data\include\value.h">
@@ -116,7 +116,7 @@
     <ClCompile Include="module\source\module_source.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="token\stream\source\stream.cpp">
+    <ClCompile Include="token\stream\source\basic_stream.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
     <ClCompile Include="utils\source\exec_time.cpp">

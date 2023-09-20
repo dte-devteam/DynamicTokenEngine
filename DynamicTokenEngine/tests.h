@@ -6,7 +6,7 @@
 #include "token/data/include/complex_value.h"
 #include "token/data/include/smart_pointer.h"
 #include "token/function/include/basic_function.h"
-#include "token/stream/include/stream.h"
+#include "token/stream/include/basic_stream.h"
 using namespace tokenoperator::dte_token;
 
 #include "module/include/module_version.h"
@@ -26,7 +26,7 @@ using namespace utils;
 
 struct int_add : function::basic_function {
 	using basic_function::basic_function;
-	void execute(stream::stream* caller, function::bf_args* argument_pointer, bool forced = false) {
+	void execute(stream::basic_stream* caller, function::bf_args* argument_pointer, bool forced = false) {
 		std::cout << ++(*(int*)(argument_pointer->get_data())[0]) << std::endl;
 		//std::cout << argument_pointer->size() << std::endl;
 	}
@@ -99,7 +99,7 @@ data::smart_pointer<data::smart_pointer<object>> func2() {
 }
 void func3() {
 	std::pair<uint64_t, bool>* paths = new std::pair<uint64_t, bool>[] {
-		{50, false},
+		{ 50, false },
 		{ 45, false },
 		{ 40, false },
 		{ 35, false },
@@ -174,8 +174,8 @@ void func5() {
 }
 void func6() {
 	data::smart_pointer<object> adder = new int_add();
-	stream::stream s_helper = stream::stream(nullptr, 0);
-	stream::stream s = stream::stream(adder, 0);
+	stream::basic_stream s_helper = stream::basic_stream(nullptr, 0);
+	stream::basic_stream s = stream::basic_stream(adder, 0);
 	s_helper.callstack = new std::stack<uint64_t>();
 	int a = 0, b = 0;
 	object* _args_a[] = {
@@ -186,7 +186,7 @@ void func6() {
 	};
 	function::bf_args args_a{ 1, _args_a };
 	function::bf_args args_b{ 2, _args_b };
-	size_t i = 10;
+	size_t i = 1;
 	exec_time et;
 	while (i--) {
 		s.execute(&s_helper, &args_a, false);
@@ -267,6 +267,12 @@ void func8() {
 	std::cout << vc->get_type().get_name() << std::endl;
 	std::cout << **(data::value<float>*)vc << " " << vc->getID() << std::endl;
 }
+void func9() {
+	data::smart_pointer<int> i = new int[]{-9};
+	std::cout << *i << ":" << i.get_type().get_name() << std::endl;
+	data::smart_pointer<long long> ii = i;
+	std::cout << ii.get_type().get_name() << std::endl;
+}
 
 
 
@@ -286,5 +292,7 @@ void test() {
 	func7();
 	std::cout << "func8:" << std::endl;
 	func8();
+	std::cout << "func9:" << std::endl;
+	func9();
 	std::cout << "**********" << std::endl;
 }

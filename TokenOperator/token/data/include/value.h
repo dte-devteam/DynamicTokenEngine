@@ -6,8 +6,12 @@ namespace tokenoperator::dte_token::data {
 	typedef std::pair<create_value_function, copy_value_function> value_functions;
 	template<typename T>
 	struct value : object {
+		template <typename U> friend struct value;
 		public:
 			value(uint64_t ID = 0) : object(ID), t(ID) {}
+			value(const T& v, uint64_t ID = 0) : object(ID), t(ID), v(v) {}
+			template<typename U>
+			value(const U& v, uint64_t ID = 0) : object(ID), t(ID), v(v) {}
 			T& operator*() { 
 				return v; 
 			}

@@ -5,12 +5,12 @@
 #include <atomic>
 #include <stack>
 namespace tokenoperator::dte_token::stream {
-	struct stream : function::basic_function {
+	struct basic_stream : function::basic_function {
 		friend struct stream_data;
 		public:
-			stream(data::smart_pointer<object> function, uint64_t ID = 0);
-			~stream();
-			void execute(stream* caller, function::bf_args* argument_pointer, bool forced = false);
+			basic_stream(data::smart_pointer<object> function, uint64_t ID = 0);
+			~basic_stream();
+			void execute(basic_stream* caller, function::bf_args* argument_pointer, bool forced = false);
 			uint64_t getfunctionID() const;
 			void killstream();
 			void joinstream();

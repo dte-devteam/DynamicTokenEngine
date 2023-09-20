@@ -38,7 +38,7 @@
     <ClInclude Include="token\function\include\basic_function.h" />
     <ClInclude Include="token\function\include\bf_args.h" />
     <ClInclude Include="token\object.h" />
-    <ClInclude Include="token\stream\include\stream.h" />
+    <ClInclude Include="token\stream\include\basic_stream.h" />
     <ClInclude Include="token_data.h" />
     <ClInclude Include="utils\include\exec_time.h" />
     <ClInclude Include="utils\include\hash.h" />
@@ -56,7 +56,7 @@
     <ClCompile Include="token\data\source\scope_path.cpp" />
     <ClCompile Include="token\function\source\basic_function.cpp" />
     <ClCompile Include="token\function\source\bf_args.cpp" />
-    <ClCompile Include="token\stream\source\stream.cpp" />
+    <ClCompile Include="token\stream\source\basic_stream.cpp" />
     <ClCompile Include="utils\source\exec_time.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

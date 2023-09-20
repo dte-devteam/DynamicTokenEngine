@@ -10,16 +10,23 @@
 //to do, all arrays if can have size 0 - set limit to delete[] (otherwise heap corruption)
 
 #include <windows.h>
+#include <chrono>
 
 int main(int argc, char* argv[]) {
+	exec_time et;
 	test();
 	std::cout << argc << " : : " << (argc > 1 ? argv[1] : argv[0]) << std::endl;
-	//Sleep(10000);
-	stream::stream s(nullptr, 0);	//to do main function
+	size_t i = argc;
+	while (--i) {
+		std::cout << i << " : : " << argv[i] << std::endl;
+	}
+	stream::basic_stream s(nullptr, 0);	//to do main function
 	s.callstack = new std::stack<uint64_t>();
 	dte_core::init_root_scope(0, 0, 0, &s);
 	std::cout << "root size: " << dte_core::root_scope->get_size() << std::endl;
-	tokenoperator::dte_token::data::scope* core_scope = (tokenoperator::dte_token::data::scope*)(*dte_core::root_scope)[tokenoperator::dte_token::TOKEN_NAME(L"DTE_CORE")].first.get_pointer();
+	tokenoperator::dte_token::data::smart_pointer<tokenoperator::dte_token::object> core_pointer = (*dte_core::root_scope)[tokenoperator::dte_token::TOKEN_NAME(L"DTE_CORE")].first;
+	//std::cout << core_pointer.get_type().get_name() << std::endl;
+	tokenoperator::dte_token::data::scope* core_scope = (tokenoperator::dte_token::data::scope*)core_pointer.get_pointer();
 	std::cout << "core size: " << core_scope->get_size() << std::endl;
 	tokenoperator::dte_token::function::basic_function* hi_core = (tokenoperator::dte_token::function::basic_function*)(*core_scope)[tokenoperator::dte_token::TOKEN_NAME(L"test_core")].first.get_pointer();
 	hi_core->execute(&s, nullptr);
@@ -34,5 +41,9 @@ int main(int argc, char* argv[]) {
 	};
 	tokenoperator::dte_token::function::bf_args args0 (ARRAYSIZE(args0_source), args0_source);
 	exec_function->execute(&s, &args0);
+	std::cout << "dt: " << et.get_dt() << std::endl;
+	#if !defined(_DEBUG)//for .exe launch directly
+		std::this_thread::sleep_for(std::chrono::milliseconds(5000));
+	#endif
 	return 0;
 }

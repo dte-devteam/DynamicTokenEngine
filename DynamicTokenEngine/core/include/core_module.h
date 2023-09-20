@@ -1,38 +1,43 @@
 #pragma once
 #include "token/data/include/scope.h"
-#include "token/stream/include/stream.h"
+#include "token/stream/include/basic_stream.h"
 #include "module/include/module_info.h"
 #include "token/object.h"
 namespace dte_core {
 	//structs
 	struct use_scope_struct : tokenoperator::dte_token::function::basic_function {
 		using tokenoperator::dte_token::function::basic_function::basic_function;
-		void execute(tokenoperator::dte_token::stream::stream* caller, tokenoperator::dte_token::function::bf_args* argument_pointer, bool forced = false);
+		void execute(tokenoperator::dte_token::stream::basic_stream* caller, tokenoperator::dte_token::function::bf_args* argument_pointer, bool forced = false);
 	};
 	struct add_module_object_struct : tokenoperator::dte_token::function::basic_function {
 		using tokenoperator::dte_token::function::basic_function::basic_function;
-		void execute(tokenoperator::dte_token::stream::stream* caller, tokenoperator::dte_token::function::bf_args* argument_pointer, bool forced = false);
+		void execute(tokenoperator::dte_token::stream::basic_stream* caller, tokenoperator::dte_token::function::bf_args* argument_pointer, bool forced = false);
 	};
 	struct add_module_struct : tokenoperator::dte_token::function::basic_function {
 		using tokenoperator::dte_token::function::basic_function::basic_function;
-		void execute(tokenoperator::dte_token::stream::stream* caller, tokenoperator::dte_token::function::bf_args* argument_pointer, bool forced = false);
+		void execute(tokenoperator::dte_token::stream::basic_stream* caller, tokenoperator::dte_token::function::bf_args* argument_pointer, bool forced = false);
 	};
 	struct import_module_struct : tokenoperator::dte_token::function::basic_function {
 		using tokenoperator::dte_token::function::basic_function::basic_function;
-		void execute(tokenoperator::dte_token::stream::stream* caller, tokenoperator::dte_token::function::bf_args* argument_pointer, bool forced = false);
+		void execute(tokenoperator::dte_token::stream::basic_stream* caller, tokenoperator::dte_token::function::bf_args* argument_pointer, bool forced = false);
 	};
 	struct init_module_struct : tokenoperator::dte_token::function::basic_function {
 		//to do, will take wstring and create module info and call add_module_struct
 		using tokenoperator::dte_token::function::basic_function::basic_function;
-		void execute(tokenoperator::dte_token::stream::stream* caller, tokenoperator::dte_token::function::bf_args* argument_pointer, bool forced = false) {}	//temp, to do
+		void execute(tokenoperator::dte_token::stream::basic_stream* caller, tokenoperator::dte_token::function::bf_args* argument_pointer, bool forced = false) {}	//temp, to do
 	};
 	struct execute_function_struct : tokenoperator::dte_token::function::basic_function {
 		using tokenoperator::dte_token::function::basic_function::basic_function;
-		void execute(tokenoperator::dte_token::stream::stream* caller, tokenoperator::dte_token::function::bf_args* argument_pointer, bool forced = false);
+		void execute(tokenoperator::dte_token::stream::basic_stream* caller, tokenoperator::dte_token::function::bf_args* argument_pointer, bool forced = false);
+	};
+	//to do - read dte file
+	struct read_dte_file_struct : tokenoperator::dte_token::function::basic_function {
+		using tokenoperator::dte_token::function::basic_function::basic_function;
+		void execute(tokenoperator::dte_token::stream::basic_stream* caller, tokenoperator::dte_token::function::bf_args* argument_pointer, bool forced = false);
 	};
 	struct test_core_struct : tokenoperator::dte_token::function::basic_function {
 		using tokenoperator::dte_token::function::basic_function::basic_function;
-		void execute(tokenoperator::dte_token::stream::stream* caller, tokenoperator::dte_token::function::bf_args* argument_pointer, bool forced = false);
+		void execute(tokenoperator::dte_token::stream::basic_stream* caller, tokenoperator::dte_token::function::bf_args* argument_pointer, bool forced = false);
 	};
 	//instances
 	inline tokenoperator::dte_token::data::scope_path dte_core_path = tokenoperator::dte_token::data::token_path(L"DTE_CORE", std::wcslen(L"DTE_CORE"), 0);
