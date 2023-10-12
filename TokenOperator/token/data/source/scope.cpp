@@ -1,4 +1,7 @@
 #include "../include/scope.h"
+
+#include <iostream>
+
 using namespace tokenoperator::dte_token;
 using namespace tokenoperator::dte_token::data;
 scope::scope(size_t size, size_t prefered_size, uint64_t ID) : value<std::pair<smart_pointer<object>, bool>*>(ID), size(size), prefered_size(prefered_size), root_num(0), roots(new scope*[0]) {
@@ -92,13 +95,12 @@ bool scope::remove_object(uint64_t ID) {
 	return false;
 }
 smart_pointer<object> scope::get_object(scope_path sp, size_t shift) {
-	if ((*sp)[shift].second) {//back
-		size_t shift_pp = shift + 1;
+	if (sp.get_value()[shift].second) {//back
 		if (shift < sp.get_size()) {
 			size_t i = root_num;
 			while (i) {
-				if (roots[--i]->ID == (*sp)[shift].first) {
-					smart_pointer<object> sop = roots[i]->get_object(sp, shift_pp);
+				if (roots[--i]->ID == sp.get_value()[shift].first) {
+					smart_pointer<object> sop = roots[i]->get_object(sp, ++shift);
 					if (sop.get_pointer()) {
 						return sop;
 					}
@@ -110,7 +112,7 @@ smart_pointer<object> scope::get_object(scope_path sp, size_t shift) {
 		}
 	}
 	else {//forward
-		std::pair<smart_pointer<object>, bool> sop_b_pair = (*this)[(*sp)[shift].first];
+		std::pair<smart_pointer<object>, bool> sop_b_pair = (*this)[sp.get_value()[shift].first];
 		if (++shift < sp.get_size()) {
 			if (sop_b_pair.second) {
 				return ((scope*)sop_b_pair.first.get_pointer())->get_object(sp, shift);

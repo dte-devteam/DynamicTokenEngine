@@ -11,7 +11,7 @@ namespace tokenoperator::dte_token::data {
 			}
 			smart_pointer(const smart_pointer<T>& sp) : value<T*>(sp.ID), owner_num(sp.owner_num) {
 				v = sp.v;
-				t = type<T>();
+				t = sp.t;
 				++*owner_num;
 			}
 			template<typename U>
@@ -30,13 +30,14 @@ namespace tokenoperator::dte_token::data {
 					delete[] owner_num;
 				}
 			}
+			T& get_value() = delete;
 			template<typename U>
 			smart_pointer<T>& operator=(const smart_pointer<U>& sp) {
 				static_assert(
 					std::is_convertible<U, T>::value || std::is_base_of<T, U>::value,
 					"can create smart_pointer<T> from smart_pointer<U> only if: T and U are convertible or T is base of U"
 				);
-				if (this == &sp) {
+				if (this == (smart_pointer<T>*)&sp) {
 					return *this;
 				}
 				if (v != sp.v) {
@@ -44,7 +45,7 @@ namespace tokenoperator::dte_token::data {
 						delete v;
 						delete[] owner_num;
 					}
-					v = sp.v;
+					v = (T*)sp.v;
 					t = sp.t;
 					owner_num = sp.owner_num;
 					++*owner_num;
@@ -80,7 +81,7 @@ namespace tokenoperator::dte_token::data {
 						delete v;
 						delete[] owner_num;
 					}
-					v = pointer;
+					v = (T*)pointer;
 					t = type<U>();
 					owner_num = new size_t[]{1};
 				}

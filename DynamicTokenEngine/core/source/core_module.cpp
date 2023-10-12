@@ -8,27 +8,26 @@ using namespace tokenoperator::dte_token::data;
 using namespace tokenoperator::dte_token::stream;
 using namespace tokenoperator::dte_token;
 using namespace tokenoperator::dte_module;
-void use_scope_struct::execute(basic_stream* caller, bf_args* argument_pointer, bool forced) {
+void use_scope_struct::execute(const basic_stream& caller, const bf_args& args, bool forced) {
 	//[0] - scope			(relative root)				NULL - root scope will be used
 	//[1] - scope_path		(path to create)			can`t be NULL
 	//[2] - scope*			(scope output, optional)	NULL - result won`t be returned
 	ENTER_STACK
-	REQUIRE_ARGS
 	REQUIRE_ARG_NUM(2)
-	scope* root = (scope*)argument_pointer->get_data()[0];
+	scope* root = (scope*)args.get_data()[0];
 	if (!root) {
 		root = root_scope;
 	}
-	scope_path* path = (scope_path*)argument_pointer->get_data()[1];
-	scope** result = argument_pointer->get_size() > 2 ? (scope**)argument_pointer->get_data()[2] : nullptr;
+	scope_path* path = (scope_path*)args.get_data()[1];
+	scope** result = args.get_size() > 2 ? (scope**)args.get_data()[2] : nullptr;
 	if (!path) {
 		RAISE_ERROR(DTE_EC_DATA_NULLPTR);
 	}
 	size_t i = 0;
 	while (i < path->get_size()) {
-		if ((**path)[i].second) {
+		if (path->get_value()[i].second) {
 			//back
-			scope_path step(1, **path + i);
+			scope_path step(1, path->get_value() + i);
 			root = (scope*)root->get_object(step).get_pointer();
 			if (!root) {
 				RAISE_ERROR(DTE_EC_DATA_ACCESS_VIOLATION)
@@ -36,7 +35,7 @@ void use_scope_struct::execute(basic_stream* caller, bf_args* argument_pointer, 
 		}
 		else {
 			//forward
-			smart_pointer<scope> node = new scope(1, 0, (**path)->first);
+			smart_pointer<scope> node = new scope(1, 0, path->get_value()[i].first);
 			if (!root->add_object(node, true)) {
 				RAISE_ERROR(DTE_EC_DATA_ACCESS_VIOLATION)
 			}
@@ -49,29 +48,28 @@ void use_scope_struct::execute(basic_stream* caller, bf_args* argument_pointer, 
 	}
 	EXIT_STACK
 }
-void add_module_object_struct::execute(basic_stream* caller, bf_args* argument_pointer, bool forced) {
+void add_module_object_struct::execute(const basic_stream& caller, const bf_args& args, bool forced) {
 	//[0] - scope			(relative root)				can`t be NULL
 	//[1] - module_source	(object metadata)			can`t be NULL
 	ENTER_STACK
-	REQUIRE_ARGS
 	REQUIRE_ARG_NUM(2)
-	scope* root = (scope*)argument_pointer->get_data()[0];
-	module_source* ms = (module_source*)argument_pointer->get_data()[1];
+	scope* root = (scope*)args.get_data()[0];
+	module_source* ms = (module_source*)args.get_data()[1];
 	if (!root) {
 		RAISE_ERROR(DTE_EC_DATA_NULLPTR);
 	}
 	if (!ms) {
 		RAISE_ERROR(DTE_EC_DATA_NULLPTR);
 	}
-	std::pair<smart_pointer<object>, bool> target_object = **ms;
+	std::pair<smart_pointer<object>, bool> target_object = ms->get_value();
 	scope_path* target_path = ms->get_path_to_set();
 	object* objs[] = {
 		root,
 		target_path,
 		(object*)&root
 	};
-	bf_args args(ARRAYSIZE(objs), objs);
-	((basic_function*)(*core_module_sources[0]).first.get_pointer())->execute(caller, &args, forced);
+	bf_args use_scope_args(ARRAYSIZE(objs), objs);
+	((basic_function*)core_module_sources[0].get_value().first.get_pointer())->execute(caller, use_scope_args, forced);
 	if ((*root)[target_object.first->getID()].first) {
 		if (!forced) {
 			RAISE_ERROR(DTE_EC_DATA_ACCESS_VIOLATION)
@@ -81,16 +79,15 @@ void add_module_object_struct::execute(basic_stream* caller, bf_args* argument_p
 	root->add_object(target_object.first, target_object.second);
 	EXIT_STACK
 }
-void add_module_struct::execute(basic_stream* caller, bf_args* argument_pointer, bool forced) {
+void add_module_struct::execute(const basic_stream& caller, const bf_args& args, bool forced) {
 	//[0] - module_info		(module data for adding)	can`t be NULL
 	ENTER_STACK
-	REQUIRE_ARGS
 	REQUIRE_ARG_NUM(1)
-	module_info* mi = (module_info*)argument_pointer->get_data()[0];
+	module_info* mi = (module_info*)args.get_data()[0];
 	if (!mi) {
 		RAISE_ERROR(DTE_EC_DATA_NULLPTR)
 	}
-	size_t i = (*mi)->second;
+	size_t i = mi->get_value().second;
 	uint64_t module_ID = TOKEN_NAME(mi->get_dllname().c_str());
 	smart_pointer<object> module_scope = (*root_scope)[module_ID].first;	//if module needs to be overriden - we dont duplicate module scope, we change already existing one
 	if (!module_scope.get_pointer()) {
@@ -101,36 +98,38 @@ void add_module_struct::execute(basic_stream* caller, bf_args* argument_pointer,
 		module_scope,
 		nullptr
 	};
-	bf_args args(ARRAYSIZE(objs), objs);
+	bf_args obj_adder_args(ARRAYSIZE(objs), objs);
 	while (i) {
-		args.get_data()[1] = &(*mi)->first[--i];
-		((basic_function*)(*core_module_sources[1]).first.get_pointer())->execute(caller, &args, forced);
+		obj_adder_args.get_data()[1] = &mi->get_value().first[--i];
+		((basic_function*)core_module_sources[1].get_value().first.get_pointer())->execute(caller, obj_adder_args, forced);
 	}
 	EXIT_STACK
 }
-void import_module_struct::execute(basic_stream* caller, bf_args* argument_pointer, bool forced) {
+void import_module_struct::execute(const basic_stream& caller, const bf_args& args, bool forced) {
 	//[0] - value<std::wstring>		(module name for import)	can`t be NULL
 	ENTER_STACK
-	value<std::wstring>* module_name = (value<std::wstring>*)argument_pointer->get_data()[0];
-	smart_pointer<module_info> mi = new module_info(**module_name, TOKEN_NAME((*module_name)->c_str()));
+	REQUIRE_ARG_NUM(1)
+	value<std::wstring>* module_name = (value<std::wstring>*)args.get_data()[0];
+	smart_pointer<module_info> mi = new module_info(module_name->get_value(), TOKEN_NAME(module_name->get_value().c_str()));
 	/*
 	* if module already imported - we can`t duplicate (collision will happen)
 	* module is defined by name hash
 	* for reimporting - unload, than load module
 	*/
-	if (((scope*)(*core_module_sources[6]).first.get_pointer())->add_object(mi)) {
+	std::wcout << module_name->get_value() << std::endl;//for debug
+	if (((scope*)core_module_sources[6].get_value().first.get_pointer())->add_object(mi)) {
 		object* objs[] = {
 			mi
 		};
-		bf_args args(ARRAYSIZE(objs), objs);
-		((basic_function*)(*core_module_sources[2]).first.get_pointer())->execute(caller, &args, forced);
+		bf_args module_adder_args(ARRAYSIZE(objs), objs);
+		((basic_function*)core_module_sources[2].get_value().first.get_pointer())->execute(caller, module_adder_args, forced);
 	}
 	else {
 		RAISE_ERROR(DTE_EC_DATA_COLLISION)
 	}
 	EXIT_STACK
 }
-void execute_function_struct::execute(basic_stream* caller, bf_args* argument_pointer, bool forced) {
+void execute_function_struct::execute(const basic_stream& caller, const bf_args& args, bool forced) {
 	//[0] - scope			(root)						NULL - root_scope will be used
 	//[1] - scope_path		(final destination)			can`t be NULL
 	//[2] - stream			(caller)					can`t be NULL
@@ -138,23 +137,22 @@ void execute_function_struct::execute(basic_stream* caller, bf_args* argument_po
 	//WARNING!
 	//This function doesn`t check function init status (because it can be imported, or created)
 	ENTER_STACK
-	REQUIRE_ARGS
 	REQUIRE_ARG_NUM(4)
-	if (!argument_pointer->get_data()[1]) {
+	if (!args.get_data()[1]) {
 		RAISE_ERROR(DTE_EC_DATA_NULLPTR)
 	}
-	if (!argument_pointer->get_data()[2]) {
+	if (!args.get_data()[2]) {
 		RAISE_ERROR(DTE_EC_DATA_NULLPTR)
 	}
-	object* root = argument_pointer->get_data()[0] ? argument_pointer->get_data()[0] : root_scope;
-	smart_pointer<object> function = ((scope*)root)->get_object(*(scope_path*)argument_pointer->get_data()[1]);
+	object* root = args.get_data()[0] ? args.get_data()[0] : root_scope;
+	smart_pointer<object> function = ((scope*)root)->get_object(*(scope_path*)args.get_data()[1]);
 	if (!function.get_pointer()) {
 		RAISE_ERROR(DTE_EC_DATA_ACCESS_VIOLATION)
 	}
-	((basic_function*)function.get_pointer())->execute((basic_stream*)argument_pointer->get_data()[2], (bf_args*)argument_pointer->get_data()[3], forced);
+	((basic_function*)function.get_pointer())->execute(*(basic_stream*)args.get_data()[2], *(bf_args*)args.get_data()[3], forced);
 	EXIT_STACK
 }
-void test_core_struct::execute(basic_stream* caller, bf_args* argument_pointer, bool forced) {
+void test_core_struct::execute(const basic_stream& caller, const bf_args& args, bool forced) {
 	ENTER_STACK
 	std::cout << "core imported into root successfully" << std::endl;
 	EXIT_STACK

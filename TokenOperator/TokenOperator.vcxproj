@@ -27,8 +27,6 @@
     <ClInclude Include="module\include\module_version.h" />
     <ClInclude Include="module\module_defines.h" />
     <ClInclude Include="target_architecture.h" />
-    <ClInclude Include="token\data\include\complex_type.h" />
-    <ClInclude Include="token\data\include\complex_value.h" />
     <ClInclude Include="token\data\include\scope.h" />
     <ClInclude Include="token\data\include\scope_path.h" />
     <ClInclude Include="token\data\include\smart_pointer.h" />
@@ -39,6 +37,7 @@
     <ClInclude Include="token\function\include\bf_args.h" />
     <ClInclude Include="token\object.h" />
     <ClInclude Include="token\stream\include\basic_stream.h" />
+    <ClInclude Include="token\super_type.h" />
     <ClInclude Include="token_data.h" />
     <ClInclude Include="utils\include\exec_time.h" />
     <ClInclude Include="utils\include\hash.h" />
@@ -50,8 +49,6 @@
     <ClCompile Include="module\source\module_source.cpp" />
     <ClCompile Include="module\source\module_source_requirement.cpp" />
     <ClCompile Include="module\source\module_version.cpp" />
-    <ClCompile Include="token\data\source\complex_type.cpp" />
-    <ClCompile Include="token\data\source\complex_value.cpp" />
     <ClCompile Include="token\data\source\scope.cpp" />
     <ClCompile Include="token\data\source\scope_path.cpp" />
     <ClCompile Include="token\function\source\basic_function.cpp" />

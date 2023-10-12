@@ -10,7 +10,7 @@ namespace tokenoperator::dte_token::function {
 	*/
 	struct bf_args {
 		public:
-			bf_args(size_t size, object** source = nullptr);
+			bf_args(size_t size = 0, object** source = nullptr);
 			bf_args(const bf_args& bfa);
 			bf_args(const bf_args& input_bfa, const bf_args& default_bfa);
 			~bf_args();
