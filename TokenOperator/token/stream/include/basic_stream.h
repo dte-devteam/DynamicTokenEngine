@@ -10,7 +10,7 @@ namespace tokenoperator::dte_token::stream {
 		public:
 			basic_stream(data::smart_pointer<object> function, uint64_t ID = 0);
 			~basic_stream();
-			void execute(const basic_stream& caller, const function::bf_args& argument_pointer, bool forced = false);
+			void execute(basic_stream& caller, function::bf_args& args, bool forced = false);
 			uint64_t getfunctionID() const;
 			void killstream();
 			void joinstream();

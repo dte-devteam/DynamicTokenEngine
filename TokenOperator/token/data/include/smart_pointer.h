@@ -9,6 +9,15 @@ namespace tokenoperator::dte_token::data {
 				v = pointer;
 				t = type<T>();
 			}
+			template<typename U>
+			smart_pointer(U* pointer = nullptr, uint64_t ID = 0) : value<T*>(ID), owner_num(new size_t[]{ 1 }) {
+				static_assert(
+					std::is_base_of<T, U>::value,
+					"can create smart_pointer<T> from U* only if: T is base of U"
+				);
+				v = (T*)pointer;
+				t = type<U>();
+			}
 			smart_pointer(const smart_pointer<T>& sp) : value<T*>(sp.ID), owner_num(sp.owner_num) {
 				v = sp.v;
 				t = sp.t;
@@ -17,8 +26,8 @@ namespace tokenoperator::dte_token::data {
 			template<typename U>
 			smart_pointer(const smart_pointer<U>& sp) : value<T*>(sp.ID), owner_num(sp.owner_num) {
 				static_assert(
-					std::is_convertible<U, T>::value || std::is_base_of<T, U>::value,
-					"can create smart_pointer<T> from smart_pointer<U> only if: T and U are convertible or T is base of U"
+					std::is_base_of<T, U>::value,
+					"can create smart_pointer<T> from smart_pointer<U> only if: T is base of U"
 				);
 				t = sp.t;
 				v = (T*)sp.v;
@@ -34,8 +43,8 @@ namespace tokenoperator::dte_token::data {
 			template<typename U>
 			smart_pointer<T>& operator=(const smart_pointer<U>& sp) {
 				static_assert(
-					std::is_convertible<U, T>::value || std::is_base_of<T, U>::value,
-					"can create smart_pointer<T> from smart_pointer<U> only if: T and U are convertible or T is base of U"
+					std::is_base_of<T, U>::value,
+					"can set smart_pointer<T> from smart_pointer<U> only if: T is base of U"
 				);
 				if (this == (smart_pointer<T>*)&sp) {
 					return *this;
@@ -73,10 +82,10 @@ namespace tokenoperator::dte_token::data {
 			template<typename U>
 			smart_pointer<T>& operator=(U* pointer) {
 				static_assert(
-					std::is_convertible<U, T>::value || std::is_base_of<T, U>::value,
-					"can create smart_pointer<T> from smart_pointer<U> only if: T and U are convertible or T is base of U"
+					std::is_base_of<T, U>::value,
+					"can set smart_pointer<T> from U* only if: T is base of U"
 				);
-				if (v != pointer) {
+				if (v != (T*)pointer) {
 					if (!-- * owner_num) {
 						delete v;
 						delete[] owner_num;

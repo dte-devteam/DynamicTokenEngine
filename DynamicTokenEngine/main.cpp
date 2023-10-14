@@ -10,10 +10,11 @@
 //to do, all arrays if can have size 0 - set limit to delete[] (otherwise heap corruption)
 
 #include <chrono>
+#include <utility>
 
 int main(int argc, char* argv[]) {
 	exec_time et;
-	//test();
+	test();
 	std::cout << argc << " : : " << (argc > 1 ? argv[1] : argv[0]) << std::endl;
 	size_t i = argc;
 	while (--i) {
@@ -47,7 +48,6 @@ int main(int argc, char* argv[]) {
 	tokenoperator::dte_token::function::bf_args args1 (ARRAYSIZE(args1_source), args1_source);
 	exec_function->execute(s, args0);
 	import_dll->execute(s, args1);
-	std::cout << s.errorcode << std::endl;
 	std::cout << "dt: " << et.get_dt() << std::endl;
 	#ifndef _DEBUG //for .exe launch directly
 		std::this_thread::sleep_for(std::chrono::milliseconds(5000));

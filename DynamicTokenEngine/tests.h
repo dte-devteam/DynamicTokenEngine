@@ -25,7 +25,7 @@ using namespace utils;
 
 struct int_add : function::basic_function {
 	using basic_function::basic_function;
-	void execute(const stream::basic_stream& caller, const function::bf_args& args, bool forced = false) {
+	void execute(stream::basic_stream& caller, function::bf_args& args, bool forced = false) {
 		std::cout << ++(*(int*)(args.get_data())[0]) << std::endl;
 		//std::cout << argument_pointer->size() << std::endl;
 	}
@@ -183,8 +183,17 @@ void func8() {
 void func9() {
 	data::smart_pointer<int> i = new int[]{-9};
 	std::cout << *i << ":" << i.get_type().get_name() << std::endl;
-	data::smart_pointer<long long> ii = i;
+	data::smart_pointer<float> ii = new float[] {(float)*i.get_pointer()};
 	std::cout << ii.get_type().get_name() << std::endl;
+}
+void func10() {
+	data::value<int[4]> i;
+	i.get_value()[0] = i.get_value()[1] = i.get_value()[2] = i.get_value()[3] = 8;
+	data::value<int[4]> ii = i;
+	ii.get_value()[0] = -9;
+	std::cout << i.get_value()[0] << std::endl;
+	std::cout << ii.get_value()[0] << std::endl;
+	std::cout << ii.get_value()[1] << std::endl;
 }
 
 
@@ -207,5 +216,7 @@ void test() {
 	func8();
 	std::cout << "func9:" << std::endl;
 	func9();
+	std::cout << "func10:" << std::endl;
+	func10();
 	std::cout << "**********" << std::endl;
 }

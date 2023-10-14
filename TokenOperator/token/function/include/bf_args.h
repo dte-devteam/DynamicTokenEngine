@@ -15,6 +15,7 @@ namespace tokenoperator::dte_token::function {
 			bf_args(const bf_args& input_bfa, const bf_args& default_bfa);
 			~bf_args();
 			bf_args& operator=(const bf_args& bfa);
+			object*& operator[](size_t index);
 			object** get_data() const;
 			size_t get_size() const;
 		protected:

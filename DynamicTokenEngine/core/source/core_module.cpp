@@ -8,13 +8,13 @@ using namespace tokenoperator::dte_token::data;
 using namespace tokenoperator::dte_token::stream;
 using namespace tokenoperator::dte_token;
 using namespace tokenoperator::dte_module;
-void use_scope_struct::execute(const basic_stream& caller, const bf_args& args, bool forced) {
+void use_scope_struct::execute(basic_stream& caller, bf_args& args, bool forced) {
 	//[0] - scope			(relative root)				NULL - root scope will be used
 	//[1] - scope_path		(path to create)			can`t be NULL
 	//[2] - scope*			(scope output, optional)	NULL - result won`t be returned
 	ENTER_STACK
 	REQUIRE_ARG_NUM(2)
-	scope* root = (scope*)args.get_data()[0];
+	scope* root = (scope*)((bf_args&)args)[0];
 	if (!root) {
 		root = root_scope;
 	}
@@ -48,7 +48,7 @@ void use_scope_struct::execute(const basic_stream& caller, const bf_args& args, 
 	}
 	EXIT_STACK
 }
-void add_module_object_struct::execute(const basic_stream& caller, const bf_args& args, bool forced) {
+void add_module_object_struct::execute(basic_stream& caller, bf_args& args, bool forced) {
 	//[0] - scope			(relative root)				can`t be NULL
 	//[1] - module_source	(object metadata)			can`t be NULL
 	ENTER_STACK
@@ -79,7 +79,7 @@ void add_module_object_struct::execute(const basic_stream& caller, const bf_args
 	root->add_object(target_object.first, target_object.second);
 	EXIT_STACK
 }
-void add_module_struct::execute(const basic_stream& caller, const bf_args& args, bool forced) {
+void add_module_struct::execute(basic_stream& caller, bf_args& args, bool forced) {
 	//[0] - module_info		(module data for adding)	can`t be NULL
 	ENTER_STACK
 	REQUIRE_ARG_NUM(1)
@@ -105,7 +105,7 @@ void add_module_struct::execute(const basic_stream& caller, const bf_args& args,
 	}
 	EXIT_STACK
 }
-void import_module_struct::execute(const basic_stream& caller, const bf_args& args, bool forced) {
+void import_module_struct::execute(basic_stream& caller, bf_args& args, bool forced) {
 	//[0] - value<std::wstring>		(module name for import)	can`t be NULL
 	ENTER_STACK
 	REQUIRE_ARG_NUM(1)
@@ -129,7 +129,7 @@ void import_module_struct::execute(const basic_stream& caller, const bf_args& ar
 	}
 	EXIT_STACK
 }
-void execute_function_struct::execute(const basic_stream& caller, const bf_args& args, bool forced) {
+void execute_function_struct::execute(basic_stream& caller, bf_args& args, bool forced) {
 	//[0] - scope			(root)						NULL - root_scope will be used
 	//[1] - scope_path		(final destination)			can`t be NULL
 	//[2] - stream			(caller)					can`t be NULL
@@ -152,7 +152,7 @@ void execute_function_struct::execute(const basic_stream& caller, const bf_args&
 	((basic_function*)function.get_pointer())->execute(*(basic_stream*)args.get_data()[2], *(bf_args*)args.get_data()[3], forced);
 	EXIT_STACK
 }
-void test_core_struct::execute(const basic_stream& caller, const bf_args& args, bool forced) {
+void test_core_struct::execute(basic_stream& caller, bf_args& args, bool forced) {
 	ENTER_STACK
 	std::cout << "core imported into root successfully" << std::endl;
 	EXIT_STACK

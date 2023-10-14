@@ -5,7 +5,7 @@ basic_stream::basic_stream(data::smart_pointer<object> function, uint64_t ID) : 
 basic_stream::~basic_stream() {
 	killstream();
 }
-void basic_stream::execute(const basic_stream& caller, const bf_args& argument_pointer, bool forced) {
+void basic_stream::execute(basic_stream& caller, bf_args& args, bool forced) {
 	ENTER_STACK
 	//to do collect caller data
 	if (isalive()) {
@@ -16,8 +16,8 @@ void basic_stream::execute(const basic_stream& caller, const bf_args& argument_p
 		//to do form new bf_args for this thread by caller bf_args (can`t just share - may cause UB)
 		callstack = new std::stack<uint64_t>();
 		thread = std::thread(
-			[this, argument_pointer, forced] {
-				((basic_function*)function.get_pointer())->execute(*this, argument_pointer, forced);
+			[this, &args, forced] {
+				((basic_function*)function.get_pointer())->execute(*this, args, forced);
 				this->errorcode = 0;	//temp, should send error (to do)
 				this->free_stream_data();
 				this->alive.store(false);

@@ -4,7 +4,7 @@ using namespace tokenoperator::dte_token::function;
 using namespace tokenoperator::dte_token::stream;
 using namespace tokenoperator::dte_token;
 namespace dte_core {
-	void init_root_scope(size_t size, size_t prefered_size, uint64_t ID, const basic_stream& caller) {
+	void init_root_scope(size_t size, size_t prefered_size, uint64_t ID, basic_stream& caller) {
 		root_scope = new scope(size + 1, prefered_size + 1, ID);	//+1 is for core
 		core_module_info->get_value() = { core_module_sources, ARRAYSIZE(core_module_sources) };
 		object* core_pointer[] = { core_module_info.get_pointer() };

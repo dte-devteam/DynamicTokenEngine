@@ -42,6 +42,9 @@ bf_args& bf_args::operator=(const bf_args& bfa) {
 	}
 	return *this;
 }
+object*& bf_args::operator[](size_t index) {
+	return data[index];
+}
 object** bf_args::get_data() const {
 	return data;
 }
