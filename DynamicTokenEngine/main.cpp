@@ -34,7 +34,7 @@ int main(int argc, char* argv[]) {
 	hi_core->execute(s, tokenoperator::dte_token::function::bf_args());
 	std::wstring target_name = L"test_core";	//if use L"DTE_CORE/test_core" - replace core_scope in args0_source to nullptr
 	tokenoperator::dte_token::data::scope_path path = tokenoperator::dte_token::data::token_path(target_name.c_str(), target_name.size());
-	tokenoperator::dte_token::data::value<std::wstring> module_name(L"hwnd.dll");
+	tokenoperator::dte_token::data::value<std::wstring> module_name(L"HWND.dll");
 	tokenoperator::dte_token::object* args0_source[] = {
 		core_scope,
 		&path,
@@ -48,9 +48,18 @@ int main(int argc, char* argv[]) {
 	tokenoperator::dte_token::function::bf_args args1 (ARRAYSIZE(args1_source), args1_source);
 	exec_function->execute(s, args0);
 	import_dll->execute(s, args1);
+
+	tokenoperator::dte_token::data::smart_pointer<tokenoperator::dte_token::object> hwnd_pointer = (*dte_core::root_scope)[tokenoperator::dte_token::TOKEN_NAME(L"HWND.dll")].first;
+	tokenoperator::dte_token::data::scope* hwnd_scope = (tokenoperator::dte_token::data::scope*)hwnd_pointer.get_pointer();
+	tokenoperator::dte_token::data::smart_pointer<tokenoperator::dte_token::object> win_obj = (*hwnd_scope)[tokenoperator::dte_token::TOKEN_NAME(L"create_win")].first;
+	if (win_obj.get_pointer()) {
+		std::cout << win_obj.get_type().get_name() << std::endl;
+		((tokenoperator::dte_token::function::basic_function*)win_obj.get_pointer())->execute(s, args0);
+	}
+
 	std::cout << "dt: " << et.get_dt() << std::endl;
-	#ifndef _DEBUG //for .exe launch directly
+	//#ifndef _DEBUG //for .exe launch directly
 		std::this_thread::sleep_for(std::chrono::milliseconds(5000));
-	#endif
+	//#endif
 	return 0;
 }

@@ -116,7 +116,9 @@ void import_module_struct::execute(basic_stream& caller, bf_args& args, bool for
 	* module is defined by name hash
 	* for reimporting - unload, than load module
 	*/
-	std::wcout << module_name->get_value() << std::endl;//for debug
+	//std::wcout << module_name->get_value() << std::endl;//for debug
+	//std::wcout << mi->get_value().second << std::endl;//for debug
+	//std::cout << mi->get_value().first[0].get_value().first.get_type().get_name() << std::endl;//for debug
 	if (((scope*)core_module_sources[6].get_value().first.get_pointer())->add_object(mi)) {
 		object* objs[] = {
 			mi

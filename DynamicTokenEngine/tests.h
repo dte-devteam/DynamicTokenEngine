@@ -30,7 +30,6 @@ struct int_add : function::basic_function {
 		//std::cout << argument_pointer->size() << std::endl;
 	}
 };
-bool* is_base_of_scope = new bool[10] { false };
 void func1() {}
 data::smart_pointer<data::smart_pointer<object>> func2() {
 	return data::smart_pointer<data::smart_pointer<object>>(new data::smart_pointer<object>(nullptr, 9876));
@@ -187,9 +186,9 @@ void func9() {
 	std::cout << ii.get_type().get_name() << std::endl;
 }
 void func10() {
-	data::value<int[4]> i;
+	data::value<std::array<int, 4>> i;
 	i.get_value()[0] = i.get_value()[1] = i.get_value()[2] = i.get_value()[3] = 8;
-	data::value<int[4]> ii = i;
+	data::value<std::array<int, 4>> ii = i;
 	ii.get_value()[0] = -9;
 	std::cout << i.get_value()[0] << std::endl;
 	std::cout << ii.get_value()[0] << std::endl;

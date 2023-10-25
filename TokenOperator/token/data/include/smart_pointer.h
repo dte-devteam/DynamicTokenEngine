@@ -123,6 +123,9 @@ namespace tokenoperator::dte_token::data {
 			operator T*() const {
 				return v;
 			}
+			T& operator[](size_t index) const {
+				return v[index];
+			}
 			T& operator*() const {
 				return *v;
 			}

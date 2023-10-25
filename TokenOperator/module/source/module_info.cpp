@@ -1,11 +1,7 @@
 #include "../include/module_info.h"
 using namespace tokenoperator::dte_module;
 using namespace tokenoperator::dte_token::data;
-module_info::module_info(uint64_t ID) : value<std::pair<module_source*, size_t>>({ nullptr, 0 }, ID), library(NULL), version() {
-    
-    std::pair<module_source*, size_t>* module_sources_pointer = (std::pair<module_source*, size_t>*)GetProcAddress(library, "module_sources");
-    v = module_sources_pointer ? *module_sources_pointer : std::pair<module_source*, size_t>{ nullptr, 0 };
-}
+module_info::module_info(uint64_t ID) : value<std::pair<module_source*, size_t>>({ nullptr, 0 }, ID), library(NULL), version() {}
 module_info::module_info(std::wstring dllname, uint64_t ID) : value<std::pair<module_source*, size_t>>(ID), dllname(dllname), library(LoadLibrary(dllname.c_str())) {
     search_for_version(dllname);
     std::pair<module_source*, size_t>* module_sources_pointer = (std::pair<module_source*, size_t>*)GetProcAddress(library, "module_sources");

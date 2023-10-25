@@ -6,7 +6,8 @@ namespace tokenoperator::dte_token {
 #define TOKEN_NAME(lpwstr) token_name(lpwstr, std::char_traits<wchar_t>::length(lpwstr))
 	struct object {
 		public:
-			object(uint64_t ID) : ID(ID){}
+			object(uint64_t ID) noexcept : ID(ID) {}
+			//object(const object& obj) noexcept : ID(obj.ID) {}
 			virtual ~object() {}
 			uint64_t getID() const {
 				return ID; 

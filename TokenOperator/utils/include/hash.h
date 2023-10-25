@@ -2,26 +2,26 @@
 #include "type_info.h"
 namespace utils {
 	//template for iterable hashes, where iteration is independannt result
-	template<typename IN, typename OUT> constexpr inline
-	OUT	iterable_hash(const IN* in, size_t in_size, auto iterable_hash_lamda) {
+	template<typename T, typename U> constexpr inline
+	U iterable_hash(const T* in, size_t in_size, auto iterable_hash_lamda) {
 		static_assert(
-			!(sizeof(OUT) < sizeof(IN)), 
+			!(sizeof(U) < sizeof(T)), 
 			"iterable_hash can`t generate output type smaller than input type"
 		);
 		static_assert(
-			!type_in_type_wholes<IN, OUT>(),
+			!type_in_type_wholes<T, U>(),
 			"iterable_hash can`t input type must fil entirely output type"
 		);
 		//to do "static warning", when sizeof(in)*in_size=OUT
-		OUT result;
-		IN* out_pointer = (IN*)&result;
+		U result;
+		T* out_pointer = (T*)&result;
 		//make result = 0, supports arrays with constant legth (like int[2])
-		size_t i = type_in_type_capasity<IN, OUT>(), ii = 0;
+		size_t i = type_in_type_capasity<T, U>(), ii = 0;
 		while (i) {
 			out_pointer[--i] = 0;
 		}
 		//calculate hash, IN size is already a STEP size
-		i = type_in_type_capasity<IN, OUT>();
+		i = type_in_type_capasity<T, U>();
 		while (in_size) {
 			out_pointer[ii] = iterable_hash_lamda(out_pointer[ii], in[--in_size]);
 			if (++ii == i) {
@@ -30,11 +30,11 @@ namespace utils {
 		}
 		return result;
 	}
-	template<typename IN, typename OUT> constexpr inline
-	OUT	pearson_hash(const IN* in, size_t in_size = 1) {
-		return iterable_hash<IN, OUT>(
+	template<typename T, typename U> constexpr inline
+	U pearson_hash(const T* in, size_t in_size = 1) {
+		return iterable_hash<T, U>(
 			in, in_size,
-			[](IN& out_step, const IN& in_step) {
+			[](T& out_step, const T& in_step) {
 				return out_step ^ in_step;
 			}
 		);
