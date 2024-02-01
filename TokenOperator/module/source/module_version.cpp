@@ -1,9 +1,32 @@
 #include "../include/module_version.h"
-using namespace tokenoperator::dte_module;
-module_version::module_version(uint64_t ID, uint16_t v0, uint16_t v1, uint16_t v2, uint16_t v3) : dte_token::data::value<std::array<uint16_t, 4>>(ID) {
-	v[0] = v0;
-	v[1] = v1;
-	v[2] = v2;
-	v[3] = v3;
+#include "target_architecture.h"
+#include <minwindef.h>
+#include <winver.h>
+#include <libloaderapi.h>
+namespace dte_module {
+	bool module_version::set_version_to_file(const wchar_t* path) {
+        DWORD verhandle = NULL, versize = GetFileVersionInfoSize(path, &verhandle);
+        if (versize) {
+            UINT size = 0;
+            LPBYTE buffer = nullptr;
+            LPSTR verdata = new char[versize];
+            if (GetFileVersionInfo(path, verhandle, versize, verdata)) {
+                if (VerQueryValue(verdata, L"\\", (VOID FAR* FAR*) &buffer, &size)) {
+                    if (size) {
+                        VS_FIXEDFILEINFO* verInfo = (VS_FIXEDFILEINFO*)buffer;
+                        if (verInfo->dwSignature == 0xfeef04bd) {
+                            numbers[3] = verInfo->dwFileVersionLS & 0xFFFF;
+                            numbers[2] = verInfo->dwFileVersionLS >> 16;
+                            numbers[1] = verInfo->dwFileVersionMS & 0xFFFF;
+                            numbers[0] = verInfo->dwFileVersionMS >> 16;
+                            delete[] verdata;
+                            return true;
+                        }
+                    }
+                }
+            }
+            delete[] verdata;
+        }
+        return false;
+	}
 }
-module_version::module_version(const module_version& mv) : module_version(mv.ID, mv.v[0], mv.v[1], mv.v[2], mv.v[3]) {}

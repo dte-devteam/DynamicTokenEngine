@@ -1,11 +1,10 @@
 #pragma once
-#include "token/object.h"
 #include <ctime>
 //#include <cstdarg>
-namespace utils {
-	struct exec_time : tokenoperator::dte_token::object {
+namespace dte_utils {
+	struct exec_time {
 		public:
-			exec_time(uint64_t ID = 0);
+			exec_time();
 			clock_t get_creation_time();
 			clock_t get_start_time();
 			clock_t get_dt();

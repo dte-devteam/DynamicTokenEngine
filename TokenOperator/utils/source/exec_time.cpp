@@ -1,7 +1,6 @@
 #include "../include/exec_time.h"
-using namespace utils;
-using namespace tokenoperator::dte_token;
-exec_time::exec_time(uint64_t ID) : object (ID) {
+using namespace dte_utils;
+exec_time::exec_time() {
 	creation_time = start_time = clock();
 }
 clock_t exec_time::get_creation_time() {
