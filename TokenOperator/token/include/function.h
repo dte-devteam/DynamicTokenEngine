@@ -3,7 +3,7 @@
 #include "path.h"
 namespace dte_token {
 	struct stream_data;
-	typedef dynamic_array<object_handler> args;
+	typedef dte_utils::dynamic_array<object_handler> args;
 	typedef void (*function)(stream_data&, args&);
 	typedef object* (*global_get_object)(path&);
 	typedef object* (*global_register_module)(path&);

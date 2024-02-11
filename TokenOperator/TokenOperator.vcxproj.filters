@@ -18,7 +18,7 @@
     <ClInclude Include="token\include\object.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="token\include\dynamic_array.h">
+    <ClInclude Include="utils\include\dynamic_array.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
     <ClInclude Include="token\include\type.h">

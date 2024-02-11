@@ -8,10 +8,9 @@ namespace dte_token {
 			return other_way.forward == forward && other_way.ID == ID;
 		}
 	};
-	struct path {
-		dynamic_array<way> ways;
+	struct path : dte_utils::dynamic_array<way> {
 		inline object* get_object(object* obj) const {
-			ways.find(
+			find(
 				[&obj](const way& w) {
 					if (obj) {
 						obj = obj->get_object(w.ID, w.forward);
@@ -25,7 +24,7 @@ namespace dte_token {
 			return obj;
 		}
 		inline object* get_object(object* obj, size_t from, size_t to) const {
-			ways.find_ranged(
+			find_ranged(
 				[&obj](const way& w) {
 					if (obj) {
 						obj = obj->get_object(w.ID, w.forward);

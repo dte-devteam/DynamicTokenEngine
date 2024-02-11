@@ -74,9 +74,21 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
     <TargetName>DTE</TargetName>
+    <OutDir>$(SolutionDir)bin\$(Platform)\$(Configuration)\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <TargetName>DTE</TargetName>
+    <OutDir>$(SolutionDir)bin\$(Platform)\$(Configuration)\</OutDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <IntDir>$(Platform)\$(Configuration)\</IntDir>
+    <TargetName>DTE</TargetName>
+    <OutDir>$(SolutionDir)bin\$(Platform)\$(Configuration)\</OutDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <IntDir>$(Platform)\$(Configuration)\</IntDir>
+    <TargetName>DTE</TargetName>
+    <OutDir>$(SolutionDir)bin\$(Platform)\$(Configuration)\</OutDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -85,14 +97,14 @@
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>C:\VulkanSDK\1.3.224.0\Include;$(SolutionDir)TokenOperator;C:\Users\User\Documents\Visual Studio 2022\Libraries\glfw-3.3.8\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)TokenOperator;./</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EntryPointSymbol>mainCRTStartup</EntryPointSymbol>
-      <AdditionalLibraryDirectories>C:\Users\User\Documents\Visual Studio 2022\Libraries\glfw-3.3.8\glfw-3.3.8.bin.WIN64\lib-vc2022;C:\VulkanSDK\1.3.224.0\Lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>vulkan-1.lib;glfw3.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)bin\$(Platform)\$(Configuration)\;C:\Users\User\Documents\Visual Studio 2022\Libraries\glfw-3.3.8\glfw-3.3.8.bin.WIN64\lib-vc2022;C:\VulkanSDK\1.3.224.0\Lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>vulkan-1.lib;glfw3.lib;Version.lib;TokenOperator.lib</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -103,12 +115,15 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>$(SolutionDir)TokenOperator;./</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>vulkan-1.lib;glfw3.lib;Version.lib;TokenOperator.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)bin\$(Platform)\$(Configuration)\;C:\Users\User\Documents\Visual Studio 2022\Libraries\glfw-3.3.8\glfw-3.3.8.bin.WIN64\lib-vc2022;C:\VulkanSDK\1.3.224.0\Lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -129,7 +144,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(SolutionDir)$(Platform)\$(Configuration)\;C:\Users\User\Documents\Visual Studio 2022\Libraries\glfw-3.3.8\glfw-3.3.8.bin.WIN64\lib-vc2022;C:\VulkanSDK\1.3.224.0\Lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)bin\$(Platform)\$(Configuration)\;C:\Users\User\Documents\Visual Studio 2022\Libraries\glfw-3.3.8\glfw-3.3.8.bin.WIN64\lib-vc2022;C:\VulkanSDK\1.3.224.0\Lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>vulkan-1.lib;glfw3.lib;Version.lib;TokenOperator.lib</AdditionalDependencies>
       <EntryPointSymbol>mainCRTStartup</EntryPointSymbol>
     </Link>
@@ -158,7 +173,7 @@
       <GenerateDebugInformation>false</GenerateDebugInformation>
       <AdditionalDependencies>vulkan-1.lib;glfw3.lib;Version.lib;TokenOperator.lib</AdditionalDependencies>
       <LinkTimeCodeGeneration>UseFastLinkTimeCodeGeneration</LinkTimeCodeGeneration>
-      <AdditionalLibraryDirectories>$(SolutionDir)$(Platform)\$(Configuration)\;C:\Users\User\Documents\Visual Studio 2022\Libraries\glfw-3.3.8\glfw-3.3.8.bin.WIN64\lib-vc2022;C:\VulkanSDK\1.3.224.0\Lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)bin\$(Platform)\$(Configuration)\;C:\Users\User\Documents\Visual Studio 2022\Libraries\glfw-3.3.8\glfw-3.3.8.bin.WIN64\lib-vc2022;C:\VulkanSDK\1.3.224.0\Lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <SetChecksum>false</SetChecksum>
     </Link>
     <ProjectReference>
@@ -172,6 +187,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="core\include\module_assembler.h" />
+    <ClInclude Include="core\include\module_unit.h" />
     <ClInclude Include="tests.h" />
     <ClInclude Include="core\include\type_assembler.h" />
     <ClInclude Include="resource.h" />

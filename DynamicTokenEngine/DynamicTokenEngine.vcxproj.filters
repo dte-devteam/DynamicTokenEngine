@@ -38,6 +38,9 @@
     <ClInclude Include="core\include\module_assembler.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
+    <ClInclude Include="core\include\module_unit.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="DynamicTokenEngine.rc">

@@ -1,6 +1,7 @@
 #pragma once
 #include <iostream>
 #include "token/include/object.h"
+#include "token/include/type.h"
 #include "token/include/function.h"
 
 #include "module/include/module_instance.h"
@@ -38,15 +39,15 @@ inline void test() {
 	o1->add_object(o4);
 	D_LOG(
 		std::cout << "--------------------" << std::endl;
-		for (size_t i = o1->b.us; i;) {
-			std::cout << o1->b.a[--i] << std::endl;
+		for (object* o : o1->b) {
+			std::cout << o << std::endl;
 		}
 	)
 	o1->remove_object(o2);
 	D_LOG(
 		std::cout << "--------------------" << std::endl;
-		for (size_t i = o1->b.us; i;) {
-			std::cout << o1->b.a[--i] << std::endl;
+		for (object* o : o1->b) {
+			std::cout << o << std::endl;
 		}
 		float fff = 0;
 		std::cout << STR_DECL_TYPE(fff) << std::endl;
@@ -56,26 +57,57 @@ inline void test() {
 		{o1, 1}, {o3, 2}, {o4, 3}
 	};
 	stream_data sd;
-	args _args(ops);
-	_fp(sd, _args);
-
+	_fp(sd, args(ops));
 
 	std::cout << (*o1->b.find([ID = 3](object*& o) { return o->ID == ID; }))->ID << std::endl;
 
-
-	dynamic_array<object_handler> da1(ops, 3, 7);
+	D_LOG(
+		std::cout << "total o1 handlers: " << o1->h << std::endl;
+		std::cout << "total o3 handlers: " << o3->h << std::endl;
+		std::cout << "total o4 handlers: " << o4->h << std::endl;
+	)
+	dynamic_array<object_handler> da1(ops, ARRAYSIZE(ops), 0);
 	D_LOG(
 		std::cout << "--------------------" << std::endl;
 		for (object_handler& oh : da1) {
-			std::cout << oh.ID << std::endl;
+			std::cout << oh.ID << " " << oh->ID << std::endl;
 		}
+		std::cout << "total o1 handlers: " << o1->h << std::endl;
+		std::cout << "total o3 handlers: " << o3->h << std::endl;
+		std::cout << "total o4 handlers: " << o4->h << std::endl;
 	)
-	dynamic_array<object_handler> da2(da1, 1, 2, 8);
+	dynamic_array<object_handler> da2(da1, 0, 2, 0);
 	D_LOG(
 		std::cout << "--------------------" << std::endl;
 		for (object_handler& oh : da2) {
-			std::cout << oh.ID << std::endl;
+			std::cout << oh.ID << " " << oh->ID << std::endl;
 		}
+		std::cout << "total o1 handlers: " << o1->h << std::endl;
+		std::cout << "total o3 handlers: " << o3->h << std::endl;
+		std::cout << "total o4 handlers: " << o4->h << std::endl;
 	)
+	da1.resize(0);
+	da2.resize(1);
+	D_LOG(
+		std::cout << "--------------------" << std::endl;
+		for (object_handler& oh : da2) {
+			std::cout << oh.ID << " " << oh->ID << std::endl;
+		}
+		std::cout << "total o1 handlers: " << o1->h << std::endl;
+		std::cout << "total o3 handlers: " << o3->h << std::endl;
+		std::cout << "total o4 handlers: " << o4->h << std::endl;
+	)
+	D_LOG(
+		std::cout << constexpr_strcmp("hello world!", "hello world") << std::endl;	//output should be "!"
+		std::cout << constexpr_strlen("hello world") << std::endl;					//output should be "11"
+		const char* start_text = "text";
+		const char* copied_text = constexpr_strcpy(start_text);
+		std::cout << copied_text << std::endl;										//output should be "text"
+		delete[] copied_text;
+		std::cout << constexpr_substr_num("text1;text2;text3", ";") << std::endl;	//output should be "2"
+		std::cout << type(constexpr_strcpy("abc"), 0).name << std::endl;			//output should be "abc"
+	)
+	uint32_t iiiii[] = { 1, 2, 3, 4 };
+	dynamic_array<uint64_t> daf(iiiii);
 	std::cout << "dt: " << et.get_dt() << "ms" << std::endl;
 }

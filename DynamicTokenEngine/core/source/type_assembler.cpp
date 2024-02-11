@@ -2,8 +2,8 @@
 using namespace dte_utils;
 using namespace dte_token;
 using namespace dte_core;
-void type_assembler::init(const dynamic_array<type>& array, size_t reserve) {
-	types = { array, reserve };
+void type_assembler::init(const dynamic_array<type_handler>& array, size_t reserve) {
+	//types = { array, reserve };
 }
 type* type_assembler::get_type(size_t virtual_type) {
 	return types.find(
@@ -19,17 +19,25 @@ type* type_assembler::get_type(const char* name) {
 		}
 	);
 }
-void type_assembler::register_type(type& type_to_add) {
+void type_assembler::register_type(type_handler& type_to_add) {
 	type* t = type_assembler::get_instance().get_type(type_to_add.name);
 	if (t) {
-		type_to_add.virtual_type = t->virtual_type;
+		type_to_add.type_instance = t;
 	}
 	else {
-		type_to_add.virtual_type = type_assembler::get_instance().get_free_vir_type();
-		t = new type(type_to_add);
-		type_assembler::get_instance().types.push_back(*t);
+		type_assembler::get_instance().types.emplace_back(constexpr_strcpy(type_to_add.name), type_assembler::get_instance().get_free_vir_type());
+		type_to_add.type_instance = type_assembler::get_instance().types.back();
 	}
 }
 size_t type_assembler::get_free_vir_type() {
-	return types.us;
+	return types.get_used_size();
+}
+bool type_assembler::set_min_reserved_size(size_t reserved_size) {
+	type_assembler& instance = type_assembler::get_instance();
+	size_t ds = instance.types.get_allocated_size() - instance.types.get_used_size();
+	if (ds < reserved_size) {
+		instance.types.resize(reserved_size - ds);
+		return true;
+	}
+	return false;
 }

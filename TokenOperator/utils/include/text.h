@@ -1,16 +1,15 @@
 #pragma once
 namespace dte_utils {
 	constexpr inline char constexpr_strcmp(const char* str1, const char* str2) {
-		char d = *str1 - *str2;
-		while (!(d || *str1 == '\0')) {
+		while (*str1 == *str2 && *str1) {
 			++str1;
 			++str2;
 		}
-		return d;
+		return *str1 - *str2;
 	}
 	constexpr inline size_t constexpr_strlen(const char* str) {
 		const char* i = str;
-		while (*i != '\0') {
+		while (*i) {
 			++i;
 		}
 		return i - str;
@@ -25,4 +24,24 @@ namespace dte_utils {
 		}
 		return r;
 	}
+	constexpr size_t constexpr_substr_num(const char* str, const char* substr) {
+		size_t num = 0;
+		const char* i;
+		while (*str) {
+			i = substr;
+			while (*str == *i && *i) {
+				++str;
+				++i;
+			}
+			if (!*i) {
+				++num;
+			}
+			++str;
+		}
+		return num;
+	}
+	//to do
+	//constexpr size_t constexpr_regexp_num(const char* str, const char* regexp) {
+	//	size_t num = 0;
+	//}
 }

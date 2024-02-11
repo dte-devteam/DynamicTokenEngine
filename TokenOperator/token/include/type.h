@@ -1,5 +1,6 @@
 #pragma once
 #include "utils/include/text.h"
+#include "utils/include/dynamic_array.h"
 #include <xstring>
 #define STR_TYPE(TYPE) #TYPE
 #define STR_DECL_TYPE(INSTANCE) dte_token::typename_getter<decltype(INSTANCE)>()
@@ -21,21 +22,42 @@ namespace dte_token {
 	}
 	//#define OPERATIONAL_TYPES(...) enum TYPE_REQUEST {__VA_ARGS__};
 	struct type {
-		const char*			name;				//user defined name for easier perfomance
-		size_t				virtual_type;		//virtual type allowing getting data from object
-		constexpr type(const char* type_name) : name(type_name), virtual_type(0) {}
-		constexpr type(const type& other_type) : name(dte_utils::constexpr_strcpy(other_type.name)), virtual_type(other_type.virtual_type) {}
+		const char*								name;				//user defined name for easier perfomance
+		size_t									virtual_type;		//virtual type allowing getting data from object
+		dte_utils::dynamic_array<type*>			parents;			//parents
+		constexpr type(const char* type_name, size_t virtual_type = 0) : name(type_name), virtual_type(virtual_type) {}
+		constexpr type(const type& other_type) : name(dte_utils::constexpr_strcpy(other_type.name)), virtual_type(other_type.virtual_type), parents(other_type.parents) {}
 		constexpr ~type() {
-			delete name;
+			//if you got _debugbreak() here - you used const char[]:
+			//for const char[] in constructor apply constexpr_strcpy
+			delete[] name;
 		}
 		constexpr bool is_same_as(const type& other_type) {
 			return virtual_type == other_type.virtual_type;
 		}
-		constexpr bool is_parent_of(const type& other_type) {
+		constexpr bool is_parent_of(type* other_type) {
 			return false;	//to do
 		}
 		constexpr bool is_coherent_to(const type& other_type) {
 			return !dte_utils::constexpr_strcmp(name, other_type.name);
+		}
+	};
+	struct type_handler {
+		const char*								name;				//user defined name for easier perfomance
+		dte_utils::dynamic_array<const char*>	parents;			//other types name for polymorphism
+		type*									type_instance;		//ponter to type
+		constexpr type_handler(const char* name) : name(name), parents(), type_instance(nullptr) {}
+		template<size_t N>
+		constexpr type_handler(const char* name, const char* (&array)[N]) : name(name), parents(array, N, 0), type_instance(nullptr) {}
+		constexpr type_handler(const char* name, const char** array, size_t array_size) : name(name), parents(array, array_size), type_instance(nullptr) {}
+		constexpr type_handler(const type_handler& other_type_handler) : name(dte_utils::constexpr_strcpy(other_type_handler.name)), parents(other_type_handler.parents), type_instance(other_type_handler.type_instance) {}
+		constexpr ~type_handler() {
+			//if you got _debugbreak() here - you used const char[]:
+			//for const char[] in constructor apply constexpr_strcpy
+			delete[] name;
+		}
+		constexpr operator type*() {
+			return type_instance;
 		}
 	};
 }

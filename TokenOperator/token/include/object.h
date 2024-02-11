@@ -1,17 +1,17 @@
 #pragma once
-#include "dynamic_array.h"
+#include "utils/include/dynamic_array.h"
 #include "type.h"
 namespace dte_token {
 	struct object {
-		friend struct object_handler;
+		//friend struct object_handler;
 		size_t					ID;		//ID
-		type*					t;		//type
+		type_handler*			t;		//type handler
 		void*					d;		//data
 		size_t					h;		//handle num
-		dynamic_array<object*>	b;		//branches
-		dynamic_array<object*>	r;		//roots
+		dte_utils::dynamic_array<object*>	b;		//branches
+		dte_utils::dynamic_array<object*>	r;		//roots
 		constexpr object(size_t ID = 0) : object(ID, nullptr, nullptr, {}, {}) {}
-		constexpr object(size_t ID, type* type, void* data, dynamic_array<object*> branches, dynamic_array<object*> roots) : ID(ID), t(type), d(data), h(0), b(branches), r(roots) {}
+		constexpr object(size_t ID, type_handler* type, void* data, dte_utils::dynamic_array<object*> branches, dte_utils::dynamic_array<object*> roots) : ID(ID), t(type), d(data), h(0), b(branches), r(roots) {}
 		constexpr object(const object& obj, size_t ID = 0) : ID(ID), t(obj.t), d(obj.d), h(0) {}
 		constexpr ~object() {
 			delete d;
@@ -33,13 +33,21 @@ namespace dte_token {
 			object** o = forward ? b.find([ID](object* o) { return o->ID == ID; }) : r.find([ID](object* o) { return o->ID == ID; });
 			return o ? *o : nullptr;
 		}
-		constexpr void* get_data(type* expected_type) const {
+		constexpr void* get_data_strictly(type* expected_type) const {
 			//while there is no linker - let`s be safe
 			if (!t) {
 				return nullptr;
 			}
 			//----------------------------------------
-			else if (t->is_same_as(*expected_type)) {
+			return t->type_instance->is_same_as(*expected_type) ? d : nullptr;
+		}
+		constexpr void* get_data_polymorphic(type* expected_type) const {
+			//while there is no linker - let`s be safe
+			if (!t) {
+				return nullptr;
+			}
+			//----------------------------------------
+			else if (t->type_instance->is_same_as(*expected_type)) {
 				return d;
 			}
 			else if (expected_type->is_parent_of(*t)) {
@@ -47,12 +55,12 @@ namespace dte_token {
 			}
 			return nullptr;
 		}
-		constexpr void set_data(void* data, type* new_type) {
+		constexpr void set_data(void* data, type_handler* new_type) {
 			d = data;
 			t = new_type;
 		}
 		constexpr void try_killing() {
-			if (!(r.us + h)) {
+			if (!(r.get_used_size() + h)) {
 				delete this;
 			}
 		}
@@ -70,14 +78,29 @@ namespace dte_token {
 				remove_target();
 			}
 			constexpr object_handler& operator=(const object_handler& handler) {
-				if (this != &handler) {
+				if (handler.target != target) {
 					remove_target();
 					target = handler.target;
 					add_target();
 				}
 				return *this;
 			}
+			constexpr object_handler& operator=(object_handler&& handler) {
+				ID = std::move(handler.ID);
+				target = std::move(handler.target);
+				return *this;
+			}
+			constexpr void set_new_target(object* object) {
+				if (object != target) {
+					remove_target();
+					target = object;
+					add_target();
+				}
+			}
 			constexpr operator object*(){
+				return target;
+			}
+			constexpr object* operator ->() {
 				return target;
 			}
 		private:
