@@ -4,7 +4,7 @@ namespace dte_token {
 	struct way {
 		bool forward;
 		size_t ID;
-		constexpr bool operator==(const way& other_way) {
+		bool operator==(const way& other_way) {
 			return other_way.forward == forward && other_way.ID == ID;
 		}
 	};

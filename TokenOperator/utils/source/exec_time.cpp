@@ -19,3 +19,22 @@ clock_t exec_time::set_start_time() {
 	start_time = clock();
 	return start_time;
 }
+hpet::hpet() {
+	start_time = time(&creation_time);
+}
+time_t hpet::get_creation_time() {
+	return creation_time;
+}
+time_t hpet::get_start_time() {
+	return start_time;
+}
+time_t hpet::get_dt() {
+	time_t end_time, dt;
+	time(&end_time);
+	dt = end_time - start_time;
+	start_time = end_time;
+	return dt;
+}
+void hpet::set_start_time() {
+	time(&start_time);
+}

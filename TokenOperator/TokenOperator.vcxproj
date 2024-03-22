@@ -20,9 +20,12 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="module\include\module_instance.h" />
+    <ClInclude Include="parser\include\relation.h" />
     <ClInclude Include="target_architecture.h" />
+    <ClInclude Include="token\include\container.h" />
     <ClInclude Include="token\include\function.h" />
     <ClInclude Include="token\include\object.h" />
+    <ClInclude Include="parser\include\token.h" />
     <ClInclude Include="utils\include\dynamic_array.h" />
     <ClInclude Include="token\include\path.h" />
     <ClInclude Include="token\include\type.h" />
@@ -31,6 +34,7 @@
     <ClInclude Include="utils\include\debug_defines.h" />
     <ClInclude Include="utils\include\exec_time.h" />
     <ClInclude Include="utils\include\sigleton_defines.h" />
+    <ClInclude Include="utils\include\pointer.h" />
     <ClInclude Include="utils\include\text.h" />
   </ItemGroup>
   <ItemGroup>
@@ -149,6 +153,7 @@
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <AdditionalIncludeDirectories>./</AdditionalIncludeDirectories>
+      <InlineFunctionExpansion>Disabled</InlineFunctionExpansion>
     </ClCompile>
     <Link>
       <SubSystem>

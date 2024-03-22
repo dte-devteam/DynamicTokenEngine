@@ -140,6 +140,7 @@
       <WholeProgramOptimization>false</WholeProgramOptimization>
       <CallingConvention>FastCall</CallingConvention>
       <SuppressStartupBanner>true</SuppressStartupBanner>
+      <InlineFunctionExpansion>Disabled</InlineFunctionExpansion>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -181,15 +182,10 @@
     </ProjectReference>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="core\source\module_assembler.cpp" />
-    <ClCompile Include="core\source\type_assembler.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="core\include\module_assembler.h" />
-    <ClInclude Include="core\include\module_unit.h" />
     <ClInclude Include="tests.h" />
-    <ClInclude Include="core\include\type_assembler.h" />
     <ClInclude Include="resource.h" />
   </ItemGroup>
   <ItemGroup>

@@ -12,4 +12,14 @@ namespace dte_utils {
 		protected:
 			clock_t creation_time, start_time;
 	};
+	struct hpet {
+		public:
+			hpet();
+			time_t get_creation_time();
+			time_t get_start_time();
+			time_t get_dt();
+			void set_start_time();
+		protected:
+			time_t creation_time, start_time;
+	};
 }
