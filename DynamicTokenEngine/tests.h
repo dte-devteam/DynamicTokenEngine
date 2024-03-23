@@ -163,12 +163,26 @@ inline void test() {
 		std::cout << _i << " ";
 	}
 	std::cout << std::endl;
+	//*/
+	///*
 	int wri[] = { 1, 2, 3, 4, 5 };
 	weak_ref<int[5]> wr = weak_ref<int[5]>(&wri);
 	std::cout << (*wr)[2] << std::endl;
 	strong_ref<int[5], true> sr;
 	wr = weak_ref<int[5]>(sr);
 	weak_ref<int> i = weak_ref<int>(weak_ref<int>());
+	std::cout << "---------------" << std::endl;
+	strong_ref<int, true>* sir = new strong_ref<int, true>(new int[10]);
+	strong_ref<int, true>* sir2 = new strong_ref<int, true>(*sir);
+	weak_ref<int> wir(*sir);
+	std::cout << wir.get_strong_owners() << std::endl;
+	std::cout << wir.get_weak_owners() << std::endl;
+	delete sir;
+	std::cout << wir.get_strong_owners() << std::endl;
+	std::cout << wir.get_weak_owners() << std::endl;
+	delete sir2;
+	std::cout << wir.get_strong_owners() << std::endl;
+	std::cout << wir.get_weak_owners() << std::endl;
 	//*/
 	//std::cout << "dt: " << et.get_dt() << "ms" << std::endl;
 }
