@@ -26,10 +26,103 @@
 
 //to do, all arrays if can have size 0 - set limit to delete[] (otherwise heap corruption)
 
-struct S { int a, b; std::string c; };
+struct S_LOG {
+	S_LOG() {
+		std::cout << "S_LOG is constructed" << std::endl;
+	}
+	~S_LOG() {
+		std::cout << "S_LOG is destructed" << std::endl;
+	}
+};
 using namespace dte_token;
 using namespace dte_module;
 using namespace dte_utils;
+inline void test_dynamic_array() {
+	std::cout << "-function \'test_dynamic_array\' started--" << std::endl;
+	size_t ints[] = {
+		1, 3, 5, 7, 9, 11
+	};
+	std::cout << "create array \'dyt\' of " << STR_DECL_TYPE(ints) << std::endl;
+	dynamic_array<size_t> dyt(ints);
+	//should be 1, 3, 5, 7, 9, 11
+	std::cout << "list \'dyt\': ";
+	for (size_t _i : dyt) {
+		std::cout << _i << " ";
+	}
+	std::cout << std::endl;
+	std::cout << "insert 0 into \'dyt\' 5 times at index 0" << std::endl;
+	dyt.insert(0, 0, 5);
+	//should be 0, 0, 0, 0, 0, 1, 3, 5, 7, 9, 11
+	std::cout << "list \'dyt\': ";
+	for (size_t _i : dyt) {
+		std::cout << _i << " ";
+	}
+	std::cout << std::endl;
+	std::cout << "insert from index 5 to index -2 at index 2" << std::endl;
+	dyt.insert(2, dyt.begin() + 5, dyt.end() - 2);
+	//should copy 1, 3, 5, 7
+	//should be 0, 0, 1, 3, 5, 7, 0, 0, 0, 1, 3, 5, 7, 9, 11
+	std::cout << "list \'dyt\': ";
+	for (size_t _i : dyt) {
+		std::cout << _i << " ";
+	}
+	std::cout << std::endl;
+	std::cout << "insert index -1 at index 0" << std::endl;
+	dyt.insert(0, *dyt.back());
+	//should be 11, 0, 0, 0, 1, 3, 5, 7, 0, 0, 0, 1, 3, 5, 7, 9, 11
+	std::cout << "list \'dyt\': ";
+	for (size_t _i : dyt) {
+		std::cout << _i << " ";
+	}
+	std::cout << std::endl;
+	std::cout << "insert index -3 at index 15" << std::endl;
+	dyt.insert(15, *(dyt.end() - 3));
+	//should be 11, 0, 0, 0, 1, 3, 5, 7, 0, 0, 0, 1, 3, 5, 7, 9, 7, 11
+	std::cout << "list \'dyt\': ";
+	for (size_t _i : dyt) {
+		std::cout << _i << " ";
+	}
+	std::cout << std::endl;
+	std::cout << "--function \'test_dynamic_array\' ended---" << std::endl;
+}
+inline void test_pointers() {
+	std::cout << "----function \'test_pointers\' started----" << std::endl;
+	//test weak_ref
+	int weak_ints[] = { 1, 2, 3, 4, 5 };
+	weak_ref<decltype(weak_ints)> wr0(&weak_ints);
+	std::cout << "accessing " << STR_DECL_TYPE(weak_ints) << " through \'weak_ref\': ";
+	for (size_t i = 0; i < ARRAYSIZE(weak_ints); ++i) {
+		std::cout << (*wr0)[i] << " ";
+	}
+	std::cout << std::endl;
+	//test strong_ref 
+	//warning! sr<n> is controlled by new and delete for proper log
+	strong_ref<S_LOG, false>* sr0 = new strong_ref<S_LOG, false>(new S_LOG());
+	delete sr0; std::cout << "sr0 is destructed" << std::endl;
+	sr0 = new strong_ref<S_LOG, false>(new S_LOG());
+	strong_ref<S_LOG, false>* sr1 = new strong_ref<S_LOG, false>(*sr0);
+	std::cout << "sr1 strong owners: " << sr1->get_strong_owners() << std::endl;
+	std::cout << "sr1 weak owners: " << sr1->get_weak_owners() << std::endl;
+	delete sr0; std::cout << "sr0 is destructed" << std::endl;
+	std::cout << "sr1 strong owners: " << sr1->get_strong_owners() << std::endl;
+	std::cout << "sr1 weak owners: " << sr1->get_weak_owners() << std::endl;
+	delete sr1; std::cout << "sr1 is destructed" << std::endl;
+	//test strong_ref-weak_ref relationship
+	//warning! wr<n> is controlled by new and delete for proper log
+	sr0 = new strong_ref<S_LOG, false>(new S_LOG());
+	weak_ref<S_LOG>* wr1 = new weak_ref<S_LOG>(*sr0);
+	std::cout << "sr0 strong owners: " << sr0->get_strong_owners() << std::endl;
+	std::cout << "sr0 weak owners: " << sr0->get_weak_owners() << std::endl;
+	delete wr1; std::cout << "wr1 is destructed" << std::endl;
+	std::cout << "sr0 strong owners: " << sr0->get_strong_owners() << std::endl;
+	std::cout << "sr0 weak owners: " << sr0->get_weak_owners() << std::endl;
+	wr1 = new weak_ref<S_LOG>(*sr0);
+	delete sr0; std::cout << "sr0 is destructed" << std::endl;
+	std::cout << "wr1 strong owners: " << wr1->get_strong_owners() << std::endl;
+	std::cout << "wr1 weak owners: " << wr1->get_weak_owners() << std::endl;
+	delete wr1; std::cout << "wr1 is destructed" << std::endl;
+	std::cout << "-----function \'test_pointers\' ended-----" << std::endl;
+}
 inline void test() {
 	/*
 	object* o1 = new object{ 1, nullptr, nullptr, {nullptr, 0, 5}, {nullptr, 0, 5} };
@@ -134,55 +227,7 @@ inline void test() {
 		std::cout << "dt v: " << et.get_dt() << "ms" << std::endl;
 	}
 	*/
-	///*
-	size_t init[] = {
-		1, 3, 5, 7, 9, 11
-	};
-	dynamic_array<size_t> dyt(init);
-	for (size_t _i : dyt) {
-		std::cout << _i << " ";
-	}
-	std::cout << std::endl;
-	dyt.insert(0, 0, 5);
-	for (size_t _i : dyt) {
-		std::cout << _i << " ";
-	}
-	std::cout << std::endl;
-	dyt.insert(2, dyt.begin() + 5, dyt.end() - 2);
-	for (size_t _i : dyt) {
-		std::cout << _i << " ";
-	}
-	std::cout << std::endl;
-	dyt.insert(0, *dyt.back());
-	for (size_t _i : dyt) {
-		std::cout << _i << " ";
-	}
-	std::cout << std::endl;
-	dyt.insert(15, *(dyt.back() - 2));
-	for (size_t _i : dyt) {
-		std::cout << _i << " ";
-	}
-	std::cout << std::endl;
-	//*/
-	///*
-	int wri[] = { 1, 2, 3, 4, 5 };
-	weak_ref<int[5]> wr = weak_ref<int[5]>(&wri);
-	std::cout << (*wr)[2] << std::endl;
-	strong_ref<int[5], true> sr;
-	wr = weak_ref<int[5]>(sr);
-	weak_ref<int> i = weak_ref<int>(weak_ref<int>());
-	std::cout << "---------------" << std::endl;
-	strong_ref<int, true>* sir = new strong_ref<int, true>(new int[10]);
-	strong_ref<int, true>* sir2 = new strong_ref<int, true>(*sir);
-	weak_ref<int> wir(*sir);
-	std::cout << wir.get_strong_owners() << std::endl;
-	std::cout << wir.get_weak_owners() << std::endl;
-	delete sir;
-	std::cout << wir.get_strong_owners() << std::endl;
-	std::cout << wir.get_weak_owners() << std::endl;
-	delete sir2;
-	std::cout << wir.get_strong_owners() << std::endl;
-	std::cout << wir.get_weak_owners() << std::endl;
-	//*/
+	test_dynamic_array();
+	test_pointers();
 	//std::cout << "dt: " << et.get_dt() << "ms" << std::endl;
 }

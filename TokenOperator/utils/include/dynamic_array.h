@@ -294,38 +294,36 @@ namespace dte_utils {
 					//to do
 				#endif
 				size_t count = last - first;
-				if (count) {
-					T* old_begin = a;
-					provide_subarray_space(count);
-					validate_pointer(old_begin, first, 0);
-					validate_pointer(old_begin, last, old_begin + index < last ? 0 : count);
-					if (index < us) {
-						T* i = begin() + index;
+				T* old_begin = a;
+				provide_subarray_space(count);
+				validate_pointer(old_begin, first, first < old_begin + index ? 0 : count);
+				validate_pointer(old_begin, last,  last < old_begin + index ? 0 : count);
+				if (index < us) {
+					T* i = begin() + index;
 						move_subarray_right(i, count);
-						i += count;
-						if (last - first != count) {
-							//we need to iter: first -> beging() + index & beging() + index + count -> last
-							T* s = i;
-							while (s != last) {
-								*--i = *--last;
-							}
-							s = begin() + index;
-							while (s != first) {
-								*--i = *--s;
-							}
+					i += count;
+					if (last - first != count) {
+						//we need to iter: first -> beging() + index & beging() + index + count -> last
+						T* s = i;
+						while (s != last) {
+							*--i = *--last;
 						}
-						else {
-							while (first != last) {
-								*--i = *--last;
-							}
+						s = begin() + index;
+						while (s != first) {
+							*--i = *--s;
 						}
-						us += count;
 					}
 					else {
 						while (first != last) {
-							a[us] = *--last;
-							++us;
+							*--i = *--last;
 						}
+					}
+					us += count;
+				}
+				else {
+					while (first != last) {
+						a[us] = *--last;
+						++us;
 					}
 				}
 			}
