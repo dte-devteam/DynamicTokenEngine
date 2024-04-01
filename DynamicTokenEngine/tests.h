@@ -227,7 +227,9 @@ inline void test() {
 		std::cout << "dt v: " << et.get_dt() << "ms" << std::endl;
 	}
 	*/
+	hpet et;
 	test_dynamic_array();
+	std::cout << "dt: " << et.get_ns_dt_strong().count() << "ns" << std::endl;
 	test_pointers();
-	//std::cout << "dt: " << et.get_dt() << "ms" << std::endl;
+	std::cout << "dt: " << et.get_ns_dt_strong().count() << "ns" << std::endl;
 }

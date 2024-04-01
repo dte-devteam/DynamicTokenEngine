@@ -1,25 +1,33 @@
 #pragma once
 #include <ctime>
-//#include <cstdarg>
+#include <chrono>
 namespace dte_utils {
-	struct exec_time {
+	//miliseconds accuracy
+	struct lpet {
 		public:
-			exec_time();
+			lpet();
 			clock_t get_creation_time();
 			clock_t get_start_time();
-			clock_t get_dt();
+			clock_t get_ms_dt_weak();
+			clock_t get_ms_dt_strong();
 			clock_t set_start_time();
 		protected:
 			clock_t creation_time, start_time;
 	};
+	//nanoseconds accuracy
 	struct hpet {
 		public:
 			hpet();
-			time_t get_creation_time();
-			time_t get_start_time();
-			time_t get_dt();
+			std::chrono::steady_clock::time_point get_creation_time();
+			std::chrono::steady_clock::time_point get_start_time();
+			std::chrono::nanoseconds get_ns_dt_weak();
+			std::chrono::microseconds get_mcs_dt_weak();
+			std::chrono::milliseconds get_ms_dt_weak();
+			std::chrono::nanoseconds get_ns_dt_strong();
+			std::chrono::microseconds get_mcs_dt_strong();
+			std::chrono::milliseconds get_ms_dt_strong();
 			void set_start_time();
 		protected:
-			time_t creation_time, start_time;
+			std::chrono::steady_clock::time_point creation_time, start_time;
 	};
 }

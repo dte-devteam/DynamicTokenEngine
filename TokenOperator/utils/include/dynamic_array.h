@@ -1,5 +1,5 @@
 #pragma once
-#include <iostream>
+#include <type_traits>
 namespace dte_utils {
 	template<typename T>
 	struct dynamic_array {
@@ -8,23 +8,29 @@ namespace dte_utils {
 			size_t			as;		//allocated size
 			size_t			us;		//used size
 			T*				a;		//array
-			void move_subarray_right(T* pos, size_t shift) {
+			void move_subarray_right(T* pos, size_t shift) noexcept(
+				std::is_nothrow_move_constructible_v<T>&&
+				std::is_nothrow_move_assignable_v<T>
+			){
 				T* s = end();
 				T* t = s + shift;
 				while (s != pos) {
 					*--t = std::move(*--s);
 				}
 			}
-			void move_subarray_left(T* pos, size_t shift) {
+			void move_subarray_left(T* pos, size_t shift) noexcept(
+				std::is_nothrow_move_constructible_v<T>&&
+				std::is_nothrow_move_assignable_v<T>
+			){
 				while (pos != end()) {
 					*(pos - shift) = std::move(*pos);
 					++pos;
 				}
 			}
-			bool pointer_out_of_array(const T* pointer) const {
+			bool pointer_out_of_array(const T* pointer) const noexcept {
 				return pointer < a || pointer > back();
 			}
-			void validate_pointer(T* old_begin, const T*& pointer, size_t movement) const {
+			void validate_pointer(T* old_begin, const T*& pointer, size_t movement) const noexcept {
 				if (!pointer_out_of_array(pointer)) {
 					pointer += a - old_begin + movement;
 				}
@@ -81,13 +87,13 @@ namespace dte_utils {
 				free(a);
 			}
 			//for(T t : dyn_array), to do (upgrade?)
-			T* begin() const {
+			T* begin() const noexcept {
 				return a;
 			}
-			T* end() const {
+			T* end() const noexcept {
 				return a + us;
 			}
-			T* back() const {
+			T* back() const noexcept {
 				return us ? end() - 1 : nullptr;
 			}
 			//--------------------------------------
@@ -165,16 +171,20 @@ namespace dte_utils {
 				if (this == &dyn_array) {
 					return *this;
 				}
+				T* target = end();
+				while (target != a) {
+					(--target)->~T();
+				}
 				free(a);
 				as = std::move(dyn_array.as);
 				us = std::move(dyn_array.us);
 				a = std::move(dyn_array.a);
 				return *this;
 			}
-			T& operator [](size_t index) {
+			T& operator [](size_t index) noexcept {
 				return a[index];
 			}
-			const T& operator [](size_t index) const {
+			const T& operator [](size_t index) const noexcept {
 				return a[index];
 			}
 			//move related functions
@@ -184,7 +194,9 @@ namespace dte_utils {
 				std::swap(a, dyn_array.a);
 			}
 			//size control--------------------------
-			void resize(size_t size) {
+			void resize(size_t size) noexcept(
+				std::is_nothrow_destructible_v<T>
+			){
 				if (size < us) {
 					T* i = end();
 					us = as = size;
@@ -201,38 +213,58 @@ namespace dte_utils {
 					a = new_array;
 				}
 			}
-			void provide_element_space() {
+			void provide_element_space() noexcept(
+				std::is_nothrow_destructible_v<T>
+			){
 				if (us == as) {
 					resize(as + 1);
 				}
 			}
-			void provide_subarray_space(size_t size) {
+			void provide_subarray_space(size_t size) noexcept(
+				std::is_nothrow_destructible_v<T>
+			){
 				if (us + size > as) {
 					resize(us + size);
 				}
 			}
 			//--------------------------------------
-			void push_back(const T& element) {
+			void push_back(const T& element) noexcept(
+				std::is_nothrow_destructible_v<T>&&
+				std::is_nothrow_assignable_v<T&, const T&>
+			){
 				provide_element_space();
 				a[us] = element;
 				++us;
 			}
-			void push_back(T&& element) {
+			void push_back(T&& element) noexcept(
+				std::is_nothrow_constructible_v<T, T&&>&&
+				std::is_nothrow_destructible_v<T>
+			){
 				emplace_back(std::move(element));
 			}
 			template<typename ...Args>
-			void emplace_back(Args&&... args) {
+			void emplace_back(Args&&... args) noexcept(
+				std::is_nothrow_constructible_v<T, Args&&...>&&
+				std::is_nothrow_destructible_v<T>
+			){
 				provide_element_space();
 				a[us] = { args... };
 				++us;
 			}
-			void pop_back() {
+			void pop_back() noexcept(
+				std::is_nothrow_destructible_v<T>
+			){
 				if (us) {
 					a[--us].~T();
 				}
 			}
 			template<typename ...Args>
-			void emplace(size_t index, Args&&... args) {
+			void emplace(size_t index, Args&&... args) noexcept(
+				std::is_nothrow_move_constructible_v<T>&&
+				std::is_nothrow_move_assignable_v<T>&&
+				std::is_nothrow_constructible_v<T, Args&&...>&&
+				std::is_nothrow_destructible_v<T>
+			){
 				if (index < us) {
 					provide_element_space();
 					move_subarray_right(begin() + index, 1);
@@ -243,21 +275,31 @@ namespace dte_utils {
 					emplace_back(args...);
 				}
 			}
-			void insert(size_t index, const T& element) {
+			void insert(size_t index, const T& element) noexcept(
+				std::is_nothrow_move_constructible_v<T>&&
+				std::is_nothrow_move_assignable_v<T>&&
+				std::is_nothrow_destructible_v<T>&&
+				std::is_nothrow_assignable_v<T&, const T&>
+			){
 				if (index < us) {
 					T* old_begin = a;
 					const T* p = &element;
 					provide_element_space();
 					validate_pointer(old_begin, p, p > old_begin + index - 1 ? 1 : 0);
 					move_subarray_right(begin() + index, 1);
-					*(begin() + index) = *p;
+					*(begin() + index) = element;
 					++us;
 				}
 				else {
 					push_back(element);
 				}
 			}
-			void insert(size_t index, const T& element, size_t count) {
+			void insert(size_t index, const T& element, size_t count) noexcept(
+				std::is_nothrow_move_constructible_v<T>&&
+				std::is_nothrow_move_assignable_v<T>&&
+				std::is_nothrow_destructible_v<T>&&
+				std::is_nothrow_assignable_v<T&, const T&>
+			){
 				#ifdef DA_DEBUG
 					//to do
 				#endif
@@ -285,11 +327,20 @@ namespace dte_utils {
 					}
 				}
 			}
-			void insert(size_t index, T&& element) {
-				//need pointer validation?
+			void insert(size_t index, T&& element) noexcept(
+				std::is_nothrow_move_constructible_v<T>&&
+				std::is_nothrow_move_assignable_v<T>&&
+				std::is_nothrow_constructible_v<T, T&&>&&
+				std::is_nothrow_destructible_v<T>
+			){
 				emplace(index, std::move(element));
 			}
-			void insert(size_t index, const T* first, const T* last) {
+			void insert(size_t index, const T* first, const T* last) noexcept (
+				std::is_nothrow_move_constructible_v<T>&&
+				std::is_nothrow_move_assignable_v<T>&&
+				std::is_nothrow_destructible_v<T>&&
+				std::is_nothrow_assignable_v<T&, const T&>
+			){
 				#ifdef DA_DEBUG
 					//to do
 				#endif
@@ -328,7 +379,11 @@ namespace dte_utils {
 				}
 			}
 			//erase from array - slow and save order
-			void erase(T* pos) {
+			void erase(T* pos) noexcept (
+				std::is_nothrow_move_constructible_v<T>&&
+				std::is_nothrow_move_assignable_v<T>&&
+				std::is_nothrow_destructible_v<T>
+			){
 				#ifdef DA_DEBUG
 					//to do
 				#endif
@@ -340,7 +395,11 @@ namespace dte_utils {
 					pop_back();
 				}
 			}
-			void erase(T* first, T* last) {
+			void erase(T* first, T* last) noexcept (
+				std::is_nothrow_move_constructible_v<T>&&
+				std::is_nothrow_move_assignable_v<T>&&
+				std::is_nothrow_destructible_v<T>
+			){
 				#ifdef DA_DEBUG
 					//to do
 				#endif
@@ -356,7 +415,11 @@ namespace dte_utils {
 				}
 			}
 			//remove from array - fast and may unsort
-			void remove(T* pos) {
+			void remove(T* pos) noexcept (
+				std::is_nothrow_move_constructible_v<T>&&
+				std::is_nothrow_move_assignable_v<T>&&
+				std::is_nothrow_destructible_v<T>
+			){
 				#ifdef DA_DEBUG
 					//to do
 				#endif
@@ -365,7 +428,11 @@ namespace dte_utils {
 					*pos = std::move(a[us]);
 				}
 			}
-			void remove(T* first, T* last) {
+			void remove(T* first, T* last) noexcept (
+				std::is_nothrow_move_constructible_v<T>&&
+				std::is_nothrow_move_assignable_v<T>&&
+				std::is_nothrow_destructible_v<T>
+			){
 				#ifdef DA_DEBUG
 					//to do
 				#endif
@@ -373,7 +440,9 @@ namespace dte_utils {
 					remove(--last);
 				}
 			}
-			void clear() {
+			void clear() noexcept(
+				std::is_nothrow_destructible_v<T>
+			){
 				T* i = end();
 				us = 0;
 				while (i != a) {
@@ -382,10 +451,10 @@ namespace dte_utils {
 				a = nullptr;
 			}
 			//get methods
-			size_t get_used_size() const {
+			size_t get_used_size() const noexcept {
 				return us;
 			}
-			size_t get_allocated_size() const {
+			size_t get_allocated_size() const noexcept {
 				return as;
 			}
 	};

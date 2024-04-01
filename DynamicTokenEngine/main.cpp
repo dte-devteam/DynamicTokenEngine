@@ -19,5 +19,5 @@ int main(int argc, char* argv[]) {
 		std::cout << argc << " : " << argv[argc] << std::endl;
 	}
 	test();
-	std::cin.get();
+	//std::cin.get();
 }
