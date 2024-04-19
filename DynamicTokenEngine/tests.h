@@ -9,7 +9,9 @@
 #include "utils/include/exec_time.h"
 #include "utils/include/pointer.h"
 
-#include "utils/include/debug_defines.h"
+#include "parser/include/token.h"
+
+#include "token/include/container.h"
 
 #include "target_architecture.h"
 #include <minwindef.h>
@@ -34,9 +36,21 @@ struct S_LOG {
 		std::cout << "S_LOG is destructed" << std::endl;
 	}
 };
+struct S_L : S_LOG {
+	int i;
+};
+struct S {
+	int i;
+};
+//template<typename T>
+//T* f() {
+//	int* i = nullptr;
+//	return i;
+//}
 using namespace dte_token;
 using namespace dte_module;
 using namespace dte_utils;
+using namespace dte_parser;
 inline void test_dynamic_array() {
 	std::cout << "-function \'test_dynamic_array\' started--" << std::endl;
 	size_t ints[] = {
@@ -121,7 +135,17 @@ inline void test_pointers() {
 	std::cout << "wr1 strong owners: " << wr1->get_strong_owners() << std::endl;
 	std::cout << "wr1 weak owners: " << wr1->get_weak_owners() << std::endl;
 	delete wr1; std::cout << "wr1 is destructed" << std::endl;
+	std::cout << "unknown_ref (as strong): " << std::endl;
+	delete new unknown_ref<S_LOG, false>(true, new S_LOG());
+	//unknown_ref<int, false> z = unknown_ref<int, false>::unknown_ref<false>();
 	std::cout << "-----function \'test_pointers\' ended-----" << std::endl;
+}
+inline void test_containes() {
+	std::cout << "----function \'test_containes\' started---" << std::endl;
+	container i1((int*)nullptr, false);
+	container i2((int*)nullptr, false);
+	std::cout << i1.destructor << ":" << i2.destructor << std::endl;
+	std::cout << "----function \'test_containes\' ended-----" << std::endl;
 }
 inline void test() {
 	/*
@@ -230,6 +254,8 @@ inline void test() {
 	hpet et;
 	test_dynamic_array();
 	std::cout << "dt: " << et.get_ns_dt_strong().count() << "ns" << std::endl;
-	test_pointers();
+	//test_pointers();
+	//std::cout << "dt: " << et.get_ns_dt_strong().count() << "ns" << std::endl;
+	test_containes();
 	std::cout << "dt: " << et.get_ns_dt_strong().count() << "ns" << std::endl;
 }

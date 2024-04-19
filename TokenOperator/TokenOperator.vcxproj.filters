@@ -48,19 +48,10 @@
     <ClInclude Include="token\include\path.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="utils\include\debug_defines.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
-    <ClInclude Include="utils\include\sigleton_defines.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
     <ClInclude Include="token\include\container.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
     <ClInclude Include="parser\include\token.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
-    <ClInclude Include="parser\include\relation.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
     <ClInclude Include="utils\include\pointer.h">
@@ -72,6 +63,9 @@
       <Filter>Исходные файлы</Filter>
     </ClCompile>
     <ClCompile Include="utils\source\exec_time.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="parser\source\token.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
   </ItemGroup>

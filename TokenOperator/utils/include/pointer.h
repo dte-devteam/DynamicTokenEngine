@@ -58,13 +58,13 @@ namespace dte_utils {
 					std::is_base_of_v<T, U> | std::is_convertible_v<U, T>,
 					"can create reference to T from U only if:\n - T is base of U\n - U is convertable to T"
 				);
-				if (this == &ref) {
+				if (this == &r) {
 					return *this;
 				}
 				if (!--reference->weak_owners) {
 					delete reference;
 				}
-				reference = (ref<T>*)ref.reference;
+				reference = (ref<T>*)r.reference;
 				++reference->weak_owners;
 				return *this;
 			}
@@ -110,7 +110,7 @@ namespace dte_utils {
 		protected:
 			constexpr weak_ref(ref<T>* reference) noexcept : reference(reference) {}
 			template<typename U>
-			constexpr weak_ref(ref<U>* reference) noexcept : reference((ref<T>*)reference){
+			constexpr weak_ref(ref<U>* reference) noexcept : reference((ref<T>*)reference) {
 				static_assert(
 					std::is_base_of_v<T, U> | std::is_convertible_v<U, T>,
 					"can create reference to T from U only if:\n - T is base of U\n - U is convertable to T"
@@ -123,35 +123,35 @@ namespace dte_utils {
 		template <typename U, bool is_array> friend struct strong_ref;
 		public:
 			constexpr strong_ref() noexcept : strong_ref(nullptr) {}
-			constexpr strong_ref(T* instance) noexcept : weak_ref(new ref<T>(instance, 1, 1)) {}
-			constexpr strong_ref(const weak_ref<T> r) noexcept : weak_ref(r) {
+			constexpr strong_ref(T* instance) noexcept : weak_ref<T>(new ref<T>(instance, 1, 1)) {}
+			constexpr strong_ref(const weak_ref<T> r) noexcept : weak_ref<T>(r) {
 				++reference->strong_owners;
 			}
-			constexpr strong_ref(weak_ref<T>&& r) noexcept : weak_ref(std::move(r)) {
+			constexpr strong_ref(weak_ref<T>&& r) noexcept : weak_ref<T>(std::move(r)) {
 				++reference->strong_owners;
 			}
-			constexpr strong_ref(const strong_ref<T, is_array>& r) noexcept : weak_ref(r) {
+			constexpr strong_ref(const strong_ref<T, is_array>& r) noexcept : weak_ref<T>(r) {
 				++reference->strong_owners;
 			}
-			constexpr strong_ref(strong_ref<T, is_array>&& r) noexcept : weak_ref(std::move(r)) {
-				++reference->strong_owners;
-			}
-			template<typename U>
-			constexpr strong_ref(U* instance) noexcept : weak_ref(new ref<U>(instance, 1, 1)) {}
-			template<typename U>
-			constexpr strong_ref(const weak_ref<U> r) noexcept : weak_ref(r) {
+			constexpr strong_ref(strong_ref<T, is_array>&& r) noexcept : weak_ref<T>(std::move(r)) {
 				++reference->strong_owners;
 			}
 			template<typename U>
-			constexpr strong_ref(weak_ref<U>&& r) noexcept : weak_ref(std::move(r)) {
+			constexpr strong_ref(U* instance) noexcept : weak_ref<T>(new ref<U>(instance, 1, 1)) {}
+			template<typename U>
+			constexpr strong_ref(const weak_ref<U> r) noexcept : weak_ref<T>(r) {
 				++reference->strong_owners;
 			}
 			template<typename U>
-			constexpr strong_ref(const strong_ref<U, is_array>& r) noexcept : weak_ref(r) {
+			constexpr strong_ref(weak_ref<U>&& r) noexcept : weak_ref<T>(std::move(r)) {
 				++reference->strong_owners;
 			}
 			template<typename U>
-			constexpr strong_ref(strong_ref<U, is_array>&& r) noexcept : weak_ref(std::move(r)) {
+			constexpr strong_ref(const strong_ref<U, is_array>& r) noexcept : weak_ref<T>(r) {
+				++reference->strong_owners;
+			}
+			template<typename U>
+			constexpr strong_ref(strong_ref<U, is_array>&& r) noexcept : weak_ref<T>(std::move(r)) {
 				++reference->strong_owners;
 			}
 			~strong_ref() {
@@ -168,6 +168,9 @@ namespace dte_utils {
 					kill_instance();
 					weak_ref::~weak_ref();
 				}
+				if (!--reference->weak_owners) {
+					delete reference;
+				}
 				reference = r.reference;
 				++reference->strong_owners;
 				++reference->weak_owners;
@@ -180,6 +183,9 @@ namespace dte_utils {
 				if (!--reference->strong_owners) {
 					kill_instance();
 					weak_ref::~weak_ref();
+				}
+				if (!--reference->weak_owners) {
+					delete reference;
 				}
 				reference = std::move(r.reference);
 				return *this;
@@ -196,6 +202,9 @@ namespace dte_utils {
 				if (!--reference->strong_owners) {
 					kill_instance();
 					weak_ref::~weak_ref();
+				}
+				if (!--reference->weak_owners) {
+					delete reference;
 				}
 				reference = (ref<T>*)r.reference;
 				++reference->strong_owners;
@@ -219,7 +228,151 @@ namespace dte_utils {
 				return *this;
 			}
 		protected:
-			void kill_instance() noexcept(
+			void kill_instance() const noexcept(
+				std::is_nothrow_destructible_v<T>
+			){
+				if constexpr (is_array) {
+					delete[] reference->instance;
+				}
+				else {
+					delete reference->instance;
+				}
+			}
+	};
+	template<typename T, bool is_array>
+	struct unknown_ref : weak_ref<T> {
+		template<typename U, bool is_array> friend struct unknown_ref;
+		public:
+			template<typename ...Args>
+			constexpr unknown_ref(bool strength, Args... args) noexcept : weak_ref<T>(args...), strength(strength) {
+				if (strength) {
+					++reference->strong_owners;
+				}
+			}
+			constexpr unknown_ref(const unknown_ref<T, is_array>& r) noexcept : weak_ref<T>(r), strength(r.strength) {
+				if (strength) {
+					++reference->strong_owners;
+				}
+			}
+			constexpr unknown_ref(unknown_ref<T, is_array>&& r) noexcept : weak_ref<T>(r), strength(std::move(r.strength)) {
+				if (strength) {
+					++reference->strong_owners;
+				}
+			}
+			template<typename U>
+			constexpr unknown_ref(const unknown_ref<U, is_array>& r) noexcept : weak_ref<T>(r), strength(r.strength) {
+				if (strength) {
+					++reference->strong_owners;
+				}
+			}
+			template<typename U>
+			constexpr unknown_ref(unknown_ref<U, is_array>&& r) noexcept : weak_ref<T>(r), strength(std::move(r.strength)) {
+				if (strength) {
+					++reference->strong_owners;
+				}
+			}
+			~unknown_ref (){
+				if (strength) {
+					if (!--reference->strong_owners) {
+						kill_instance();
+					}
+				}
+			}
+			void change_behavior() noexcept(
+				std::is_nothrow_destructible_v<T>
+			){
+				if (strength) {
+					if (!--reference->strong_owners) {
+						kill_instance();
+					}
+				}
+				else {
+					++reference->strong_owners;
+				}
+				strength = !strength;
+			}
+			//operators
+			unknown_ref<T, is_array>& operator=(const unknown_ref<T, is_array>& r) {
+				if (this == &r) {
+					return *this;
+				}
+				if (strength) {
+					if (!--reference->strong_owners) {
+						kill_instance();
+					}
+				}
+				if (!--reference->weak_owners) {
+					delete reference;
+				}
+				reference = r.reference;
+				if (strength) {
+					++reference->strong_owners;
+				}
+				++reference->weak_owners;
+			}
+			unknown_ref<T, is_array>& operator=(unknown_ref<T, is_array>&& r) noexcept {
+				if (this == &r) {
+					return *this;
+				}
+				if (strength) {
+					if (!--reference->strong_owners) {
+						kill_instance();
+					}
+				}
+				if (!--reference->weak_owners) {
+					delete reference;
+				}
+				reference = std::move(r.reference);
+			}
+			template<typename U>
+			unknown_ref<T, is_array>& operator=(const unknown_ref<U, is_array>& r) {
+				static_assert(
+					std::is_base_of_v<T, U> | std::is_convertible_v<U, T>,
+					"can create reference to T from U only if:\n - T is base of U\n - U is convertable to T"
+				);
+				if (this == &r) {
+					return *this;
+				}
+				if (strength) {
+					if (!--reference->strong_owners) {
+						kill_instance();
+					}
+				}
+				if (!--reference->weak_owners) {
+					delete reference;
+				}
+				reference = (ref<T>*)r.reference;
+				if (strength) {
+					++reference->strong_owners;
+				}
+				++reference->weak_owners;
+			}
+			template<typename U>
+			unknown_ref<T, is_array>& operator=(unknown_ref<U, is_array>&& r) noexcept {
+				static_assert(
+					std::is_base_of_v<T, U> | std::is_convertible_v<U, T>,
+					"can create reference to T from U only if:\n - T is base of U\n - U is convertable to T"
+				);
+				if (this == &r) {
+					return *this;
+				}
+				if (strength) {
+					if (!--reference->strong_owners) {
+						kill_instance();
+					}
+				}
+				if (!--reference->weak_owners) {
+					delete reference;
+				}
+				reference = std::move((ref<T>*)r.reference);
+			}
+			//get methods
+			constexpr bool is_strong() const noexcept {
+				return strength;
+			}
+		protected:
+			bool strength;
+			void kill_instance() const noexcept(
 				std::is_nothrow_destructible_v<T>
 			){
 				if constexpr (is_array) {

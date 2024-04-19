@@ -1,6 +1,7 @@
 #pragma once
 #include <type_traits>
 namespace dte_utils {
+	//to do: handle malloc(N) = NULL (memory shortage) 
 	template<typename T>
 	struct dynamic_array {
 		template <typename U> friend struct dynamic_array;
@@ -80,9 +81,11 @@ namespace dte_utils {
 				//for T/U array[N] there is dynamic_array(T/U (&array)[N]) - it will copy it
 				//dynamic_array(T/U* array, size_t use_size) is allowed only for new T/U[N] - it will hold array by pointer
 				//dynamic_array(T/U* array, size_t use_size) ensures that we won`t make useless duplicate
-				T* i = end();
-				while (i != a) {
-					(--i)->~T();
+				if constexpr (!std::is_trivially_destructible_v<T>) {
+					T* i = end();
+					while (i != a) {
+						(--i)->~T();
+					}
 				}
 				free(a);
 			}
@@ -128,9 +131,11 @@ namespace dte_utils {
 				}
 				T* target;
 				if (as < dyn_array.us) {
-					target = end();
-					while (target != a) {
-						(--target)->~T();
+					if constexpr (!std::is_trivially_destructible_v<T>) {
+						target = end();
+						while (target != a) {
+							(--target)->~T();
+						}
 					}
 					free(a);
 					as = dyn_array.as;
@@ -151,9 +156,11 @@ namespace dte_utils {
 				}
 				T* target;
 				if (as < dyn_array.us) {
-					target = end();
-					while (target != a) {
-						(--target)->~T();
+					if constexpr (!std::is_trivially_destructible_v<T>) {
+						target = end();
+						while (target != a) {
+							(--target)->~T();
+						}
 					}
 					free(a);
 					as = dyn_array.as;
@@ -171,9 +178,11 @@ namespace dte_utils {
 				if (this == &dyn_array) {
 					return *this;
 				}
-				T* target = end();
-				while (target != a) {
-					(--target)->~T();
+				if constexpr (!std::is_trivially_destructible_v<T>) {
+					T* target = end();
+					while (target != a) {
+						(--target)->~T();
+					}
 				}
 				free(a);
 				as = std::move(dyn_array.as);
@@ -198,11 +207,13 @@ namespace dte_utils {
 				std::is_nothrow_destructible_v<T>
 			){
 				if (size < us) {
-					T* i = end();
-					us = as = size;
-					T* e = end();
-					while (i != e) {
-						(--i)->~T();
+					if constexpr (!std::is_trivially_destructible_v<T>) {
+						T* i = end();
+						us = as = size;
+						T* e = end();
+						while (i != e) {
+							(--i)->~T();
+						}
 					}
 					a = (T*)realloc(a, sizeof(T) * size);
 					return;
@@ -255,7 +266,12 @@ namespace dte_utils {
 				std::is_nothrow_destructible_v<T>
 			){
 				if (us) {
-					a[--us].~T();
+					if constexpr (!std::is_trivially_destructible_v<T>) {
+						--us;
+					}
+					else {
+						a[--us].~T();
+					}
 				}
 			}
 			template<typename ...Args>
@@ -351,7 +367,7 @@ namespace dte_utils {
 				validate_pointer(old_begin, last,  last < old_begin + index ? 0 : count);
 				if (index < us) {
 					T* i = begin() + index;
-						move_subarray_right(i, count);
+					move_subarray_right(i, count);
 					i += count;
 					if (last - first != count) {
 						//we need to iter: first -> beging() + index & beging() + index + count -> last
@@ -403,15 +419,21 @@ namespace dte_utils {
 				#ifdef DA_DEBUG
 					//to do
 				#endif
-				if (last == end()) {
-					us -= last - first;
-					while (last != first) {
-						(--last)->~T();
+				us -= last - first;
+				if constexpr (std::is_trivially_destructible_v<T>) {
+					if (last != end()) {
+						move_subarray_left(last, last - first);
 					}
 				}
 				else {
-					us -= last - first;
-					move_subarray_left(last, last - first);
+					if (last == end()) {
+						while (last != first) {
+							(--last)->~T();
+						}
+					}
+					else {
+						move_subarray_left(last, last - first);
+					}
 				}
 			}
 			//remove from array - fast and may unsort
@@ -423,7 +445,9 @@ namespace dte_utils {
 				#ifdef DA_DEBUG
 					//to do
 				#endif
-				pos->~T();
+				if constexpr (!std::is_trivially_destructible_v<T>) {
+					pos->~T();
+				}
 				if (pos - a != --us) {
 					*pos = std::move(a[us]);
 				}
@@ -443,12 +467,15 @@ namespace dte_utils {
 			void clear() noexcept(
 				std::is_nothrow_destructible_v<T>
 			){
-				T* i = end();
-				us = 0;
-				while (i != a) {
-					(--i)->~T();
+				if constexpr (!std::is_trivially_destructible_v<T>) {
+					T* i = end();
+					while (i != a) {
+						(--i)->~T();
+					}
 				}
+				free(a);
 				a = nullptr;
+				us = 0;
 			}
 			//get methods
 			size_t get_used_size() const noexcept {

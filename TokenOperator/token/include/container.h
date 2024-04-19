@@ -48,7 +48,7 @@ namespace dte_token {
 				return data;
 			}
 			//--------------------------------------
-		protected:
+		//protected:
 			void*	data;
 			deleter	destructor;
 	};
