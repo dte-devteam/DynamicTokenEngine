@@ -42,11 +42,6 @@ struct S_L : S_LOG {
 struct S {
 	int i;
 };
-//template<typename T>
-//T* f() {
-//	int* i = nullptr;
-//	return i;
-//}
 using namespace dte_token;
 using namespace dte_module;
 using namespace dte_utils;
@@ -141,11 +136,11 @@ inline void test_pointers() {
 	std::cout << "-----function \'test_pointers\' ended-----" << std::endl;
 }
 inline void test_containes() {
-	std::cout << "----function \'test_containes\' started---" << std::endl;
+	std::cout << "---function \'test_containers\' started---" << std::endl;
 	container i1((int*)nullptr, false);
 	container i2((int*)nullptr, false);
 	std::cout << i1.destructor << ":" << i2.destructor << std::endl;
-	std::cout << "----function \'test_containes\' ended-----" << std::endl;
+	std::cout << "---function \'test_containers\' ended-----" << std::endl;
 }
 inline void test() {
 	/*
@@ -254,8 +249,14 @@ inline void test() {
 	hpet et;
 	test_dynamic_array();
 	std::cout << "dt: " << et.get_ns_dt_strong().count() << "ns" << std::endl;
-	//test_pointers();
-	//std::cout << "dt: " << et.get_ns_dt_strong().count() << "ns" << std::endl;
-	test_containes();
+	test_pointers();
 	std::cout << "dt: " << et.get_ns_dt_strong().count() << "ns" << std::endl;
+	test_containes();
+	try {
+		weak_ref<int>& r = any_ref<int>().get<weak_ref>();
+	}
+	catch (const std::exception& e) {
+		printf("Error: %s\n", e.what());
+	}
+	printf("%zi\n", sizeof(any_ref<int>::ref_union));
 }

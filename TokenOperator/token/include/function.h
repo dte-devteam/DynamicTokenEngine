@@ -1,12 +1,9 @@
 #pragma once
 #include <iostream>
-#include "path.h"
 namespace dte_token {
 	struct stream_data;
-	typedef dte_utils::dynamic_array<object_handler> args;
+	typedef dte_utils::dynamic_array<dte_utils::strong_ref<object, false>> args;
 	typedef void (*function)(stream_data&, args&);
-	typedef object* (*global_get_object)(path&);
-	typedef object* (*global_register_module)(path&);
 	struct stream_data {
 		//create stream by function (to do add constructor for stream caller
 		//create stream by builder
@@ -14,10 +11,10 @@ namespace dte_token {
 		//kill stream
 	};
 	inline void test(stream_data& sd, args& args) {
-		for (object* o : args) {
-			std::cout << o;
-			if (o) {
-				std::cout << "\t" << o->ID;
+		for (dte_utils::strong_ref<object, false>& o : args) {
+			std::cout << o.get_pointer();
+			if (o.get_strong_owners()) {
+				std::wcout << L"\t" << o->name.begin();
 			}
 			std::cout << std::endl;
 		}

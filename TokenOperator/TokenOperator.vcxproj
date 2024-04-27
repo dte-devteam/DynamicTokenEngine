@@ -25,8 +25,8 @@
     <ClInclude Include="token\include\function.h" />
     <ClInclude Include="token\include\object.h" />
     <ClInclude Include="parser\include\token.h" />
+    <ClInclude Include="utils\include\dictionary.h" />
     <ClInclude Include="utils\include\dynamic_array.h" />
-    <ClInclude Include="token\include\path.h" />
     <ClInclude Include="token\include\type.h" />
     <ClInclude Include="module\include\module_version.h" />
     <ClInclude Include="module\module_defines.h" />
@@ -37,6 +37,7 @@
   <ItemGroup>
     <ClCompile Include="module\source\module_version.cpp" />
     <ClCompile Include="parser\source\token.cpp" />
+    <ClCompile Include="token\source\object.cpp" />
     <ClCompile Include="utils\source\exec_time.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

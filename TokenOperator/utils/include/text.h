@@ -14,7 +14,7 @@ namespace dte_utils {
 		}
 		return i - str;
 	}
-	char* constexpr_strcpy(const char* str) {
+	inline char* constexpr_strcpy(const char* str) {
 		size_t size = constexpr_strlen(str);
 		char* r = new char[++size];
 		char* i = r + size;
@@ -24,7 +24,7 @@ namespace dte_utils {
 		}
 		return r;
 	}
-	size_t constexpr_substr_num(const char* str, const char* substr) {
+	inline size_t constexpr_substr_num(const char* str, const char* substr) {
 		size_t num = 0;
 		const char* i;
 		while (*str) {

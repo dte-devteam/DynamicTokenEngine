@@ -45,9 +45,6 @@
     <ClInclude Include="module\include\module_instance.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="token\include\path.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
     <ClInclude Include="token\include\container.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
@@ -55,6 +52,9 @@
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
     <ClInclude Include="utils\include\pointer.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="utils\include\dictionary.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
   </ItemGroup>
@@ -66,6 +66,9 @@
       <Filter>Исходные файлы</Filter>
     </ClCompile>
     <ClCompile Include="parser\source\token.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="token\source\object.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
   </ItemGroup>

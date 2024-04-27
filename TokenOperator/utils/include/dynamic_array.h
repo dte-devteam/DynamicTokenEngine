@@ -45,7 +45,12 @@ namespace dte_utils {
 				T* source = array + us;
 				T* target = end();
 				while (source != array) {
-					new (--target) T(*--source);
+					if constexpr (std::is_trivially_copy_constructible_v<T>) {
+						*--target = *--source;
+					}
+					else {
+						new (--target) T(*--source);
+					}
 				}
 			}
 			dynamic_array(const dynamic_array<T>& dyn_array) : dynamic_array(dyn_array.a, dyn_array.us, 0) {}
@@ -76,6 +81,8 @@ namespace dte_utils {
 					//to do (to > from || to > dyn_array.us) -> error
 				#endif
 			}
+			template<typename U>
+			dynamic_array(dynamic_array<T>&& dyn_array) noexcept : dynamic_array(dyn_array.a, dyn_array.us, 0) {}
 			~dynamic_array() {
 				//if you got _debugbreak() here - you used wrong constructor:
 				//for T/U array[N] there is dynamic_array(T/U (&array)[N]) - it will copy it
@@ -196,6 +203,22 @@ namespace dte_utils {
 			const T& operator [](size_t index) const noexcept {
 				return a[index];
 			}
+			bool operator ==(const dynamic_array<T>& dyn_array) {
+				if (us == dyn_array.us) {
+					T* this_i = a;
+					for (T& i : dyn_array) {
+						if (*this_i != i) {
+							return false;
+						}
+						++this_i;
+					}
+					return true;
+				}
+				return false;
+			}
+			bool operator !=(const dynamic_array<T>& dyn_array) {
+				return !(*this == dyn_array);
+			}
 			//move related functions
 			void swap(dynamic_array<T>& dyn_array) noexcept {
 				std::swap(as, dyn_array.as);
@@ -244,7 +267,12 @@ namespace dte_utils {
 				std::is_nothrow_assignable_v<T&, const T&>
 			){
 				provide_element_space();
-				a[us] = element;
+				if constexpr (std::is_trivially_copy_constructible_v<T>) {
+					a[us] = element;
+				}
+				else {
+					new (a + us) T(element);
+				}
 				++us;
 			}
 			void push_back(T&& element) noexcept(
@@ -259,7 +287,12 @@ namespace dte_utils {
 				std::is_nothrow_destructible_v<T>
 			){
 				provide_element_space();
-				a[us] = { args... };
+				if constexpr (std::is_trivially_move_constructible_v<T>) {
+					a[us] = { args... };
+				}
+				else {
+					new (a + us) T(args...);
+				}
 				++us;
 			}
 			void pop_back() noexcept(
@@ -284,7 +317,12 @@ namespace dte_utils {
 				if (index < us) {
 					provide_element_space();
 					move_subarray_right(begin() + index, 1);
-					*(begin() + index) = {args...};
+					if constexpr (std::is_trivially_move_constructible_v<T>) {
+						*(begin() + index) = { args... };
+					}
+					else {
+						new (begin() + index) T(args...);
+					}
 					++us;
 				}
 				else {
@@ -303,7 +341,12 @@ namespace dte_utils {
 					provide_element_space();
 					validate_pointer(old_begin, p, p > old_begin + index - 1 ? 1 : 0);
 					move_subarray_right(begin() + index, 1);
-					*(begin() + index) = element;
+					if constexpr (std::is_trivially_copy_constructible_v<T>) {
+						*(begin() + index) = element;
+					}
+					else {
+						new (begin() + index) T(element);
+					}
 					++us;
 				}
 				else {
@@ -325,22 +368,34 @@ namespace dte_utils {
 					provide_subarray_space(count);
 					validate_pointer(old_begin, p, p > old_begin + index - 1 ? count : 0);
 					if (index < us) {
-						T* i = begin() + index;
-						move_subarray_right(i, count);
+						old_begin = begin() + index;
+						move_subarray_right(old_begin, count);
 						us += count;
-						i += count;
+						old_begin += count;
 						while (count) {
-							*--i = *p;
+							if constexpr (std::is_trivially_copy_constructible_v<T>) {
+								*--old_begin = element;
+							}
+							else {
+								new (--old_begin) T(element);
+							}
 							--count;
 						}
 					}
 					else {
+						old_begin = end();
 						while (count) {
-							a[us] = *p;
-							++us;
+							if constexpr (std::is_trivially_copy_constructible_v<T>) {
+								*old_begin = element;
+							}
+							else {
+								new (old_begin) T(element);
+							}
+							++old_begin;
 							--count;
 						}
 					}
+					us += count;
 				}
 			}
 			void insert(size_t index, T&& element) noexcept(
@@ -366,23 +421,38 @@ namespace dte_utils {
 				validate_pointer(old_begin, first, first < old_begin + index ? 0 : count);
 				validate_pointer(old_begin, last,  last < old_begin + index ? 0 : count);
 				if (index < us) {
-					T* i = begin() + index;
-					move_subarray_right(i, count);
-					i += count;
+					old_begin = begin() + index;
+					move_subarray_right(old_begin, count);
+					old_begin += count;
 					if (last - first != count) {
 						//we need to iter: first -> beging() + index & beging() + index + count -> last
-						T* s = i;
+						T* s = old_begin;
 						while (s != last) {
-							*--i = *--last;
+							if constexpr (std::is_trivially_copy_constructible_v<T>) {
+								*old_begin = *--last;
+							}
+							else {
+								new (old_begin) T(*--last);
+							}
 						}
 						s = begin() + index;
 						while (s != first) {
-							*--i = *--s;
+							if constexpr (std::is_trivially_copy_constructible_v<T>) {
+								*old_begin = *--s;
+							}
+							else {
+								new (old_begin) T(*--s);
+							}
 						}
 					}
 					else {
 						while (first != last) {
-							*--i = *--last;
+							if constexpr (std::is_trivially_copy_constructible_v<T>) {
+								*--old_begin = *--last;
+							}
+							else {
+								new (--old_begin) T(*--last);
+							}
 						}
 					}
 					us += count;
@@ -485,4 +555,6 @@ namespace dte_utils {
 				return as;
 			}
 	};
+	using dynamic_string = dynamic_array<char>;
+	using dynamic_wstring = dynamic_array<wchar_t>;
 }
