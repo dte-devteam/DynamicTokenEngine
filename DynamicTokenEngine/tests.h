@@ -258,5 +258,4 @@ inline void test() {
 	catch (const std::exception& e) {
 		printf("Error: %s\n", e.what());
 	}
-	printf("%zi\n", sizeof(any_ref<int>::ref_union));
 }

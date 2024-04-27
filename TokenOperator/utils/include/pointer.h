@@ -758,10 +758,6 @@ namespace dte_utils {
 				new (&u.strong_array) strong_ref<T, true>(std::move(r));
 				return *this;
 			}
-
-
-
-
 			constexpr any_ref<T>& operator=(const unknown_ref<T, false>& r) noexcept {
 				kill_ref();
 				type = ref_type::unknown;
@@ -814,10 +810,6 @@ namespace dte_utils {
 				new (&u.unknown_array) unknown_ref<T, true>(std::move(r));
 				return *this;
 			}
-
-
-
-
 			constexpr bool operator==(const any_ref<T>& r) {
 				if (type != r.type) {
 					return false;
@@ -842,7 +834,7 @@ namespace dte_utils {
 					case ref_type::unknown_array:	return u.unknown_array == r.u.unknown_array;
 				}
 			};
-		//protected:
+		protected:
 			union ref_union {
 				constexpr ref_union() noexcept {}
 				~ref_union() {}
