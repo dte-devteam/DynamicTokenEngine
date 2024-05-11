@@ -203,7 +203,7 @@ namespace dte_utils {
 			const T& operator [](size_t index) const noexcept {
 				return a[index];
 			}
-			bool operator ==(const dynamic_array<T>& dyn_array) {
+			bool operator ==(const dynamic_array<T>& dyn_array) const {
 				if (us == dyn_array.us) {
 					T* this_i = a;
 					for (T& i : dyn_array) {
@@ -216,7 +216,7 @@ namespace dte_utils {
 				}
 				return false;
 			}
-			bool operator !=(const dynamic_array<T>& dyn_array) {
+			bool operator !=(const dynamic_array<T>& dyn_array) const {
 				return !(*this == dyn_array);
 			}
 			//move related functions

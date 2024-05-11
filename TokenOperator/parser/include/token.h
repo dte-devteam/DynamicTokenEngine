@@ -1,28 +1,29 @@
 #pragma once
 #include "utils/include/dictionary.h"
 #include "utils/include/pointer.h"
+#include "token/include/function.h"
+#include "token/include/object.h"
 namespace dte_parser {
-	typedef bool (*unknown_function)();
+	/*
+	token - is main pseudograph
+	 - contains function (if defined and filled)
+	 - contains data (if object and data is set)
+	*/
 	struct token {
 		struct relation {
 			dte_utils::dynamic_wstring text;
-			dte_utils::dictionary<dte_utils::dynamic_wstring, bool> flags;
+			//dte_utils::dictionary<dte_utils::dynamic_wstring, bool> flags;	//possible analysis
 		};
 		struct metainfo {
-			unknown_function this_execution;
-			unknown_function next_execution;
-			unknown_function jump_execution;
-			template<typename ...Args>
-			unknown_function execute(Args... args) {
-				if (this_execution == nullptr) {
-					//to do throw
-				}
-				return ((bool (*)(Args))this_execution)(args...) ? jump_execution : next_execution;
-			}
+			dte_token::function func;
+			//data (object)
 		};
 		struct link {
 			dte_utils::unknown_ref<token, false> pointer;
 			relation token_relation;
+			dte_utils::dynamic_wstring pseudonym;
+			dte_utils::dynamic_wstring& getcallname();
+			const dte_utils::dynamic_wstring& getcallname() const;
 		};
 		public:
 			//~token();
