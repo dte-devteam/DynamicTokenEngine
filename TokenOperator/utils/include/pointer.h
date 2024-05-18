@@ -100,7 +100,8 @@ namespace dte_utils {
 				}
 				reference = new ref<T>((T*)instance, 1, 0);
 			}
-			constexpr T& operator*() const noexcept {
+			template<typename U = T, std::enable_if_t<!std::is_void_v<U>, int> = 0>
+			constexpr U& operator*() const noexcept {
 				return *reference->instance;
 			}
 			constexpr T* operator->() const noexcept {
@@ -253,6 +254,10 @@ namespace dte_utils {
 				}
 				weak_ref::~weak_ref();
 				reference = new ref<T>((T*)instance, 1, 1);
+			}
+			template<typename U = T, std::enable_if_t<is_array && !std::is_void_v<U>, int> = 0>
+			constexpr U& operator[](size_t index) {
+				return reference->instance[index];
 			}
 		protected:
 			constexpr void kill_instance() const noexcept(
@@ -407,6 +412,10 @@ namespace dte_utils {
 				}
 				weak::~weak();
 				reference = new ref<T>((T*)instance, 1, strength ? 1 : 0);
+			}
+			template<typename U = T, std::enable_if_t<is_array && !std::is_void_v<U>, int> = 0>
+			constexpr U& operator[](size_t index) {
+				return reference->instance[index];
 			}
 			//get methods
 			constexpr bool is_strong() const noexcept {

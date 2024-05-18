@@ -15,9 +15,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="token\include\object.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
     <ClInclude Include="utils\include\dynamic_array.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
@@ -48,7 +45,7 @@
     <ClInclude Include="token\include\container.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="parser\include\token.h">
+    <ClInclude Include="token\include\token.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
     <ClInclude Include="utils\include\pointer.h">
@@ -65,10 +62,7 @@
     <ClCompile Include="utils\source\exec_time.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="parser\source\token.cpp">
-      <Filter>Исходные файлы</Filter>
-    </ClCompile>
-    <ClCompile Include="token\source\object.cpp">
+    <ClCompile Include="token\source\token.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
   </ItemGroup>

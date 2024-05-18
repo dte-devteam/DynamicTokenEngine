@@ -1,15 +1,12 @@
 #pragma once
 #include <iostream>
-#include "token/include/object.h"
-#include "token/include/type.h"
-#include "token/include/function.h"
 
 #include "module/include/module_instance.h"
 
 #include "utils/include/exec_time.h"
 #include "utils/include/pointer.h"
 
-#include "parser/include/token.h"
+#include "token/include/token.h"
 
 #include "token/include/container.h"
 
@@ -45,7 +42,7 @@ struct S {
 using namespace dte_token;
 using namespace dte_module;
 using namespace dte_utils;
-using namespace dte_parser;
+//using namespace dte_parser;
 inline void test_dynamic_array() {
 	std::cout << "-function \'test_dynamic_array\' started--" << std::endl;
 	size_t ints[] = {

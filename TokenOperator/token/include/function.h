@@ -1,9 +1,10 @@
 #pragma once
-#include <iostream>
-#include "object.h"
+#include "utils/include/pointer.h"
+#include "utils/include/dynamic_array.h"
 namespace dte_token {
+	struct token;
 	struct stream_data;
-	typedef dte_utils::dynamic_array<dte_utils::strong_ref<object, false>> args;
+	typedef dte_utils::dynamic_array<dte_utils::strong_ref<token, false>> args;
 	typedef size_t (*function)(args&);
 	//typedef void (*function)(stream_data&, args&);
 	struct stream_data {
@@ -12,14 +13,4 @@ namespace dte_token {
 		//suspend stream
 		//kill stream
 	};
-	//inline void test(stream_data& sd, args& args) {
-	//	for (dte_utils::strong_ref<object, false>& o : args) {
-	//		std::cout << o.get_pointer();
-	//		if (o.get_strong_owners()) {
-	//			std::wcout << L"\t" << o->name.begin();
-	//		}
-	//		std::cout << std::endl;
-	//	}
-	//}
-	//inline function _fp = test;
 }

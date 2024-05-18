@@ -22,75 +22,28 @@ namespace dte_token {
 	}
 	//#define OPERATIONAL_TYPES(...) enum TYPE_REQUEST {__VA_ARGS__};
 	struct type {
-		const char*								name;				//user defined name for easier perfomance
-		size_t									virtual_type;		//virtual type allowing getting data from object
-		dte_utils::dynamic_array<type*>			parents;			//parents
-		type(const char* type_name, size_t virtual_type = 0) : name(type_name), virtual_type(virtual_type) {}
-		type(const type& other_type) : name(dte_utils::constexpr_strcpy(other_type.name)), virtual_type(other_type.virtual_type), parents(other_type.parents) {}
-		type(type&& other_type) noexcept : name(std::move(other_type.name)), virtual_type(other_type.virtual_type), parents(std::move(other_type.parents)) {}
-		~type() {
-			//if you got _debugbreak() here - you used const char[]:
-			//for const char[] in constructor apply constexpr_strcpy
-			delete[] name;
-		}
+		dte_utils::dynamic_wstring					name;
+		/*dte_utils::dynamic_array<type*>			parents;
 		bool is_same_as(const type& other_type) {
-			return virtual_type == other_type.virtual_type;
+			return false;	//to do
 		}
 		bool is_parent_of(const type& other_type) {
 			return false;	//to do
 		}
 		bool is_coherent_to(const type& other_type) {
-			return !dte_utils::constexpr_strcmp(name, other_type.name);
+			return false;	//to do
 		}
+		*/
 		//operators-----------------------------
+		/*
 		type& operator=(type&& other_type_handler) noexcept {
 			if (this == &other_type_handler) {
 				return *this;
 			}
 			name = std::move(other_type_handler.name);
-			virtual_type = std::move(other_type_handler.virtual_type);
 			parents = std::move(other_type_handler.parents);
 			return *this;
 		}
-	};
-	struct type_handler {
-		const char*								name;				//user defined name for easier perfomance
-		dte_utils::dynamic_array<const char*>	parents;			//other types name for polymorphism
-		type*									type_instance;		//ponter to type
-		type_handler(const char* name) : name(name), parents(), type_instance(nullptr) {}
-		template<size_t N>
-		type_handler(const char* name, const char* (&array)[N]) : name(name), parents(array, N, 0), type_instance(nullptr) {}
-		type_handler(const char* name, const char** array, size_t array_size) : name(name), parents(array, array_size), type_instance(nullptr) {}
-		type_handler(const type_handler& other_type_handler) : name(dte_utils::constexpr_strcpy(other_type_handler.name)), parents(other_type_handler.parents), type_instance(other_type_handler.type_instance) {}
-		type_handler(type_handler&& other_type_handler) noexcept : name(std::move(other_type_handler.name)), parents(std::move(other_type_handler.parents)), type_instance(std::move(other_type_handler.type_instance)) {}
-		~type_handler() {
-			//if you got _debugbreak() here - you used const char[]:
-			//for const char[] in constructor apply constexpr_strcpy
-			delete[] name;
-		}
-		//operators-----------------------------
-		operator type*() const {
-			return type_instance;
-		}
-		type_handler& operator=(const type_handler& other_type_handler) {
-			if (&other_type_handler == this) {
-				return *this;
-			}
-			delete[] name;
-			name = dte_utils::constexpr_strcpy(other_type_handler.name);
-			parents = other_type_handler.parents;
-			type_instance = other_type_handler.type_instance;
-			return *this;
-		}
-		type_handler& operator=(type_handler&& other_type_handler) noexcept {
-			if (&other_type_handler == this) {
-				return *this;
-			}
-			delete[] name;
-			name = std::move(other_type_handler.name);
-			parents = std::move(other_type_handler.parents);
-			type_instance = std::move(other_type_handler.type_instance);
-			return *this;
-		}
+		*/
 	};
 }
