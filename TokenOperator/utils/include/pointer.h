@@ -1,5 +1,6 @@
 #pragma once
 #include <type_traits>
+#include "function.h"
 namespace dte_utils {
 	template<typename T>
 	struct ref {
@@ -100,11 +101,18 @@ namespace dte_utils {
 				}
 				reference = new ref<T>((T*)instance, 1, 0);
 			}
-			template<typename U = T, std::enable_if_t<!std::is_void_v<U>, int> = 0>
-			constexpr U& operator*() const noexcept {
+			template<typename R = std::enable_if_t<!std::is_void_v<T>, T>>
+			constexpr R& operator*() const noexcept {
 				return *reference->instance;
 			}
 			constexpr T* operator->() const noexcept {
+				return reference->instance;
+			}
+			template<typename R = return_type_t<T>, typename ...Args>
+			R operator()(Args... args) const {
+				return (*reference->instance)((std::decay_t<Args>)args...);
+			}
+			constexpr operator bool() const noexcept {
 				return reference->instance;
 			}
 			//move related methods
@@ -255,8 +263,8 @@ namespace dte_utils {
 				weak_ref::~weak_ref();
 				reference = new ref<T>((T*)instance, 1, 1);
 			}
-			template<typename U = T, std::enable_if_t<is_array && !std::is_void_v<U>, int> = 0>
-			constexpr U& operator[](size_t index) {
+			template<typename R = std::enable_if_t<is_array && !std::is_void_v<T>, T>>
+			constexpr R& operator[](size_t index) {
 				return reference->instance[index];
 			}
 		protected:
@@ -413,8 +421,8 @@ namespace dte_utils {
 				weak::~weak();
 				reference = new ref<T>((T*)instance, 1, strength ? 1 : 0);
 			}
-			template<typename U = T, std::enable_if_t<is_array && !std::is_void_v<U>, int> = 0>
-			constexpr U& operator[](size_t index) {
+			template<typename R = std::enable_if_t<is_array && !std::is_void_v<T>, T>>
+			constexpr R& operator[](size_t index) {
 				return reference->instance[index];
 			}
 			//get methods

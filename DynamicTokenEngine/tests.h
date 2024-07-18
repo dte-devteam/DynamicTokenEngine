@@ -5,10 +5,11 @@
 
 #include "utils/include/exec_time.h"
 #include "utils/include/pointer.h"
+#include "utils/include/hash.h"
 
+#include "token/include/data.h"
 #include "token/include/token.h"
-
-#include "token/include/container.h"
+#include "token/include/function.h"
 
 #include "target_architecture.h"
 #include <minwindef.h>
@@ -132,24 +133,18 @@ inline void test_pointers() {
 	//unknown_ref<int, false> z = unknown_ref<int, false>::unknown_ref<false>();
 	std::cout << "-----function \'test_pointers\' ended-----" << std::endl;
 }
-inline void test_containes() {
-	std::cout << "---function \'test_containers\' started---" << std::endl;
-	container i1((int*)nullptr, false);
-	container i2((int*)nullptr, false);
-	std::cout << i1.destructor << ":" << i2.destructor << std::endl;
-	std::cout << "---function \'test_containers\' ended-----" << std::endl;
-}
 inline void test() {
 	hpet et;
 	test_dynamic_array();
 	std::cout << "dt: " << et.get_ns_dt_strong().count() << "ns" << std::endl;
 	test_pointers();
 	std::cout << "dt: " << et.get_ns_dt_strong().count() << "ns" << std::endl;
-	test_containes();
 	try {
 		weak_ref<int>& r = any_ref<int>().get<weak_ref>();
 	}
 	catch (const std::exception& e) {
 		printf("Error: %s\n", e.what());
 	}
+	std::cout << (size_t)pearson_hash<wchar_t, wchar_t, wchar_t>(L"\2\1", 2) << std::endl;
+	std::cout << (size_t)(L"\2"[0]) << std::endl;
 }

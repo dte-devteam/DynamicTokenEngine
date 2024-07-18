@@ -7,25 +7,25 @@ dynamic_wstring& token::link::getcallname() {
 const dynamic_wstring& token::link::getcallname() const {
 	return pseudonym.get_used_size() ? pseudonym : pointer->name;
 }
-token::link* token::get_token(const dynamic_wstring& token_name) {
+token::link* token::get_token(const dynamic_wstring& token_name) const {
 	return links.find(
-		[&token_name](const token::link& iter) {
+		[&token_name](const link& iter) noexcept {
 			return iter.getcallname() == token_name;
 		}
 	);
 }
-token::link* token::get_token(dynamic_wstring&& token_name) {
+token::link* token::get_token(dynamic_wstring&& token_name) const {
 	return links.find(
-		[&token_name](const link& iter) {
+		[&token_name](const link& iter) noexcept {
 			return iter.getcallname() == token_name;
 		}
 	);
 }
-token::link* token::get_token(const dynamic_path& token_path, size_t shift) {
+token::link* token::get_token(const dynamic_path& token_path, size_t shift) const {
 	link* l = get_token(token_path[shift]);
 	return ++shift < token_path.get_used_size() && l ? get_token(token_path, shift) : l;
 }
-token::link* token::get_token(dynamic_path&& token_path, size_t shift) {
+token::link* token::get_token(dynamic_path&& token_path, size_t shift) const {
 	link* l = get_token(token_path[shift]);
 	return ++shift < token_path.get_used_size() && l ? get_token(token_path, shift) : l;
 }

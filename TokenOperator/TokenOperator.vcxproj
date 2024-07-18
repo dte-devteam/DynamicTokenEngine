@@ -21,21 +21,24 @@
   <ItemGroup>
     <ClInclude Include="module\include\module_instance.h" />
     <ClInclude Include="target_architecture.h" />
-    <ClInclude Include="token\include\container.h" />
+    <ClInclude Include="token\include\data.h" />
     <ClInclude Include="token\include\function.h" />
     <ClInclude Include="token\include\token.h" />
-    <ClInclude Include="utils\include\dictionary.h" />
     <ClInclude Include="utils\include\dynamic_array.h" />
     <ClInclude Include="token\include\type.h" />
     <ClInclude Include="module\include\module_version.h" />
     <ClInclude Include="module\module_defines.h" />
     <ClInclude Include="utils\include\exec_time.h" />
+    <ClInclude Include="utils\include\function.h" />
+    <ClInclude Include="utils\include\hash.h" />
     <ClInclude Include="utils\include\pointer.h" />
     <ClInclude Include="utils\include\text.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="module\source\module_version.cpp" />
+    <ClCompile Include="token\source\function.cpp" />
     <ClCompile Include="token\source\token.cpp" />
+    <ClCompile Include="token\source\type.cpp" />
     <ClCompile Include="utils\source\exec_time.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
