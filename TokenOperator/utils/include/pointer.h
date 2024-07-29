@@ -12,7 +12,7 @@ namespace dte_utils {
 	struct weak_ref {
 		template <typename U> friend struct weak_ref;
 		public:
-			constexpr weak_ref() noexcept : weak_ref((T*)nullptr) {}
+			constexpr weak_ref() noexcept : weak_ref(static_cast<T*>(nullptr)) {}
 			constexpr weak_ref(T* instance) noexcept : weak_ref(new ref<T>(instance, 1, 0)) {}
 			constexpr weak_ref(const weak_ref<T>& r) noexcept : weak_ref(r.reference) {
 				++reference->weak_owners;
@@ -65,7 +65,7 @@ namespace dte_utils {
 				if (!--reference->weak_owners) {
 					delete reference;
 				}
-				reference = (ref<T>*)r.reference;
+				reference = static_cast<ref<T>*>(r.reference);
 				++reference->weak_owners;
 				return *this;
 			}
@@ -81,7 +81,7 @@ namespace dte_utils {
 				if (!--reference->weak_owners) {
 					delete reference;
 				}
-				reference = std::move((ref<T>*)r.reference);
+				reference = std::move(static_cast<ref<T>*>(r.reference));
 				return *this;
 			}
 			constexpr weak_ref<T>& operator=(T* instance) {
@@ -99,7 +99,7 @@ namespace dte_utils {
 				if (!--reference->weak_owners) {
 					delete reference;
 				}
-				reference = new ref<T>((T*)instance, 1, 0);
+				reference = new ref<T>(static_cast<T*>(instance), 1, 0);
 			}
 			template<typename R = std::enable_if_t<!std::is_void_v<T>, T>>
 			constexpr R& operator*() const noexcept {
@@ -136,7 +136,7 @@ namespace dte_utils {
 		protected:
 			constexpr weak_ref(ref<T>* reference) noexcept : reference(reference) {}
 			template<typename U>
-			constexpr weak_ref(ref<U>* reference) noexcept : reference((ref<T>*)reference) {
+			constexpr weak_ref(ref<U>* reference) noexcept : reference(static_cast<ref<T>*>(reference)) {
 				static_assert(
 					std::is_base_of_v<T, U>,
 					"can create reference to T from U only if T is base of U"
@@ -223,7 +223,7 @@ namespace dte_utils {
 					kill_instance();
 				}
 				weak_ref::~weak_ref();
-				reference = (ref<T>*)r.reference;
+				reference = static_cast<ref<T>*>(r.reference);
 				++reference->strong_owners;
 				++reference->weak_owners;
 				return *this;
@@ -241,7 +241,7 @@ namespace dte_utils {
 					kill_instance();
 				}
 				weak_ref::~weak_ref();
-				reference = std::move((ref<T>*)r.reference);
+				reference = std::move(static_cast<ref<T>*>(r.reference));
 				return *this;
 			}
 			constexpr strong_ref<T, is_array>& operator=(T* instance) {
@@ -261,7 +261,7 @@ namespace dte_utils {
 					kill_instance();
 				}
 				weak_ref::~weak_ref();
-				reference = new ref<T>((T*)instance, 1, 1);
+				reference = new ref<T>(static_cast<T*>(instance), 1, 1);
 			}
 			template<typename R = std::enable_if_t<is_array && !std::is_void_v<T>, T>>
 			constexpr R& operator[](size_t index) {
@@ -375,7 +375,7 @@ namespace dte_utils {
 					}
 				}
 				weak::~weak()
-				reference = (ref<T>*)r.reference;
+				reference = static_cast<ref<T>*>(r.reference);
 				if (strength) {
 					++reference->strong_owners;
 				}
@@ -396,7 +396,7 @@ namespace dte_utils {
 					}
 				}
 				weak::~weak()
-				reference = std::move((ref<T>*)r.reference);
+				reference = std::move(static_cast<ref<T>*>(r.reference));
 			}
 			constexpr unknown_ref<T, is_array>& operator=(T* instance) {
 				if (strength) {
@@ -419,7 +419,7 @@ namespace dte_utils {
 					}
 				}
 				weak::~weak();
-				reference = new ref<T>((T*)instance, 1, strength ? 1 : 0);
+				reference = new ref<T>(static_cast<T*>(instance), 1, strength ? 1 : 0);
 			}
 			template<typename R = std::enable_if_t<is_array && !std::is_void_v<T>, T>>
 			constexpr R& operator[](size_t index) {
@@ -563,11 +563,41 @@ namespace dte_utils {
 				kill_ref();
 			}
 			//get methods
-			constexpr ref_type get_type() {
+			constexpr T* get_pointer() const noexcept {
+				switch (type) {
+					case ref_type::weak:			return u.weak.get_pointer();
+					case ref_type::strong:			return u.strong.get_pointer();
+					case ref_type::strong_array:	return u.strong_array.get_pointer();
+					case ref_type::unknown:			return u.unknown.get_pointer();
+					case ref_type::unknown_array:	return u.unknown_array.get_pointer();
+					default:						return nullptr;
+				}
+			}
+			constexpr size_t get_weak_owners() const noexcept {
+				switch (type) {
+					case ref_type::weak:			return u.weak.get_weak_owners();
+					case ref_type::strong:			return u.strong.get_weak_owners();
+					case ref_type::strong_array:	return u.strong_array.get_weak_owners();
+					case ref_type::unknown:			return u.unknown.get_weak_owners();
+					case ref_type::unknown_array:	return u.unknown_array.get_weak_owners();
+					default:						return 0;
+				}
+			}
+			constexpr size_t get_strong_owners() const noexcept {
+				switch (type) {
+					case ref_type::weak:			return u.weak.get_strong_owners();
+					case ref_type::strong:			return u.strong.get_strong_owners();
+					case ref_type::strong_array:	return u.strong_array.get_strong_owners();
+					case ref_type::unknown:			return u.unknown.get_strong_owners();
+					case ref_type::unknown_array:	return u.unknown_array.get_strong_owners();
+					default:						return 0;
+				}
+			}
+			constexpr ref_type get_type() const noexcept {
 				return type;
 			}
 			template<template<typename> typename C>
-			constexpr C<T>* get_if() {}
+			constexpr C<T>* get_if();
 			template<>
 			constexpr weak_ref<T>* get_if<weak_ref>() {
 				return type == ref_type::weak ? &u.weak : nullptr;
@@ -591,7 +621,7 @@ namespace dte_utils {
 				return type == ref_type::unknown_array ? &u.unknown_array : nullptr;
 			}
 			template<template<typename> typename C>
-			constexpr C<T>& get() {}
+			constexpr C<T>& get();
 			template<>
 			constexpr weak_ref<T>& get<weak_ref>() {
 				if (type == ref_type::weak) {
@@ -633,6 +663,19 @@ namespace dte_utils {
 			constexpr void clear() {
 				kill_ref();
 				type = none;
+			}
+			//move related methods
+			void move(T* target) noexcept(
+				std::is_nothrow_move_constructible_v<T>&&
+				std::is_nothrow_move_assignable_v<T>
+			) {
+				switch (type) {
+					case ref_type::weak:			return u.weak.move(target);
+					case ref_type::strong:			return u.strong.move(target);
+					case ref_type::strong_array:	return u.strong_array.move(target);
+					case ref_type::unknown:			return u.unknown.move(target);
+					case ref_type::unknown_array:	return u.unknown_array.move(target);
+				}
 			}
 			//operators-----------------------------
 			constexpr any_ref<T>& operator=(const any_ref<T>& r) {
@@ -827,30 +870,20 @@ namespace dte_utils {
 				new (&u.unknown_array) unknown_ref<T, true>(std::move(r));
 				return *this;
 			}
-			constexpr bool operator==(const any_ref<T>& r) {
-				if (type != r.type) {
-					return false;
-				}
-				switch (type) {
-					case ref_type::weak:			return u.weak == r.u.weak;
-					case ref_type::strong:			return u.strong == r.u.strong;
-					case ref_type::strong_array:	return u.strong_array == r.u.strong_array;
-					case ref_type::unknown:			return u.unknown == r.u.unknown;
-					case ref_type::unknown_array:	return u.unknown_array == r.u.unknown_array;
-				}
-			};
-			constexpr bool operator==(any_ref<T>&& r) {
-				if (type != r.type) {
-					return false;
-				}
-				switch (type) {
-					case ref_type::weak:			return u.weak == r.u.weak;
-					case ref_type::strong:			return u.strong == r.u.strong;
-					case ref_type::strong_array:	return u.strong_array == r.u.strong_array;
-					case ref_type::unknown:			return u.unknown == r.u.unknown;
-					case ref_type::unknown_array:	return u.unknown_array == r.u.unknown_array;
-				}
-			};
+			template<typename R = std::enable_if_t<!std::is_void_v<T>, T>>
+			constexpr R& operator*() const noexcept {
+				return *get_pointer();
+			}
+			constexpr T* operator->() const noexcept {
+				return get_pointer();
+			}
+			template<typename R = return_type_t<T>, typename ...Args>
+			R operator()(Args... args) const {
+				return (*get_pointer())((std::decay_t<Args>)args...);
+			}
+			constexpr operator bool() const noexcept {
+				return get_pointer();
+			}
 		protected:
 			union ref_union {
 				constexpr ref_union() noexcept {}

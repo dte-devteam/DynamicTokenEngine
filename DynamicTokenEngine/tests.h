@@ -11,6 +11,8 @@
 #include "token/include/token.h"
 #include "token/include/function.h"
 
+#include "core/include/initialization_data.h"
+
 #include "target_architecture.h"
 #include <minwindef.h>
 #include <winver.h>
@@ -76,7 +78,7 @@ inline void test_dynamic_array() {
 	std::cout << std::endl;
 	std::cout << "insert index -1 at index 0" << std::endl;
 	dyt.insert(0, *dyt.back());
-	//should be 11, 0, 0, 0, 1, 3, 5, 7, 0, 0, 0, 1, 3, 5, 7, 9, 11
+	//should be 11, 0, 0, 1, 3, 5, 7, 0, 0, 0, 1, 3, 5, 7, 9, 11
 	std::cout << "list \'dyt\': ";
 	for (size_t _i : dyt) {
 		std::cout << _i << " ";
@@ -84,7 +86,7 @@ inline void test_dynamic_array() {
 	std::cout << std::endl;
 	std::cout << "insert index -3 at index 15" << std::endl;
 	dyt.insert(15, *(dyt.end() - 3));
-	//should be 11, 0, 0, 0, 1, 3, 5, 7, 0, 0, 0, 1, 3, 5, 7, 9, 7, 11
+	//should be 11, 0, 0, 1, 3, 5, 7, 0, 0, 0, 1, 3, 5, 7, 9, 7, 11
 	std::cout << "list \'dyt\': ";
 	for (size_t _i : dyt) {
 		std::cout << _i << " ";
@@ -92,6 +94,7 @@ inline void test_dynamic_array() {
 	std::cout << std::endl;
 	std::cout << "--function \'test_dynamic_array\' ended---" << std::endl;
 }
+
 inline void test_pointers() {
 	std::cout << "----function \'test_pointers\' started----" << std::endl;
 	//test weak_ref
@@ -133,7 +136,7 @@ inline void test_pointers() {
 	//unknown_ref<int, false> z = unknown_ref<int, false>::unknown_ref<false>();
 	std::cout << "-----function \'test_pointers\' ended-----" << std::endl;
 }
-inline void test() {
+inline void test() {	
 	hpet et;
 	test_dynamic_array();
 	std::cout << "dt: " << et.get_ns_dt_strong().count() << "ns" << std::endl;
@@ -145,6 +148,6 @@ inline void test() {
 	catch (const std::exception& e) {
 		printf("Error: %s\n", e.what());
 	}
-	std::cout << (size_t)pearson_hash<wchar_t, wchar_t, wchar_t>(L"\2\1", 2) << std::endl;
+	std::cout << static_cast<size_t>(pearson_hash<wchar_t, wchar_t, wchar_t>(L"\2\1", 2)) << std::endl;
 	std::cout << (size_t)(L"\2"[0]) << std::endl;
 }

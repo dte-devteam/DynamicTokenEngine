@@ -1,10 +1,6 @@
 #pragma once
-//#include <new>
-//#include <corecrt_malloc.h>
+#include <new>	//to do - find out why fixes error C2661 with operator new
 #include <type_traits>
-namespace std {
-	typedef ::size_t size_t;
-}
 namespace dte_utils {
 	//to do: handle malloc(N) = NULL (memory shortage) 
 	template<typename T>
@@ -18,10 +14,10 @@ namespace dte_utils {
 				std::is_nothrow_move_constructible_v<T>&&
 				std::is_nothrow_move_assignable_v<T>
 			){
-				T* s = end();
-				T* t = s + shift;
-				while (s != pos) {
-					*--t = std::move(*--s);
+				T* source = end();
+				T* target = source + shift;
+				while (source != pos) {
+					*--target = std::move(*--source);
 				}
 			}
 			void move_subarray_left(T* pos, size_t shift) noexcept(
@@ -46,7 +42,7 @@ namespace dte_utils {
 			template<size_t N>
 			dynamic_array(T (&array)[N]) : dynamic_array(array, N, 0) {}
 			dynamic_array(T* array, size_t use_size) : as(use_size), us(use_size), a(array)  {}
-			dynamic_array(T* array, size_t use_size, size_t reserve_size) : as(use_size + reserve_size), us(use_size), a((T*)malloc(sizeof(T) * as)) {
+			dynamic_array(T* array, size_t use_size, size_t reserve_size) : as(use_size + reserve_size), us(use_size), a(static_cast<T*>(malloc(sizeof(T) * as))) {
 				T* source = array + us;
 				T* target = end();
 				while (source != array) {
@@ -69,7 +65,7 @@ namespace dte_utils {
 			template<size_t N, typename U>
 			dynamic_array(U (&array)[N]) : dynamic_array(array, N){}
 			template<typename U>
-			dynamic_array(U* array, size_t use_size, size_t reserve_size) : as(use_size + reserve_size), us(use_size), a((T*)malloc(sizeof(T) * as)) {
+			dynamic_array(U* array, size_t use_size, size_t reserve_size) : as(use_size + reserve_size), us(use_size), a(static_cast<T*>(malloc(sizeof(T) * as))) {
 				U* source = array + us;
 				T* target = end();
 				while (source != array) {
@@ -92,7 +88,7 @@ namespace dte_utils {
 				#endif
 			}
 			template<typename U>
-			dynamic_array(dynamic_array<U>&& dyn_array) noexcept : as(std::move(dyn_array.as)), us(std::move(dyn_array.us)), a((T*)malloc(sizeof(T)* as)) {
+			dynamic_array(dynamic_array<U>&& dyn_array) noexcept : as(std::move(dyn_array.as)), us(std::move(dyn_array.us)), a(static_cast<T*>(malloc(sizeof(T)* as))) {
 				U* source = dyn_array.a + us;
 				T* target = end();
 				while (source != dyn_array.a) {
@@ -171,7 +167,7 @@ namespace dte_utils {
 					}
 					free(a);
 					as = dyn_array.as;
-					a = (T*)malloc(sizeof(T) * as);
+					a = static_cast<T*>(malloc(sizeof(T) * as));
 				}
 				us = dyn_array.us;
 				T* source = dyn_array.end();
@@ -201,7 +197,7 @@ namespace dte_utils {
 					}
 					free(a);
 					as = dyn_array.as;
-					a = (T*)malloc(sizeof(T) * as);
+					a = static_cast<T*>(malloc(sizeof(T) * as));
 				}
 				us = dyn_array.us;
 				U* source = dyn_array.end();
@@ -358,10 +354,10 @@ namespace dte_utils {
 							(--i)->~T();
 						}
 					}
-					a = (T*)realloc(a, sizeof(T) * size);
+					a = static_cast<T*>(realloc(a, sizeof(T) * size));
 					return;
 				}
-				T* new_array = (T*)realloc(a, sizeof(T) * size);
+				T* new_array = static_cast<T*>(realloc(a, sizeof(T) * size));
 				if (new_array) {
 					as = size;
 					a = new_array;
@@ -419,11 +415,36 @@ namespace dte_utils {
 				std::is_nothrow_destructible_v<T>
 			){
 				if (us) {
-					if constexpr (!std::is_trivially_destructible_v<T>) {
+					if constexpr (std::is_trivially_destructible_v<T>) {
 						--us;
 					}
 					else {
 						a[--us].~T();
+					}
+				}
+			}
+			void pop_back(size_t count) noexcept(
+				std::is_nothrow_destructible_v<T>
+			) {
+				if (count > us) {
+					if constexpr (std::is_trivially_destructible_v<T>) {
+						us = 0;
+					}
+					else {
+						while (us) {
+							a[--us].~T();
+						}
+					}
+				}
+				else {
+					if constexpr (std::is_trivially_destructible_v<T>) {
+						us -= count;
+					}
+					else {
+						while (count) {
+							a[--us].~T();
+							--count;
+						}
 					}
 				}
 			}
@@ -462,10 +483,10 @@ namespace dte_utils {
 					validate_pointer(old_begin, p, p > old_begin + index - 1 ? 1 : 0);
 					move_subarray_right(begin() + index, 1);
 					if constexpr (std::is_trivially_copy_constructible_v<T>) {
-						*(begin() + index) = element;
+						*(begin() + index) = *p;
 					}
 					else {
-						new (begin() + index) T(element);
+						new (begin() + index) T(*p);
 					}
 					++us;
 				}
@@ -494,10 +515,10 @@ namespace dte_utils {
 						old_begin += count;
 						while (count) {
 							if constexpr (std::is_trivially_copy_constructible_v<T>) {
-								*--old_begin = element;
+								*--old_begin = *p;
 							}
 							else {
-								new (--old_begin) T(element);
+								new (--old_begin) T(*p);
 							}
 							--count;
 						}
@@ -506,10 +527,10 @@ namespace dte_utils {
 						old_begin = end();
 						while (count) {
 							if constexpr (std::is_trivially_copy_constructible_v<T>) {
-								*old_begin = element;
+								*old_begin = *p;
 							}
 							else {
-								new (old_begin) T(element);
+								new (old_begin) T(*p);
 							}
 							++old_begin;
 							--count;
@@ -594,6 +615,9 @@ namespace dte_utils {
 					//to do
 				#endif
 				if (pos < back()) {
+					if constexpr (!std::is_trivially_destructible_v<T>) {
+						pos->~T();
+					}
 					move_subarray_left(++pos, 1);
 					--us;
 				}

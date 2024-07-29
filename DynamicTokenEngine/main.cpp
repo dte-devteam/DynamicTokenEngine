@@ -8,12 +8,6 @@
 
 //to do, all arrays if can have size 0 - set limit to delete[] (otherwise heap corruption)
 
-
-
-
-
-using namespace dte_token;
-using namespace dte_utils;
 int main(int argc, char* argv[]) {
 	while (--argc) {
 		std::cout << argc << " : " << argv[argc] << std::endl;

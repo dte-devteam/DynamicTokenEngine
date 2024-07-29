@@ -141,6 +141,7 @@
       <CallingConvention>FastCall</CallingConvention>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <InlineFunctionExpansion>Disabled</InlineFunctionExpansion>
+      <LanguageStandard_C>Default</LanguageStandard_C>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -166,6 +167,7 @@
       <Optimization>MaxSpeed</Optimization>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
       <DebugInformationFormat>None</DebugInformationFormat>
+      <LanguageStandard_C>Default</LanguageStandard_C>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -182,9 +184,11 @@
     </ProjectReference>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="core\source\initialization_data.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="core\include\initialization_data.h" />
     <ClInclude Include="tests.h" />
     <ClInclude Include="resource.h" />
   </ItemGroup>

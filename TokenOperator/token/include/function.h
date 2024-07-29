@@ -3,28 +3,16 @@
 #include "token.h"
 namespace dte_token {
 	typedef dte_utils::dynamic_array<token::link> long_args;
-	typedef bool (*function)(long_args);	//long_args&& with std::move?
-	struct function_call {
-		virtual bool execute(long_args) = 0;
-	};
-	struct function_info {
-		//to do info
-	};
-	struct funtion_literal : function_call {
-		//to do
-		bool execute(long_args args);
-	};
-	struct dll_function : function_info, function_call {
-		function fp;
-		bool execute(long_args args);
-	};
-	struct dynamic_function : function_info, function_call {
+	typedef bool (*function)(long_args&, const size_t);
+	__forceinline void clear_function_frame(long_args& stack, const size_t stack_frame_begin);
+	struct dynamic_function {
 		struct function_step {
 			size_t jump;
-			dte_utils::weak_ref<function_call> fc;
+			dte_utils::weak_ref<function> fc;
+			//to do literal storage
 		};
+		size_t stack_frame_size;
 		dte_utils::dynamic_array<function_step> functions;
-		//to do literal storage
-		bool execute(long_args args);
+		void execute(long_args& stack, const size_t stack_frame_begin = 0) const;
 	};
 }

@@ -1,6 +1,6 @@
 #pragma once
 #include "utils/include/dynamic_array.h"
-#include "utils/include/pointer.h"
+#include "data.h"
 namespace dte_utils {
 	typedef dynamic_array<dynamic_wstring> dynamic_path;
 }
@@ -10,7 +10,7 @@ namespace dte_token {
 	 - contains function (if defined and set)
 	 - contains data (if defined is set)
 	*/
-	struct token {
+	struct token : data {
 		struct link {
 			dte_utils::unknown_ref<token, false> pointer;
 			dte_utils::dynamic_wstring pseudonym;
