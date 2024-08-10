@@ -23,15 +23,7 @@ namespace dte_token {
 	//#define OPERATIONAL_TYPES(...) enum TYPE_REQUEST {__VA_ARGS__};
 	struct type {
 		dte_utils::dynamic_wstring							name;
-		dte_utils::dynamic_array<dte_utils::weak_ref<type>>	parents;
 		bool is_same_as(const type& other_type) const noexcept;
-		bool is_parent_of(const type& other_type) const noexcept;
-		bool is_child_of(const type& other_type) const noexcept;
-		/*
-		bool is_coherent_to(const type& other_type) {
-			return false;	//to do
-		}
-		*/
 		//operators-----------------------------
 		type& operator=(const type& other_type) noexcept;
 		type& operator=(type&& other_type) noexcept;

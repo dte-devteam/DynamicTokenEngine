@@ -42,7 +42,7 @@ namespace dte_utils {
 			template<size_t N>
 			dynamic_array(T (&array)[N]) : dynamic_array(array, N, 0) {}
 			dynamic_array(T* array, size_t use_size) : as(use_size), us(use_size), a(array)  {}
-			dynamic_array(T* array, size_t use_size, size_t reserve_size) : as(use_size + reserve_size), us(use_size), a(static_cast<T*>(malloc(sizeof(T) * as))) {
+			dynamic_array(T* array, size_t use_size, size_t reserve_size) : as(use_size + reserve_size), us(use_size), a((T*)malloc(sizeof(T) * as)) {
 				T* source = array + us;
 				T* target = end();
 				while (source != array) {
@@ -63,9 +63,9 @@ namespace dte_utils {
 			}
 			dynamic_array(dynamic_array<T>&& dyn_array) noexcept : as(std::move(dyn_array.as)), us(std::move(dyn_array.us)), a(std::move(dyn_array.a)) {}
 			template<size_t N, typename U>
-			dynamic_array(U (&array)[N]) : dynamic_array(array, N){}
+			dynamic_array(U (&array)[N]) : dynamic_array(array, N, 0){}
 			template<typename U>
-			dynamic_array(U* array, size_t use_size, size_t reserve_size) : as(use_size + reserve_size), us(use_size), a(static_cast<T*>(malloc(sizeof(T) * as))) {
+			dynamic_array(U* array, size_t use_size, size_t reserve_size) : as(use_size + reserve_size), us(use_size), a((T*)malloc(sizeof(T) * as)) {
 				U* source = array + us;
 				T* target = end();
 				while (source != array) {
@@ -88,7 +88,7 @@ namespace dte_utils {
 				#endif
 			}
 			template<typename U>
-			dynamic_array(dynamic_array<U>&& dyn_array) noexcept : as(std::move(dyn_array.as)), us(std::move(dyn_array.us)), a(static_cast<T*>(malloc(sizeof(T)* as))) {
+			dynamic_array(dynamic_array<U>&& dyn_array) noexcept : as(std::move(dyn_array.as)), us(std::move(dyn_array.us)), a((T*)(malloc(sizeof(T)* as))) {
 				U* source = dyn_array.a + us;
 				T* target = end();
 				while (source != dyn_array.a) {
@@ -167,7 +167,7 @@ namespace dte_utils {
 					}
 					free(a);
 					as = dyn_array.as;
-					a = static_cast<T*>(malloc(sizeof(T) * as));
+					a = (T*)malloc(sizeof(T) * as);
 				}
 				us = dyn_array.us;
 				T* source = dyn_array.end();
@@ -197,7 +197,7 @@ namespace dte_utils {
 					}
 					free(a);
 					as = dyn_array.as;
-					a = static_cast<T*>(malloc(sizeof(T) * as));
+					a = (T*)malloc(sizeof(T) * as);
 				}
 				us = dyn_array.us;
 				U* source = dyn_array.end();
@@ -354,10 +354,10 @@ namespace dte_utils {
 							(--i)->~T();
 						}
 					}
-					a = static_cast<T*>(realloc(a, sizeof(T) * size));
+					a = (T*)realloc(a, sizeof(T) * size);
 					return;
 				}
-				T* new_array = static_cast<T*>(realloc(a, sizeof(T) * size));
+				T* new_array = (T*)realloc(a, sizeof(T) * size);
 				if (new_array) {
 					as = size;
 					a = new_array;

@@ -45,6 +45,7 @@ struct S {
 using namespace dte_token;
 using namespace dte_module;
 using namespace dte_utils;
+using namespace dte_core;
 //using namespace dte_parser;
 inline void test_dynamic_array() {
 	std::cout << "-function \'test_dynamic_array\' started--" << std::endl;
@@ -94,8 +95,7 @@ inline void test_dynamic_array() {
 	std::cout << std::endl;
 	std::cout << "--function \'test_dynamic_array\' ended---" << std::endl;
 }
-
-inline void test_pointers() {
+inline void test_pointer() {
 	std::cout << "----function \'test_pointers\' started----" << std::endl;
 	//test weak_ref
 	int weak_ints[] = { 1, 2, 3, 4, 5 };
@@ -136,11 +136,43 @@ inline void test_pointers() {
 	//unknown_ref<int, false> z = unknown_ref<int, false>::unknown_ref<false>();
 	std::cout << "-----function \'test_pointers\' ended-----" << std::endl;
 }
+inline void test_function() {
+	std::cout << "----function \'test_function\' started----" << std::endl;
+	long_args stack;
+	dynamic_function df;
+	token* th = new token();
+	strong_ref<step_action, false> pl_ref(push_link);
+	strong_ref<step_action, false> sc_ref(call_static_function);
+	strong_ref<function, false> add_ref(add);
+	th->d = strong_ref<int, false>(new int(123));
+	df.steps.emplace_back(
+		dynamic_function::function_step::value_action(dynamic_wstring(L"a"), token::link(unknown_ref<token, false>(true, th), dynamic_wstring())),
+		dynamic_function::function_step::function_action(), 
+		weak_ref<step_action>(pl_ref)
+	);
+	th = new token();
+	th->d = strong_ref<int, false>(new int(321));
+	df.steps.emplace_back(
+		dynamic_function::function_step::value_action(dynamic_wstring(L"b"), token::link(unknown_ref<token, false>(true, th), dynamic_wstring())),
+		dynamic_function::function_step::function_action(),
+		weak_ref<step_action>(pl_ref)
+	);
+	df.steps.emplace_back(
+		dynamic_function::function_step::value_action(dynamic_wstring(), token::link(unknown_ref<token, false>((token*)nullptr), dynamic_wstring())),
+		dynamic_function::function_step::function_action(weak_ref<function>(add_ref), 0, 2),
+		weak_ref<step_action>(sc_ref)
+	);
+	df.execute(stack);
+	std::cout << *(int*)stack[0].pointer->d.get_pointer() << std::endl;
+	std::cout << "-----function \'test_function\' ended-----" << std::endl;
+}
 inline void test() {	
 	hpet et;
 	test_dynamic_array();
 	std::cout << "dt: " << et.get_ns_dt_strong().count() << "ns" << std::endl;
-	test_pointers();
+	test_pointer();
+	std::cout << "dt: " << et.get_ns_dt_strong().count() << "ns" << std::endl;
+	test_function();
 	std::cout << "dt: " << et.get_ns_dt_strong().count() << "ns" << std::endl;
 	try {
 		weak_ref<int>& r = any_ref<int>().get<weak_ref>();
