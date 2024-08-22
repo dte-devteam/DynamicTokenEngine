@@ -95,6 +95,13 @@ inline void test_dynamic_array() {
 	std::cout << std::endl;
 	std::cout << "--function \'test_dynamic_array\' ended---" << std::endl;
 }
+inline void test_strings() {
+	std::cout << "----function \'test_strings\' started-----" << std::endl;
+	dynamic_string ds("abc");
+	ds += ds;
+	std::cout << ds.a << std::endl;
+	std::cout << "-----function \'test_strings\' ended------" << std::endl;
+}
 inline void test_pointer() {
 	std::cout << "----function \'test_pointers\' started----" << std::endl;
 	//test weak_ref
@@ -166,9 +173,11 @@ inline void test_function() {
 	std::cout << *(int*)stack[0].pointer->d.get_pointer() << std::endl;
 	std::cout << "-----function \'test_function\' ended-----" << std::endl;
 }
-inline void test() {	
+inline void test() {
 	hpet et;
 	test_dynamic_array();
+	std::cout << "dt: " << et.get_ns_dt_strong().count() << "ns" << std::endl;
+	test_strings();
 	std::cout << "dt: " << et.get_ns_dt_strong().count() << "ns" << std::endl;
 	test_pointer();
 	std::cout << "dt: " << et.get_ns_dt_strong().count() << "ns" << std::endl;

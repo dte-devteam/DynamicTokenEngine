@@ -22,6 +22,7 @@
     <ClInclude Include="module\include\module_instance.h" />
     <ClInclude Include="target_architecture.h" />
     <ClInclude Include="token\include\data.h" />
+    <ClInclude Include="utils\include\exception.h" />
     <ClInclude Include="token\include\function.h" />
     <ClInclude Include="token\include\token.h" />
     <ClInclude Include="utils\include\dynamic_array.h" />

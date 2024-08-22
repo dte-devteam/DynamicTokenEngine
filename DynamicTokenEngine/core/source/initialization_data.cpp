@@ -1,6 +1,4 @@
 #include "../include/initialization_data.h"
-
-#include <iostream>
 using namespace dte_utils;
 using namespace dte_token;
 namespace dte_core {
@@ -35,18 +33,17 @@ namespace dte_core {
 		}
 	}
 	size_t push_link(long_args& stack, const size_t stack_frame_begin, const dynamic_function::function_step& step) {
-		//token::link* search = stack.find_ranged(
-		//	[&step](const token::link& iter) { return step.va.search_name == iter.getcallname(); },
-		//	stack_frame_begin,
-		//	stack.get_used_size()
-		//);
-		//if (search) {
-		//	search->pointer = step.va.fallback.pointer;
-		//}
-		//else {
-		//std::cout << stack.get_used_size() << ":";
+		token::link* search = stack.find_ranged(
+			[&step](const token::link& iter) { return step.va.search_name == iter.getcallname(); },
+			stack_frame_begin,
+			stack.get_used_size()
+		);
+		if (search) {
+			search->pointer = step.va.fallback.pointer;
+		}
+		else {
 			stack.emplace_back(step.va.fallback.pointer, step.va.search_name);
-		//}
+		}
 		return 1;
 	}
 

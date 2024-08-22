@@ -6,7 +6,7 @@ namespace dte_utils {
 	template<typename T>
 	struct dynamic_array {
 		template<typename U> friend struct dynamic_array;
-		protected:
+		//protected:
 			size_t			as;		//allocated size
 			size_t			us;		//used size
 			T*				a;		//array
@@ -703,10 +703,32 @@ namespace dte_utils {
 	//string definition and string relared helpers
 	typedef dynamic_array<char> dynamic_string;
 	typedef dynamic_array<wchar_t> dynamic_wstring;
-	#define SECURE_STR_MERGE(str)		\
-		if ((str).get_used_size()) {	\
-			if (!*(str).back()) {		\
-				(str).pop_back();		\
-			}							\
+	dynamic_string& dynamic_string::operator +=(const dynamic_string& d) {
+		pop_back();
+		provide_subarray_space(d.us);
+		char* i = end();
+		for (const char& element : d) {
+			*i = element;
+			++i;
 		}
+		us += d.us;
+		if (this == &d) {
+			push_back('\0');
+		}
+		return *this;
+	}
+	dynamic_wstring& dynamic_wstring::operator +=(const dynamic_wstring& d) {
+		pop_back();
+		provide_subarray_space(d.us);
+		wchar_t* i = end();
+		for (const wchar_t& element : d) {
+			*i = element;
+			++i;
+		}
+		us += d.us;
+		if (this == &d) {
+			push_back(L'\0');
+		}
+		return *this;
+	}
 }
