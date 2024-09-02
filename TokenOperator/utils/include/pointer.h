@@ -27,7 +27,7 @@ namespace dte_utils {
 			constexpr weak_ref(const weak_ref<T>& r) noexcept : weak_ref(r.reference) {
 				++reference->weak_owners;
 			}
-			constexpr weak_ref(weak_ref<T>&& r) noexcept : weak_ref(std::move(r.reference)) {
+			constexpr weak_ref(weak_ref<T>&& r) noexcept : weak_ref(r.reference) {
 				++reference->weak_owners;
 			}
 			template<typename U>
@@ -37,7 +37,7 @@ namespace dte_utils {
 				++reference->weak_owners;
 			}
 			template<typename U>
-			constexpr weak_ref(weak_ref<U>&& r) noexcept : weak_ref(std::move(r.reference)) {
+			constexpr weak_ref(weak_ref<U>&& r) noexcept : weak_ref(r.reference) {
 				++reference->weak_owners;
 			}
 			~weak_ref() {
@@ -59,9 +59,7 @@ namespace dte_utils {
 				if (this == &r) {
 					return *this;
 				}
-				~weak_ref();
-				reference = std::move(r.reference);
-				++reference->weak_owners;
+				std::swap(reference, r.reference);
 				return *this;
 			}
 			template<typename U>
@@ -87,14 +85,11 @@ namespace dte_utils {
 				if (this == &r) {
 					return *this;
 				}
-				~weak_ref();
-				reference = std::move((ref<T>*)r.reference);
+				std::swap(reference, (ref<T>*)r.reference);
 				return *this;
 			}
 			constexpr weak_ref<T>& operator=(type_helper_t<T> instance) {
-				if (!--reference->weak_owners) {
-					delete reference;
-				}
+				~weak_ref();
 				reference = new ref<T>(instance, 1, 0);
 				++reference->weak_owners;
 				return *this;
@@ -105,9 +100,7 @@ namespace dte_utils {
 					std::is_base_of_v<T, U> || std::is_void_v<T>,
 					"can create reference to T from U only if T is base of U or T = void"
 				);
-				if (!--reference->weak_owners) {
-					delete reference;
-				}
+				~weak_ref();
 				reference = new ref<T>((type_helper_t<T>)instance, 1, 0);
 				return *this;
 			}
@@ -148,7 +141,7 @@ namespace dte_utils {
 		protected:
 			constexpr weak_ref(ref<T>* reference) noexcept : reference(reference) {}
 			template<typename U>
-			constexpr weak_ref(ref<U>* reference) noexcept : reference((ref<T>*)(reference)) {
+			constexpr weak_ref(ref<U>* reference) noexcept : reference((ref<T>*)reference) {
 				static_assert(
 					std::is_base_of_v<T, U> || std::is_void_v<T>,
 					"can create reference to T from U only if T is base of U or T = void"

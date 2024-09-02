@@ -33,6 +33,7 @@
     <ClInclude Include="utils\include\function.h" />
     <ClInclude Include="utils\include\hash.h" />
     <ClInclude Include="utils\include\pointer.h" />
+    <ClInclude Include="utils\include\string.h" />
     <ClInclude Include="utils\include\text.h" />
   </ItemGroup>
   <ItemGroup>

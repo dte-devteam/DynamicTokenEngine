@@ -6,7 +6,7 @@ namespace dte_utils {
 	template<typename T>
 	struct dynamic_array {
 		template<typename U> friend struct dynamic_array;
-		//protected:
+		protected:
 			size_t			as;		//allocated size
 			size_t			us;		//used size
 			T*				a;		//array
@@ -40,10 +40,10 @@ namespace dte_utils {
 		public:
 			dynamic_array() : dynamic_array(nullptr, 0) {}
 			template<size_t N>
-			dynamic_array(T (&array)[N]) : dynamic_array(array, N, 0) {}
+			dynamic_array(const T (&array)[N]) : dynamic_array(array, N, 0) {}
 			dynamic_array(T* array, size_t use_size) : as(use_size), us(use_size), a(array)  {}
-			dynamic_array(T* array, size_t use_size, size_t reserve_size) : as(use_size + reserve_size), us(use_size), a((T*)malloc(sizeof(T) * as)) {
-				T* source = array + us;
+			dynamic_array(const T* array, size_t use_size, size_t reserve_size) : as(use_size + reserve_size), us(use_size), a((T*)malloc(sizeof(T) * as)) {
+				const T* source = array + us;
 				T* target = end();
 				while (source != array) {
 					if constexpr (std::is_trivially_copy_constructible_v<T>) {
@@ -61,12 +61,12 @@ namespace dte_utils {
 					//to do (to > from || to > dyn_array.us) -> error
 				#endif
 			}
-			dynamic_array(dynamic_array<T>&& dyn_array) noexcept : as(std::move(dyn_array.as)), us(std::move(dyn_array.us)), a(std::move(dyn_array.a)) {}
+			dynamic_array(dynamic_array<T>&& dyn_array) noexcept : as(std::exchange(dyn_array.as, 0)), us(std::exchange(dyn_array.us, 0)), a(std::exchange(dyn_array.a, nullptr)) {}
 			template<size_t N, typename U>
-			dynamic_array(U (&array)[N]) : dynamic_array(array, N, 0){}
+			dynamic_array(const U (&array)[N]) : dynamic_array(array, N, 0){}
 			template<typename U>
-			dynamic_array(U* array, size_t use_size, size_t reserve_size) : as(use_size + reserve_size), us(use_size), a((T*)malloc(sizeof(T) * as)) {
-				U* source = array + us;
+			dynamic_array(const U* array, size_t use_size, size_t reserve_size) : as(use_size + reserve_size), us(use_size), a((T*)malloc(sizeof(T) * as)) {
+				const U* source = array + us;
 				T* target = end();
 				while (source != array) {
 					if constexpr (std::is_trivially_constructible_v<T, const U&>) {
@@ -216,14 +216,7 @@ namespace dte_utils {
 				if (this == &dyn_array) {
 					return *this;
 				}
-				if constexpr (!std::is_trivially_destructible_v<T>) {
-					T* target = end();
-					while (target != a) {
-						(--target)->~T();
-					}
-				}
-				free(a);
-				dynamic_array<T>(std::move(dyn_array));
+				swap(dyn_array);
 				return *this;
 			}
 			template<typename U>
@@ -239,6 +232,54 @@ namespace dte_utils {
 				}
 				free(a);
 				dynamic_array(std::move(dyn_array));
+				return *this;
+			}
+			template<size_t N>
+			dynamic_array<T>& operator =(const T (&array)[N]) {
+				T* target;
+				const T* source = array + N;
+				if constexpr (!std::is_trivially_destructible_v<T>) {
+					target = end();
+					while (target != a) {
+						(--target)->~T();
+					}
+				}
+				free(a);
+				a = (T*)malloc(N * sizeof(T));
+				us = as = N;
+				target = end();
+				while (target != a) {
+					if constexpr (std::is_trivially_copy_constructible_v<T>) {
+						*--target = *--source;
+					}
+					else {
+						new (--target) T(*--source);
+					}
+				}
+				return *this;
+			}
+			template<size_t N, typename U>
+			dynamic_array<T>& operator =(const U(&array)[N]) {
+				T* target;
+				const U* source = array + N;
+				if constexpr (!std::is_trivially_destructible_v<T>) {
+					target = end();
+					while (target != a) {
+						(--target)->~T();
+					}
+				}
+				free(a);
+				a = (T*)malloc(N * sizeof(T));
+				us = as = N;
+				target = end();
+				while (target != a) {
+					if constexpr (std::is_trivially_constructible_v<T, const U&>) {
+						*--target = *--source;
+					}
+					else {
+						new (--target) T(*--source);
+					}
+				}
 				return *this;
 			}
 			dynamic_array<T>& operator +=(const dynamic_array<T>& dyn_array) {
@@ -303,6 +344,102 @@ namespace dte_utils {
 				us += dyn_array.us;
 				return *this;
 			}
+			dynamic_array<T> operator +(const dynamic_array<T>& dyn_array) const {
+				dynamic_array<T> result(a, us, dyn_array.us);
+				T* i = result.end();
+				for (const T& element : dyn_array) {
+					if constexpr (std::is_trivially_copy_constructible_v<T>) {
+						*i = element;
+					}
+					else {
+						new (i) T(element);
+					}
+					++i;
+				}
+				result.us = result.as;
+				return result;
+			}
+			template<typename U>
+			dynamic_array<T> operator +(const dynamic_array<U>& dyn_array) const {
+				dynamic_array<T> result(a, us, dyn_array.us);
+				T* i = result.end();
+				for (const U& element : dyn_array) {
+					if constexpr (std::is_trivially_constructible_v<T, const U&>) {
+						*i = element;
+					}
+					else {
+						new (i) T(element);
+					}
+					++i;
+				}
+				result.us = result.as;
+				return result;
+			}
+			dynamic_array<T> operator +(dynamic_array<T>&& dyn_array) const {
+				dynamic_array<T> result(a, us, dyn_array.us);
+				T* i = result.end();
+				for (const T& element : dyn_array) {
+					if constexpr (std::is_trivially_move_constructible_v<T>) {
+						*i = std::move(element);
+					}
+					else {
+						new (i) T(std::move(element));
+					}
+					++i;
+				}
+				result.us = result.as;
+				return result;
+			}
+			template<typename U>
+			dynamic_array<T> operator +(dynamic_array<U>&& dyn_array) const {
+				dynamic_array<T> result(a, us, dyn_array.us);
+				T* i = result.end();
+				for (const U& element : dyn_array) {
+					if constexpr (std::is_trivially_constructible_v<T, U&&>) {
+						*i = std::move(element);
+					}
+					else {
+						new (i) T(std::move(element));
+					}
+					++i;
+				}
+				result.us = result.as;
+				return result;
+			}
+			template<size_t N>
+			dynamic_array<T> operator +(const T(&array)[N]) const {
+				dynamic_array<T> result(a, us, N);
+				T* i = result.end();
+				for (const T& element : array) {
+					if constexpr (std::is_trivially_copy_constructible_v<T>) {
+						*i = element;
+					}
+					else {
+						new (i) T(element);
+					}
+					++i;
+				}
+				result.us = result.as;
+				return result;
+			}
+			template<size_t N, typename U>
+			dynamic_array<T> operator +(const U(&array)[N]) const {
+				dynamic_array<T> result(a, us, N);
+				T* i = result.end();
+				for (const U& element : array) {
+					if constexpr (std::is_trivially_constructible_v<T, const U&>) {
+						*i = element;
+					}
+					else {
+						new (i) T(element);
+					}
+					++i;
+				}
+				result.us = result.as;
+				return result;
+			}
+			template<size_t N, typename T>
+			friend dynamic_array<T> operator +(const T(&array)[N], const dynamic_array<T>& dyn_array);
 			T& operator [](size_t index) {
 				#ifdef DA_DEBUG
 					//to do (index > us - 1) -> error
@@ -342,7 +479,7 @@ namespace dte_utils {
 				std::swap(a, dyn_array.a);
 			}
 			//size control--------------------------
-			void resize(size_t size) noexcept(
+			void resize_allocated(size_t size) noexcept(
 				std::is_nothrow_destructible_v<T>
 			){
 				if (size < us) {
@@ -367,14 +504,14 @@ namespace dte_utils {
 				std::is_nothrow_destructible_v<T>
 			){
 				if (us == as) {
-					resize(as + 1);
+					resize_allocated(as + 1);
 				}
 			}
 			void provide_subarray_space(size_t size) noexcept(
 				std::is_nothrow_destructible_v<T>
 			){
 				if (us + size > as) {
-					resize(us + size);
+					resize_allocated(us + size);
 				}
 			}
 			//--------------------------------------
@@ -535,8 +672,8 @@ namespace dte_utils {
 							++old_begin;
 							--count;
 						}
+						us += count;
 					}
-					us += count;
 				}
 			}
 			void insert(size_t index, T&& element) noexcept(
@@ -567,8 +704,7 @@ namespace dte_utils {
 					old_begin += count;
 					if (last - first != count) {
 						//we need to iter: first -> beging() + index & beging() + index + count -> last
-						T* s = old_begin;
-						while (s != last) {
+						while (old_begin != last) {
 							if constexpr (std::is_trivially_copy_constructible_v<T>) {
 								*old_begin = *--last;
 							}
@@ -576,7 +712,7 @@ namespace dte_utils {
 								new (old_begin) T(*--last);
 							}
 						}
-						s = begin() + index;
+						T* s = begin() + index;
 						while (s != first) {
 							if constexpr (std::is_trivially_copy_constructible_v<T>) {
 								*old_begin = *--s;
@@ -604,6 +740,15 @@ namespace dte_utils {
 						++us;
 					}
 				}
+			}
+			template<size_t N>
+			void insert(size_t index, const T (&array)[N]) noexcept (
+				std::is_nothrow_move_constructible_v<T>&&
+				std::is_nothrow_move_assignable_v<T>&&
+				std::is_nothrow_destructible_v<T>&&
+				std::is_trivially_copy_constructible_v<T> ? std::is_nothrow_assignable_v<T&, const T&> : std::is_nothrow_copy_constructible_v<T>
+			){
+				insert(index, array, array + N);
 			}
 			//erase from array - slow and save order
 			void erase(T* pos) noexcept (
@@ -700,35 +845,25 @@ namespace dte_utils {
 				return as;
 			}
 	};
-	//string definition and string relared helpers
-	typedef dynamic_array<char> dynamic_string;
-	typedef dynamic_array<wchar_t> dynamic_wstring;
-	dynamic_string& dynamic_string::operator +=(const dynamic_string& d) {
-		pop_back();
-		provide_subarray_space(d.us);
-		char* i = end();
-		for (const char& element : d) {
-			*i = element;
+	template<size_t N, typename T>
+	dynamic_array<T> operator +(const T(&array)[N], const dynamic_array<T>& dyn_array) {
+		dynamic_array<T> result(array, N, dyn_array.us);
+		T* i = result.end();
+		for (const T& element : array) {
+			if constexpr (std::is_trivially_copy_constructible_v<T>) {
+				*i = element;
+			}
+			else {
+				new (i) T(element);
+			}
 			++i;
 		}
-		us += d.us;
-		if (this == &d) {
-			push_back('\0');
-		}
-		return *this;
+		result.us = result.as;
+		return result;
 	}
-	dynamic_wstring& dynamic_wstring::operator +=(const dynamic_wstring& d) {
-		pop_back();
-		provide_subarray_space(d.us);
-		wchar_t* i = end();
-		for (const wchar_t& element : d) {
-			*i = element;
-			++i;
-		}
-		us += d.us;
-		if (this == &d) {
-			push_back(L'\0');
-		}
-		return *this;
+	template<size_t N, typename T>
+	dynamic_array<T> operator +(const T(&array)[N], dynamic_array<T>&& dyn_array) {
+		dyn_array.insert(0, array, array + N);
+		return dyn_array;
 	}
 }

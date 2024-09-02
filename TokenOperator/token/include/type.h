@@ -1,6 +1,6 @@
 #pragma once
 #include "utils/include/pointer.h"
-#include "utils/include/dynamic_array.h"
+#include "utils/include/string.h"
 #include <xstring>
 #define STR_TYPE(TYPE) #TYPE
 #define STR_DECL_TYPE(INSTANCE) dte_token::typename_getter<decltype(INSTANCE)>()
@@ -23,9 +23,9 @@ namespace dte_token {
 	//#define OPERATIONAL_TYPES(...) enum TYPE_REQUEST {__VA_ARGS__};
 	struct type {
 		dte_utils::dynamic_wstring							name;
-		bool is_same_as(const type& other_type) const noexcept;
 		//operators-----------------------------
 		type& operator=(const type& other_type) noexcept;
 		type& operator=(type&& other_type) noexcept;
+		bool operator==(const type& other_type) const noexcept;
 	};
 }

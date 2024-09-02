@@ -23,7 +23,7 @@ namespace dte_token {
 			link* get_token(const dte_utils::dynamic_path& token_path, size_t shift = 0) const;
 			link* get_token(dte_utils::dynamic_path&& token_path, size_t shift = 0) const;
 			void copy_links(const token& source);
-			//protected:
+		protected:
 			dte_utils::dynamic_wstring name;
 			dte_utils::dynamic_array<link> links;
 	};
