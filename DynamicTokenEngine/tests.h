@@ -42,6 +42,10 @@ struct S_L : S_LOG {
 struct S {
 	int i;
 };
+struct SS {
+	int i[5] = { 1,2,3,4,5 };
+};
+int i[5] = { 1,2,3,4,5 };
 using namespace dte_token;
 using namespace dte_module;
 using namespace dte_utils;

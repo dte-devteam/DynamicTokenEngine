@@ -50,7 +50,9 @@ namespace dte_utils {
 				if (this == &r) {
 					return *this;
 				}
-				~weak_ref();
+				if (!--reference->weak_owners) {
+					delete reference;
+				}
 				reference = r.reference;
 				++reference->weak_owners;
 				return *this;
@@ -71,7 +73,9 @@ namespace dte_utils {
 				if (this == &r) {
 					return *this;
 				}
-				~weak_ref();
+				if (!--reference->weak_owners) {
+					delete reference;
+				}
 				reference = (ref<T>*)r.reference;
 				++reference->weak_owners;
 				return *this;
@@ -89,7 +93,9 @@ namespace dte_utils {
 				return *this;
 			}
 			constexpr weak_ref<T>& operator=(type_helper_t<T> instance) {
-				~weak_ref();
+				if (!--reference->weak_owners) {
+					delete reference;
+				}
 				reference = new ref<T>(instance, 1, 0);
 				++reference->weak_owners;
 				return *this;
@@ -100,7 +106,9 @@ namespace dte_utils {
 					std::is_base_of_v<T, U> || std::is_void_v<T>,
 					"can create reference to T from U only if T is base of U or T = void"
 				);
-				~weak_ref();
+				if (!--reference->weak_owners) {
+					delete reference;
+				}
 				reference = new ref<T>((type_helper_t<T>)instance, 1, 0);
 				return *this;
 			}
@@ -208,7 +216,9 @@ namespace dte_utils {
 						kill_instance();
 					}
 				}
-				weak_ref::~weak_ref();
+				if (!--reference->weak_owners) {
+					delete reference;
+				}
 				reference = r.reference;
 				++reference->strong_owners;
 				++reference->weak_owners;
@@ -226,7 +236,9 @@ namespace dte_utils {
 						kill_instance();
 					}
 				}
-				weak_ref::~weak_ref();
+				if (!--reference->weak_owners) {
+					delete reference;
+				}
 				reference = std::move(r.reference);
 				++reference->strong_owners;
 				++reference->weak_owners;
@@ -249,7 +261,9 @@ namespace dte_utils {
 						kill_instance();
 					}
 				}
-				weak_ref::~weak_ref();
+				if (!--reference->weak_owners) {
+					delete reference;
+				}
 				reference = (ref<T>*)r.reference;
 				++reference->strong_owners;
 				++reference->weak_owners;
@@ -272,7 +286,9 @@ namespace dte_utils {
 						kill_instance();
 					}
 				}
-				weak_ref::~weak_ref();
+				if (!--reference->weak_owners) {
+					delete reference;
+				}
 				reference = std::move((ref<T>*)r.reference);
 				++reference->strong_owners;
 				++reference->weak_owners;
@@ -287,7 +303,9 @@ namespace dte_utils {
 						kill_instance();
 					}
 				}
-				weak_ref::~weak_ref();
+				if (!--reference->weak_owners) {
+					delete reference;
+				}
 				reference = new ref<T>(instance, 1, 1);
 				return *this;
 			}
@@ -305,7 +323,9 @@ namespace dte_utils {
 						kill_instance();
 					}
 				}
-				weak_ref::~weak_ref();
+				if (!--reference->weak_owners) {
+					delete reference;
+				}
 				reference = new ref<T>((type_helper_t<T>)instance, 1, 1);
 				return *this;
 			}
@@ -403,7 +423,9 @@ namespace dte_utils {
 						}
 					}
 				}
-				weak_ref::~weak_ref();
+				if (!--reference->weak_owners) {
+					delete reference;
+				}
 				reference = r.reference;
 				if (strength) {
 					++reference->strong_owners;
@@ -425,7 +447,9 @@ namespace dte_utils {
 						}
 					}
 				}
-				weak::~weak()
+				if (!--reference->weak_owners) {
+					delete reference;
+				}
 				reference = std::move(r.reference);
 				if (strength) {
 					++reference->strong_owners;

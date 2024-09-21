@@ -5,7 +5,7 @@ namespace dte_token {
 		if (this == &other_type) {
 			return *this;
 		}
-		name = other_type.name;
+		name = (dynamic_array<wchar_t>)other_type.name;
 		return *this;
 	}
 	type& type::operator=(type&& other_type) noexcept {
