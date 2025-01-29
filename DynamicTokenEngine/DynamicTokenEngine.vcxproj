@@ -184,11 +184,9 @@
     </ProjectReference>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="core\source\initialization_data.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="core\include\initialization_data.h" />
     <ClInclude Include="tests.h" />
     <ClInclude Include="resource.h" />
   </ItemGroup>
