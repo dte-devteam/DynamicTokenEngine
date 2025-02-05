@@ -140,6 +140,10 @@
     <ClInclude Include="target_architecture.h" />
     <ClInclude Include="utils\include\function.h" />
     <ClInclude Include="utils\include\pointer.h" />
+    <ClInclude Include="utils\include\pointer\ref.h" />
+    <ClInclude Include="utils\include\pointer\strong_ref.h" />
+    <ClInclude Include="utils\include\pointer\unknown_ref.h" />
+    <ClInclude Include="utils\include\pointer\weak_ref.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

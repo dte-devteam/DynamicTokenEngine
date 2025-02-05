@@ -32,12 +32,14 @@ struct ref2r {
 	
 };
 struct ref3r : ref2r {
-
+	int a;
 };
-void f(test_struct t[]) {
 
-}
+typedef int(*fp)(void);
 //to do, all arrays if can have size 0 - set limit to delete[] (otherwise heap corruption)
+int f() {
+	return 1;
+}
 
 void tabc() {
 	weak_ref<ref3r[10]> abc3(new ref3r[10]);
@@ -46,14 +48,25 @@ void tabc() {
 	weak_ref<ref3r> abc5(new ref3r());
 	weak_ref<ref2r> abc1(abc5);
 
+	ref3r r = abc3[2];
+
+	abc5->a = 5;
+	(*abc5).a = 5;
+
 	weak_ref<ref3r[10]> abc = weak_ref<ref3r[10]>(
 		weak_ref<ref3r[10]>()
 	);
 
+
 	strong_ref<test_struct> sr(new test_struct());
 	strong_ref<test_struct[]> sr2(new test_struct[4]);
 
-	unknown_ref<test_struct> ur(new test_struct(), true);
+	unknown_ref<test_struct> ur(new test_struct(), false);
+	ur.set_strength(true);
+	ur.set_strength(false);
+	
+	strong_ref<fp> wr(f);
+	std::cout << wr() << std::endl;
 }
 void test() {
 	tabc();
