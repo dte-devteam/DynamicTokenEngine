@@ -37,6 +37,38 @@ namespace dte_utils {
 			~unknown_ref() {
 				unknown_decrease();
 			}
+			template<typename U = T>
+			unknown_ref& operator=(ref_pointer<U> instance) {
+				REF_ASSIGN_LIMITS
+				if (!--reference->weak_owners) {
+					reference->instance = (ref_pointer<T>)instance;
+				}
+				else {
+					reference = (ref<T>*)new ref<U>(instance);
+				}
+				++reference->weak_owners;
+				unknown_increase();
+				return *this;
+			}
+			template<typename U = T>
+			unknown_ref& operator=(const weak_ref<U>& r) {
+				REF_ASSIGN_LIMITS
+				if (this == (unknown_ref*)&r) {
+					return *this;
+				}
+				weak_decrease();
+				fetch_weak_ref(r);
+				++reference->weak_owners;
+				unknown_increase();
+				return *this;
+			}
+			unknown_ref& operator=(unknown_ref&& r) noexcept {
+				if (this == &r) {
+					return *this;
+				}
+				std::swap(reference, r.reference);
+				return *this;
+			}
 			//set stregth
 			void set_strength(bool strength) {
 				if (is_strong == strength) {

@@ -24,5 +24,38 @@ namespace dte_utils {
 			~strong_ref() {
 				strong_decrease();
 			}
+			template<typename U = T>
+			strong_ref& operator=(ref_pointer<U> instance) {
+				REF_ASSIGN_LIMITS
+				strong_decrease();
+				if (!--reference->weak_owners) {
+					reference->instance = (ref_pointer<T>)instance;
+				}
+				else {
+					reference = (ref<T>*)new ref<U>(instance);
+				}
+				++reference->weak_owners;
+				++reference->strong_owners;
+				return *this;
+			}
+			template<typename U = T>
+			strong_ref& operator=(const weak_ref<U>& r) {
+				if (this == (strong_ref*)&r) {
+					return *this;
+				}
+				strong_decrease();
+				weak_decrease();
+				fetch_weak_ref(r);
+				++reference->weak_owners;
+				++reference->strong_owners;
+				return *this;
+			}
+			strong_ref& operator=(strong_ref&& r) noexcept {
+				if (this == &r) {
+					return *this;
+				}
+				std::swap(reference, r.reference);
+				return *this;
+			}
 	};
 }
