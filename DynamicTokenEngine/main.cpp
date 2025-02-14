@@ -1,4 +1,4 @@
-﻿#include "tests.h"
+﻿#include "tests/test.h"
 /*
 * future structure:
 * lib(data template)->dll(any module, may be multiple)
@@ -12,6 +12,6 @@ int main(int argc, char* argv[]) {
 	while (--argc) {
 		std::cout << argc << " : " << argv[argc] << std::endl;
 	}
-	test();
+	run_tests();
 	std::cin.get();
 }

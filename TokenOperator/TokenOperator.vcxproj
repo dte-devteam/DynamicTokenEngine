@@ -142,6 +142,7 @@
     <ClInclude Include="utils\include\pointer.h" />
     <ClInclude Include="utils\include\pointer\ref.h" />
     <ClInclude Include="utils\include\pointer\strong_ref.h" />
+    <ClInclude Include="utils\include\pointer\unique_ref.h" />
     <ClInclude Include="utils\include\pointer\unknown_ref.h" />
     <ClInclude Include="utils\include\pointer\weak_ref.h" />
   </ItemGroup>

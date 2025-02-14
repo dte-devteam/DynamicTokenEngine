@@ -36,5 +36,8 @@
     <ClInclude Include="utils\include\pointer\unknown_ref.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
+    <ClInclude Include="utils\include\pointer\unique_ref.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

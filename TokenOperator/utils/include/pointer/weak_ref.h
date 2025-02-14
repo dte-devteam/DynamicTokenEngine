@@ -42,9 +42,11 @@ namespace dte_utils {
 			weak_ref() noexcept : weak_ref(new ref<T>()) {}
 			template<typename U = T>
 			weak_ref(ref_pointer<U> instance) noexcept : weak_ref(new ref<U>(instance)) {}
-			template<typename U = T>
+			weak_ref(const weak_ref& r) noexcept : weak_ref(r.reference) {}
+			template<typename U>
 			weak_ref(const weak_ref<U>& r) noexcept : weak_ref(r.reference) {}
-			template<typename U = T>
+			weak_ref(weak_ref&& r) noexcept : weak_ref(r.reference) {}
+			template<typename U>
 			weak_ref(weak_ref<U>&& r) noexcept : weak_ref(r.reference) {}
 			~weak_ref() {
 				weak_decrease();
@@ -58,6 +60,15 @@ namespace dte_utils {
 				else {
 					reference = (ref<T>*)new ref<U>(instance);
 				}
+				++reference->weak_owners;
+				return *this;
+			}
+			weak_ref& operator=(const weak_ref& r) {
+				if (this == (weak_ref*)&r) {
+					return *this;
+				}
+				weak_decrease();
+				reference = r.reference;
 				++reference->weak_owners;
 				return *this;
 			}
