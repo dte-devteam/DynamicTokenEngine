@@ -11,6 +11,22 @@ namespace test {
 			std::cout << "destructed" << std::endl;
 		}
 	};
+	struct A {
+		A() {
+			std::cout << "constructed A" << std::endl;
+		}
+		~A() {
+			std::cout << "destructed A" << std::endl;
+		}
+	};
+	struct B : A {
+		B() {
+			std::cout << "constructed B" << std::endl;
+		}
+		~B() {
+			std::cout << "destructed B" << std::endl;
+		}
+	};
 	//functions
 	typedef int (*function)();
 	int return_1() {

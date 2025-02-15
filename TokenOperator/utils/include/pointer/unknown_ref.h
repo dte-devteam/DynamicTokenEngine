@@ -41,20 +41,20 @@ namespace dte_utils {
 			unknown_ref& operator=(ref_pointer<U> instance) {
 				REF_ASSIGN_LIMITS
 				if (--reference->weak_owners) {
-					reference = (ref<T>*)new ref<U>(instance);
+					reference = reinterpret_cast<ref<T>*>(new ref<U>(instance));
 				}
 				else {
-					reference->instance = (ref_pointer<T>)instance;
+					reference->instance = reinterpret_cast<ref_pointer<T>>(instance);
 				}
 				++reference->weak_owners;
 				return *this;
 			}
 			unknown_ref& operator=(const unknown_ref& r) {
-				if (this == (unknown_ref*)&r) {
+				if (this == &r) {
 					return *this;
 				}
 				weak_decrease();
-				fetch_weak_ref(r);
+				reference = pull_weak_ref(r);
 				++reference->weak_owners;
 				unknown_increase();
 				return *this;
@@ -62,11 +62,11 @@ namespace dte_utils {
 			template<typename U = T>
 			unknown_ref& operator=(const weak_ref<U>& r) {
 				REF_ASSIGN_LIMITS
-				if (this == (unknown_ref*)&r) {
+				if (reinterpret_cast<weak_ref<U>*>(this) == &r) {
 					return *this;
 				}
 				weak_decrease();
-				fetch_weak_ref(r);
+				reference = pull_weak_ref(r);
 				++reference->weak_owners;
 				unknown_increase();
 				return *this;
@@ -77,6 +77,19 @@ namespace dte_utils {
 				}
 				std::swap(reference, r.reference);
 				std::swap(is_strong, r.is_strong);
+				return *this;
+			}
+			template<typename U>
+			unknown_ref& operator=(weak_ref<U>&& r) {
+				REF_ASSIGN_LIMITS
+				if (reinterpret_cast<weak_ref<U>*>(this) == &r) {
+					return *this;
+				}
+				unknown_decrease();
+				ref<T>* other_ref = std::move(reinterpret_cast<ref<T>*>(pull_weak_ref(r)));
+				push_weak_ref(r, std::move(reinterpret_cast<ref<U>*>(reference)));
+				reference = std::move(other_ref);
+				unknown_increase();
 				return *this;
 			}
 			//set stregth

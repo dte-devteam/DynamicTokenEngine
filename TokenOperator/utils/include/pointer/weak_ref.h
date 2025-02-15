@@ -29,12 +29,17 @@ namespace dte_utils {
 				}
 			}
 			template<typename U>
-			void fetch_weak_ref(const weak_ref<U>& r) {
+			ref<T>* pull_weak_ref(const weak_ref<U>& r) {
 				REF_ASSIGN_LIMITS
-				reference = (ref<T>*)r.reference;
+				return reinterpret_cast<ref<T>*>(r.reference);
 			}
 			template<typename U>
-			weak_ref(ref<U>* r) noexcept : reference((ref<T>*)r) {
+			void push_weak_ref(weak_ref<U>& r, ref<U>* new_ref) {
+				REF_ASSIGN_LIMITS
+				r.reference = new_ref;
+			}
+			template<typename U>
+			weak_ref(ref<U>* r) noexcept : reference(reinterpret_cast<ref<T>*>(r)) {
 				REF_ASSIGN_LIMITS
 				++reference->weak_owners;
 			}
@@ -54,17 +59,17 @@ namespace dte_utils {
 			template<typename U = T>
 			weak_ref& operator=(ref_pointer<U> instance) {
 				REF_ASSIGN_LIMITS
-				if (!--reference->weak_owners) {
-					reference->instance = (ref_pointer<T>)instance;
+				if (--reference->weak_owners) {
+					reference = reinterpret_cast<ref<T>*>(new ref<U>(instance));
 				}
 				else {
-					reference = (ref<T>*)new ref<U>(instance);
+					reference->instance = reinterpret_cast<ref_pointer<T>>(instance);
 				}
 				++reference->weak_owners;
 				return *this;
 			}
 			weak_ref& operator=(const weak_ref& r) {
-				if (this == (weak_ref*)&r) {
+				if (this == &r) {
 					return *this;
 				}
 				weak_decrease();
@@ -72,14 +77,14 @@ namespace dte_utils {
 				++reference->weak_owners;
 				return *this;
 			}
-			template<typename U = T>
+			template<typename U>
 			weak_ref& operator=(const weak_ref<U>& r) {
 				REF_ASSIGN_LIMITS
-				if (this == (weak_ref*)&r) {
+				if (reinterpret_cast<weak_ref<U>*>(this) == &r) {
 					return *this;
 				}
 				weak_decrease();
-				reference = (ref<T>*)r.reference;
+				reference = reinterpret_cast<ref<T>*>(r.reference);
 				++reference->weak_owners;
 				return *this;
 			}
@@ -88,6 +93,17 @@ namespace dte_utils {
 					return *this;
 				}
 				std::swap(reference, r.reference);
+				return *this;
+			}
+			template<typename U>
+			weak_ref& operator=(weak_ref<U>&& r) {
+				REF_ASSIGN_LIMITS
+				if (reinterpret_cast<weak_ref<U>*>(this) == &r) {
+					return *this;
+				}
+				ref<T>* other_ref = std::move(reinterpret_cast<ref<T>*>(r.reference));
+				r.reference = std::move(reinterpret_cast<ref<U>*>(reference));
+				reference = std::move(other_ref);
 				return *this;
 			}
 			size_t get_weak_owners() const {

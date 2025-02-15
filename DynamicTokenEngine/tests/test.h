@@ -2,5 +2,5 @@
 #include "pointer/pointer_tests.h"
 using namespace test;
 void run_tests() {
-	//test_pointer();
+	test_pointer();
 }

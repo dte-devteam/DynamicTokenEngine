@@ -53,6 +53,12 @@ namespace test {
 		weak_ref<primitive_test_struct> wr(new primitive_test_struct());
 		ur = wr;
 	}
+	void test_unknown_by_child() {
+		std::cout << "---test_unknown_by_child---" << std::endl;
+		unknown_ref<A> ur(true);
+		ur = weak_ref<B>();
+		ur = new B();
+	}
 	//strength
 	void test_unknown_by_strong() {
 		std::cout << "---test_unknown_by_strong---" << std::endl;
@@ -76,6 +82,7 @@ namespace test {
 		test_unknown_by_assign_lvalue_unknown();
 		test_unknown_by_assign_rvalue_unknown();
 		test_unknown_by_assign_lvalue_weak();
+		test_unknown_by_child();
 		//strength
 		test_unknown_by_strong();
 		test_unknown_by_weak();

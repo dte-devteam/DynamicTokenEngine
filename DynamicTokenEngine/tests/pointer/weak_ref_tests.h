@@ -57,6 +57,13 @@ namespace test {
 		weak_ref<primitive_test_struct> wr;
 		wr = weak_ref<primitive_test_struct>();
 	}
+	void test_weak_by_child() {
+		std::cout << "---test_weak_by_child---" << std::endl;
+		weak_ref<A> wr;
+		wr = weak_ref<B>();
+		wr = new B();
+		delete wr.get_pointer();
+	}
 	//interaction operators
 	void test_weak_by_ref_operator(primitive_test_struct* non_array_pts) {
 		std::cout << "---test_weak_by_ref_operator---" << std::endl;
@@ -90,6 +97,7 @@ namespace test {
 		test_weak_by_assign_instance(non_array_pts, array_pts);
 		test_weak_by_assign_lvalue_weak();
 		test_weak_by_assign_rvalue_weak();
+		test_weak_by_child();
 		//interaction operators
 		test_weak_by_ref_operator(non_array_pts);
 		test_weak_by_array_operator(array_pts);

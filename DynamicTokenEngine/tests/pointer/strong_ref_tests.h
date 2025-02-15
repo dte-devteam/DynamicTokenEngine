@@ -88,6 +88,12 @@ namespace test {
 		strong_ref<primitive_test_struct[]> sr(new primitive_test_struct[2]);
 		sr = strong_ref<primitive_test_struct[2]>(new primitive_test_struct[2]);
 	}
+	void test_strong_by_child() {
+		std::cout << "---test_strong_by_child---" << std::endl;
+		strong_ref<A> sr;
+		sr = weak_ref<B>();
+		sr = new B();
+	}
 	//main tests
 	void test_strong_ref() {
 		std::cout << "---test_strong_ref---" << std::endl;
@@ -109,5 +115,6 @@ namespace test {
 		test_strong_by_assign_rvalue_weak();
 		test_strong_by_assign_lvalue_strong_ref();
 		test_strong_by_assign_rvalue_strong_ref();
+		test_strong_by_child();
 	}
 }
