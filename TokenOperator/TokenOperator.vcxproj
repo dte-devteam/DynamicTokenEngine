@@ -139,7 +139,11 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="target_architecture.h" />
+    <ClInclude Include="utils\include\constraints.h" />
+    <ClInclude Include="utils\include\dynamic_array.h" />
+    <ClInclude Include="utils\include\exec_time.h" />
     <ClInclude Include="utils\include\function.h" />
+    <ClInclude Include="utils\include\memory.h" />
     <ClInclude Include="utils\include\pointer.h" />
     <ClInclude Include="utils\include\pointer\ref.h" />
     <ClInclude Include="utils\include\pointer\strong_ref.h" />
@@ -149,6 +153,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="utils\source\exec_time.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

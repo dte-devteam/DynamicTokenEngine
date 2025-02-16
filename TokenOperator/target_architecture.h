@@ -16,3 +16,9 @@
 #define _IA64_
 #endif /* !_IA64_ */
 #endif
+
+
+
+#ifndef CPU_WORD	//may be predefined
+#define CPU_WORD long long	//temp solution for 64x (CPU word may be other size)
+#endif
