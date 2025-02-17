@@ -15,7 +15,7 @@ namespace test {
 		A() {
 			std::cout << "constructed A" << std::endl;
 		}
-		~A() {
+		virtual ~A() {
 			std::cout << "destructed A" << std::endl;
 		}
 	};

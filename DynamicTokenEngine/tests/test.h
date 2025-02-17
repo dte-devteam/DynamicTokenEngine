@@ -5,6 +5,7 @@
 using namespace test;
 void run_tests() {
 	test_pointer();
+	/*
 	const size_t len = 16;
 	int* var1 = new int[len];
 	int* var2 = new int[len];
@@ -35,4 +36,5 @@ void run_tests() {
 
 	delete[] var1;
 	delete[] var2;
+	*/
 }

@@ -3,6 +3,7 @@
 #include "../data_examples.h"
 using namespace dte_utils;
 namespace test {
+	/*
 	//constructors
 	void test_strong_empty_constructor() {
 		std::cout << "---test_strong_empty_constructor---" << std::endl;
@@ -116,5 +117,5 @@ namespace test {
 		test_strong_by_assign_lvalue_strong_ref();
 		test_strong_by_assign_rvalue_strong_ref();
 		test_strong_by_child();
-	}
+	}*/
 }

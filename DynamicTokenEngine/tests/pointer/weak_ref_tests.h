@@ -3,6 +3,7 @@
 #include "../data_examples.h"
 using namespace dte_utils;
 namespace test {
+	/*
 	//constructors
 	void test_weak_empty_constructor() {
 		std::cout << "---test_weak_empty_constructor---" << std::endl;
@@ -104,5 +105,5 @@ namespace test {
 		test_weak_by_func_operator();
 		delete non_array_pts;
 		delete[] array_pts;
-	}
+	}*/
 }

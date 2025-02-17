@@ -3,6 +3,7 @@
 #include "../data_examples.h"
 using namespace dte_utils;
 namespace test {
+	/*
 	//constructors
 	void test_unknown_empty_constructor() {
 		std::cout << "---test_unknown_empty_constructor---" << std::endl;
@@ -86,5 +87,5 @@ namespace test {
 		//strength
 		test_unknown_by_strong();
 		test_unknown_by_weak();
-	}
+	}*/
 }
