@@ -41,7 +41,7 @@ namespace dte_utils {
 				++reference->weak_owners;
 			}
 		public:
-			weak_ref() noexcept : weak_ref(new ref<T>()) {}
+			weak_ref() noexcept : weak_ref(new ref<T>) {}
 			weak_ref(ref_pointer<T> instance) noexcept : weak_ref(new ref<T>(instance)) {}
 			
 			weak_ref(const weak_ref& r) noexcept : weak_ref(r.reference) {}
@@ -90,7 +90,7 @@ namespace dte_utils {
 					return *this;
 				}
 				weak_decrease();
-				reference = reinterpret_cast<ref<T>*>(r.reference);
+				reference = pull_weak_ref(r.reference);
 				++reference->weak_owners;
 				return *this;
 			}
@@ -99,9 +99,9 @@ namespace dte_utils {
 				if (reinterpret_cast<weak_ref<U>*>(this) == &r) {
 					return *this;
 				}
-				ref<T>* other_ref = pull_weak_ref(r);
-				push_weak_ref(r, reference);
-				reference = other_ref;
+				weak_decrease();
+				reference = pull_weak_ref(r.reference);
+				++reference->weak_owners;
 				return *this;
 			}
 

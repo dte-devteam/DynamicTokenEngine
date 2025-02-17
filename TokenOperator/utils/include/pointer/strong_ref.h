@@ -10,7 +10,7 @@ namespace dte_utils {
 				++reference->strong_owners;
 			}
 		public:
-			strong_ref() noexcept : strong_ref(new ref<T>()) {}
+			strong_ref() noexcept : strong_ref(new ref<T>) {}
 			strong_ref(ref_pointer<T> instance) noexcept : strong_ref(new ref<T>(instance)) {}
 			strong_ref(const strong_ref& r) noexcept : weak_ref(r) {
 				++reference->strong_owners;
@@ -35,10 +35,10 @@ namespace dte_utils {
 			strong_ref& operator=(ref_pointer<T> instance) {
 				strong_decrease();
 				if (--reference->weak_owners) {
-					reference = reinterpret_cast<ref<T>*>(new ref<U>(instance));
+					reference = new ref<T>(instance);
 				}
 				else {
-					reference->instance = reinterpret_cast<ref_pointer<T>>(instance);
+					reference->instance = instance;
 				}
 				++reference->weak_owners;
 				++reference->strong_owners;

@@ -29,7 +29,7 @@ namespace test {
 		unknown_ref<int> ur2{ sr0 };
 		ur2 = sr0;*/
 
-
+		/*
 		//unknown_ref<A> ur3{new A(), true};
 		//unknown_ref<A> ur4;
 		//ur3 = ur4;
@@ -48,6 +48,12 @@ namespace test {
 
 		ur5 = weak_ref<A>(new A);
 
-		ur5 = unknown_ref<B>(new B, true);	
+		ur5 = unknown_ref<B>(new B, true);
+
+		weak_ref<A> wr;
+		wr = weak_ref<B>();
+
+		*/
+		strong_ref<A> AAA{ unknown_ref<B>(new B) };
 	}
 }

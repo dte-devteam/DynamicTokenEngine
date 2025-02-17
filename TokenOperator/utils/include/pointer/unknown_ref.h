@@ -45,10 +45,10 @@ namespace dte_utils {
 
 			unknown_ref& operator=(ref_pointer<T> instance) {
 				if (--reference->weak_owners) {
-					reference = reinterpret_cast<ref<T>*>(new ref<U>(instance));
+					reference = new ref<T>(instance);
 				}
 				else {
-					reference->instance = reinterpret_cast<ref_pointer<T>>(instance);
+					reference->instance = instance;
 				}
 				++reference->weak_owners;
 				return *this;
