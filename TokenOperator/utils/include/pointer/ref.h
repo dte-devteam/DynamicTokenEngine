@@ -25,18 +25,9 @@ namespace dte_utils {
 		ref(ref_pointer<T> instance = nullptr) noexcept : instance(instance), weak_owners(0), strong_owners(0) {}
 	};
 	template<typename T, typename U>
-	concept REF_ASSIGNABLE = std::is_array_v<T> == std::is_array_v<U> &&
+	concept ref_assignable = std::is_array_v<T> == std::is_array_v<U> &&
 		(
 			std::is_same_v<ref_pointer<T>, ref_pointer<U>> ||
 			std::is_base_of_v<U, T>																									\
-		);
-	#define REF_ASSIGN_LIMITS																											\
-		static_assert(																													\
-			std::is_array_v<T> == std::is_array_v<U> &&																					\
-			(																															\
-				std::is_same_v<ref_pointer<T>, ref_pointer<U>> ||																		\
-				std::is_base_of_v<T, U>																									\
-			)																															\
-			, "ref: array pointer can be set only by array and vice versa\nnon-array instance can be set by same or parent instance"	\
 		);
 }

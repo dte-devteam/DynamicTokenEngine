@@ -1,38 +1,52 @@
 #pragma once
-#include <new>	//to do - find out why fixes error C2661 with operator new
+//currenty unactive error VVV
+//#include <new>	//to do - find out why fixes error C2661 with operator new
 #include "../../target_architecture.h"
+#include "constraints.h"
 namespace dte_utils {
 	template<typename T>
-	T* malloc_t(size_t size) {
+	inline T* malloc_t(size_t size) {
 		return reinterpret_cast<T*>(malloc(sizeof(T) * size));
 	}
 	template<typename T>
-	inline void construct_range(T* begin, T* end) {
+	inline T* realloc_t(T* block, size_t size) {
+		return reinterpret_cast<T*>(realloc(block, sizeof(T) * size));
+	}
+
+	template<typename T, typename ...Args> requires std::is_constructible_v<T, Args&&...>
+	inline T* construct_range(T* begin, T* end, Args&&... args) {
 		while (begin != end) {
-			new (begin) T;
-			++begin;
+			new (--end) T(std::forward<Args>(args)...);
+		}
+		return begin;
+	}
+
+	template<typename U, castable<U> T>
+	inline void copy_range(const T* begin, const T* end, U* dest_end) {
+		while (begin != end) {
+			new (--dest_end) U(static_cast<U>(*--end));
 		}
 	}
-	template<typename T, typename U>
-	inline void copy_range(const T* begin, const T* end, U* dest) {
+	template<typename T>
+	inline void move_range(T* begin, T* end, T* dest_end) {
 		while (begin != end) {
-			new (dest) U(*begin);
-			++begin;
-			++dest;
+			new (--dest_end) T(std::move(*--end));
 		}
 	}
 	template<typename T>
 	inline void destruct_range(T* begin, T* end) {
 		while (begin != end) {
-			begin->~T();
-			++begin;
+			(--end)->~T();
 		}
 	}
+
 	//Copies memory by char/CPU_WORD (count = number of bytes)
 	inline void* copy_memory(void* dest, const void* src, size_t count) {
-		if ((uintptr_t)dest % sizeof(CPU_WORD) ==
-			(uintptr_t)src % sizeof(CPU_WORD) ==
-			count % sizeof(CPU_WORD) == 0) {
+		if (!(
+			(uintptr_t)dest % sizeof(CPU_WORD) ||
+			(uintptr_t)src % sizeof(CPU_WORD) ||
+			count % sizeof(CPU_WORD)
+		)) {
 			count /= sizeof(CPU_WORD);
 			while (count) {
 				((CPU_WORD*)dest)[count] = ((const CPU_WORD*)src)[--count];
@@ -44,5 +58,24 @@ namespace dte_utils {
 			}
 		}
 		return dest;
+	}
+
+	template<typename U, castable<U> T>
+	inline void copy_array(U* dest, const T* src, size_t count) {
+		if constexpr (std::is_trivially_copyable_v<T> && std::is_same_v<T, U>) {
+			copy_memory(dest, src, count * sizeof(T));
+		}
+		else {
+			copy_range(src, src + count, dest + count);
+		}
+	}
+	template<typename T>
+	inline void move_array(T* dest, T* src, size_t count) {
+		if constexpr (std::is_trivially_move_constructible_v<T>) {
+			copy_memory(dest, src, count * sizeof(T));
+		}
+		else {
+			move_range(src, src + count, dest + count);
+		}
 	}
 }

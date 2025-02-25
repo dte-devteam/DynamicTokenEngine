@@ -29,7 +29,7 @@ namespace dte_utils {
 			}
 			template<typename R = return_type_t<T>, typename ...Args>
 			R operator()(Args&&... args) const {
-				return instance(args...);
+				return instance(std::forward<Args>(args)...);
 			}
 			template<typename U = std::enable_if_t<ref_instantiable<T>, T>>
 			U& operator*() const {

@@ -39,7 +39,7 @@
     <ClInclude Include="utils\include\pointer\unique_ref.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="utils\include\dynamic_array.h">
+    <ClInclude Include="utils\include\dynamic_memory\dynamic_stack.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
     <ClInclude Include="utils\include\memory.h">
@@ -49,6 +49,9 @@
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
     <ClInclude Include="utils\include\constraints.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="utils\include\dynamic_memory.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
   </ItemGroup>

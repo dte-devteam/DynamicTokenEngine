@@ -28,15 +28,15 @@ namespace dte_utils {
 					}
 				}
 			}
-			template<REF_ASSIGNABLE<T> U>
+			template<ref_assignable<T> U>
 			ref<T>* pull_weak_ref(const weak_ref<U>& r) {
 				return reinterpret_cast<ref<T>*>(r.reference);
 			}
-			template<REF_ASSIGNABLE<T> U>
+			template<ref_assignable<T> U>
 			void push_weak_ref(weak_ref<U>& r, ref<T>* new_ref) {
 				r.reference = reinterpret_cast<ref<U>*>(new_ref);
 			}
-			template<REF_ASSIGNABLE<T> U>
+			template<ref_assignable<T> U>
 			weak_ref(ref<U>* r) noexcept : reference(reinterpret_cast<ref<T>*>(r)) {
 				++reference->weak_owners;
 			}
@@ -47,9 +47,9 @@ namespace dte_utils {
 			weak_ref(const weak_ref& r) noexcept : weak_ref(r.reference) {}
 			weak_ref(weak_ref&& r) noexcept : weak_ref(r.reference) {}
 
-			template<REF_ASSIGNABLE<T> U>
+			template<ref_assignable<T> U>
 			weak_ref(const weak_ref<U>& r) noexcept : weak_ref(r.reference) {}
-			template<REF_ASSIGNABLE<T> U>
+			template<ref_assignable<T> U>
 			weak_ref(weak_ref<U>&& r) noexcept : weak_ref(r.reference) {}
 			
 			~weak_ref() {
@@ -80,27 +80,8 @@ namespace dte_utils {
 				if (this == &r) {
 					return *this;
 				}
-				std::swap(reference, r.reference);
-				return *this;
-			}
-
-			template<REF_ASSIGNABLE<T> U>
-			weak_ref& operator=(const weak_ref<U>& r) {
-				if (reinterpret_cast<weak_ref<U>*>(this) == &r) {
-					return *this;
-				}
 				weak_decrease();
-				reference = pull_weak_ref(r.reference);
-				++reference->weak_owners;
-				return *this;
-			}
-			template<REF_ASSIGNABLE<T> U>
-			weak_ref& operator=(weak_ref<U>&& r) noexcept {
-				if (reinterpret_cast<weak_ref<U>*>(this) == &r) {
-					return *this;
-				}
-				weak_decrease();
-				reference = pull_weak_ref(r.reference);
+				reference = r.reference;
 				++reference->weak_owners;
 				return *this;
 			}
@@ -117,7 +98,7 @@ namespace dte_utils {
 
 			template<typename R = return_type_t<T>, typename ...Args>
 			R operator()(Args&&... args) const {
-				return reference->instance(args...);
+				return reference->instance(std::forward<Args>(args)...);
 			}
 			template<typename U = std::enable_if_t<ref_instantiable<T>, T>>
 			U& operator*() const {

@@ -10,31 +10,31 @@ namespace dte_utils {
 			//behave as strong if it is strong at decreasing
 			void unknown_decrease() const {
 				if (is_strong) {
-					strong_decrease();
+					this->strong_decrease();
 				}
 			}
 			//behave as strong if it is strong at increase
 			void unknown_increase() const {
 				if (is_strong) {
-					++reference->strong_owners;
+					++this->reference->strong_owners;
 				}
 			}
-			template<REF_ASSIGNABLE<T> U>
+			template<ref_assignable<T> U>
 			unknown_ref(ref<U>* r, bool strength) noexcept : is_strong(strength), weak_ref(r) {
 				unknown_increase();
 			}
 		public:
 			unknown_ref(bool strength = false) noexcept : unknown_ref(new ref<T>(), strength) {}
-			unknown_ref(ref_pointer<T> instance, bool strength = true) noexcept : unknown_ref(new ref<T>(instance), strength) {}
+			unknown_ref(ref_pointer<T> instance, bool strength = false) noexcept : unknown_ref(new ref<T>(instance), strength) {}
 			
 			unknown_ref(const unknown_ref& r, bool strength = false) : unknown_ref(r.reference, strength) {}
 			unknown_ref(unknown_ref&& r) noexcept : unknown_ref(r.reference, r.is_strong) {}
 			
-			template<REF_ASSIGNABLE<T> U>
+			template<ref_assignable<T> U>
 			unknown_ref(const weak_ref<U>& r, bool strength = false) noexcept : is_strong(strength), weak_ref(r) {
 				unknown_increase();
 			}
-			template<REF_ASSIGNABLE<T> U>
+			template<ref_assignable<T> U>
 			unknown_ref(weak_ref<U>&& r, bool strength = false) noexcept : is_strong(strength), weak_ref(r) {
 				unknown_increase();
 			}
@@ -44,13 +44,13 @@ namespace dte_utils {
 			}
 
 			unknown_ref& operator=(ref_pointer<T> instance) {
-				if (--reference->weak_owners) {
-					reference = new ref<T>(instance);
+				if (--this->reference->weak_owners) {
+					this->reference = new ref<T>(instance);
 				}
 				else {
-					reference->instance = instance;
+					this->reference->instance = instance;
 				}
-				++reference->weak_owners;
+				++this->reference->weak_owners;
 				return *this;
 			}
 
@@ -59,9 +59,9 @@ namespace dte_utils {
 					return *this;
 				}
 				unknown_decrease();
-				weak_decrease();
-				reference = pull_weak_ref(r);
-				++reference->weak_owners;
+				this->weak_decrease();
+				this->reference = pull_weak_ref(r);
+				++this->reference->weak_owners;
 				unknown_increase();
 				return *this;
 			}
@@ -69,38 +69,41 @@ namespace dte_utils {
 				if (this == &r) {
 					return *this;
 				}
-				std::swap(reference, r.reference);
-				std::swap(is_strong, r.is_strong);
+				unknown_decrease();
+				this->weak_decrease();
+				this->reference = pull_weak_ref(r);
+				++this->reference->weak_owners;
+				unknown_increase();
 				return *this;
 			}
 
-			template<REF_ASSIGNABLE<T> U>
+			template<ref_assignable<T> U>
 			unknown_ref& operator=(const weak_ref<U>& r) {
 				if (reinterpret_cast<weak_ref<U>*>(this) == &r) {
 					return *this;
 				}
 				unknown_decrease();
-				weak_decrease();
-				reference = pull_weak_ref(r);
-				++reference->weak_owners;
+				this->weak_decrease();
+				this->reference = pull_weak_ref(r);
+				++this->reference->weak_owners;
 				unknown_increase();
 				return *this;
 			}
-			template<REF_ASSIGNABLE<T> U>
+			template<ref_assignable<T> U>
 			unknown_ref& operator=(weak_ref<U>&& r) {
 				if (reinterpret_cast<weak_ref<U>*>(this) == &r) {
 					return *this;
 				}
 				unknown_decrease();
-				weak_decrease();
-				reference = pull_weak_ref(r);
-				++reference->weak_owners;
+				this->weak_decrease();
+				this->reference = pull_weak_ref(r);
+				++this->reference->weak_owners;
 				unknown_increase();
 				return *this;
 			}
 			//stregth
 			bool get_strength() {
-				return is_strong();
+				return is_strong;
 			}
 			void set_strength(bool strength) {
 				if (is_strong == strength) {
