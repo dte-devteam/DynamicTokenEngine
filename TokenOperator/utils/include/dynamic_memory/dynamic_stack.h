@@ -191,6 +191,7 @@ namespace dte_utils {
 					return *this;
 				}
 				std::swap(a, dyn_array.a);
+				std::swap(as, dyn_array.as);
 				std::swap(us, dyn_array.us);
 				return *this;
 			}
@@ -203,19 +204,19 @@ namespace dte_utils {
 				us += dyn_array.us;
 				return *this;
 			}
-			dynamic_stack& operator +=(dynamic_stack&& dyn_array) {
-				if (as < us + dyn_array.us) {
-					resize_allocated(us + dyn_array.us);
-				}
-				copy_array(a + us, dyn_array.a, dyn_array.us);
-				us += dyn_array.us;
-				return *this;
-			}
+			//dynamic_stack& operator +=(dynamic_stack&& dyn_array) {
+			//	if (as < us + dyn_array.us) {
+			//		resize_allocated(us + dyn_array.us);
+			//	}
+			//	copy_array(a + us, dyn_array.a, dyn_array.us);
+			//	us += dyn_array.us;
+			//	return *this;
+			//}
 
 
 			dynamic_stack operator+(const dynamic_stack& dyn_array) {
 				dynamic_stack new_array(a, us, dyn_array.us);
-				//new_array += dyn_array; wtf?
+				new_array += dyn_array;
 				return new_array;
 			}
 			dynamic_stack operator+(dynamic_stack&& dyn_array) {

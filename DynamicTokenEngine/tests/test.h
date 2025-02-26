@@ -109,32 +109,35 @@ void run_tests() {
 
 	
 
-	dynamic_stack<float> ds4{ 100 };
-	ds4.push_back(1);
-	ds4.push_back(2);
-	ds4.push_back(3);
+	//dynamic_stack<float> ds4{ 100 };
+	//ds4.push_back(1);
+	//ds4.push_back(2);
+	//ds4.push_back(3);
 
 	dynamic_stack<int> ds3;
 	ds3.push_back(1.0F);
-	ds3 = ds3 + ds3 + ds3 + ds4;
-	ds3 = ds3 + dynamic_stack<float>();
-
+	ds3 = ds3 + ds3;
+	//ds3 = ds3 + dynamic_stack<float>();
+	ds3.push_back(1);
 	for (const int& i : ds3) {
 		std::cout << i << " ";
 	}
 	std::cout << std::endl;
+	
 	
 	M* mm = new M[3];
 	mm[0].i = 1;
 	mm[1].i = 2;
 	mm[2].i = 3;
 	dynamic_stack<M> dsm(mm, 3, 0);
-	dsm.push_back(M());//OK
+	dsm.push_back(M());
+	dsm.push_back(M());
 	delete[] mm;
-	//dsm += dsm; wont cause problem
-	dsm = dsm + dsm; //motherfucker
+	dsm += dsm;
+	dsm = dsm + dsm;
 	for (const M& i : dsm) {
 		std::cout << i.i << " ";
 	}
 	dsm.push_back(M());//heap problems
+	
 }
