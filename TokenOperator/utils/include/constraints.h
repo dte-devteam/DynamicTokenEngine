@@ -2,8 +2,10 @@
 #include <type_traits>
 namespace dte_utils {
 	//concepts
-	template<typename T, typename U>
-	concept castable = requires (T t, U u) {
-		u = static_cast<U>(t);
-	};
+	template<typename U, typename T>
+	concept copy_constructible = std::is_constructible_v<T, const U&>;
+	template<typename U, typename T>
+	concept move_constructible = std::is_constructible_v<T, U&&>;
+	template<typename U, typename T>
+	concept copyable_movable = copy_constructible<U, T> && move_constructible<U, T>;
 }

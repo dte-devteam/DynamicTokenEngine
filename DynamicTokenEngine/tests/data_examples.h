@@ -45,13 +45,20 @@ namespace test {
 		}
 	};
 	struct M {
-		M() : i(222) {}
-		M(const M& m) : i(111) {}
-		M(M&& m) noexcept : i(m.i) {
-		//	m.i = 0;
-		//	std::cout << "M moved" << std::endl;
-		}
+		//M() = default;
+		//M(const M& m) : i(m.i) {}
+		//M(M&& m) noexcept : i(m.i) {}
 		int i;
+	};
+	struct UM {
+		UM() {}
+		UM(const UM&) {}
+		UM(UM&& m) = delete;
+	};
+	struct UC {
+		UC() {}
+		UC(const UC& m) = delete;
+		UC(UC&&) {}
 	};
 	//functions
 	typedef int (*function)();

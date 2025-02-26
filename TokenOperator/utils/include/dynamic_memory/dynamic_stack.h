@@ -3,7 +3,10 @@
 #include <iostream>
 namespace dte_utils {
 	template<typename T>
-	concept dyn_memory_limit = !(std::is_void_v<T> || std::is_unbounded_array_v<T>);
+	concept dyn_memory_limit = !(
+			std::is_void_v<T> || 
+			std::is_unbounded_array_v<T>
+		);
 	/*
 	Operates with non-new array
 	*/
@@ -29,9 +32,9 @@ namespace dte_utils {
 		public:
 			dynamic_stack() noexcept : us(0), as(0), a(nullptr) {}
 			dynamic_stack(size_t alocate_size) noexcept : us(0), as(alocate_size), a(as ? malloc_t<T>(as) : nullptr) {}
-			template<castable<T> U, size_t N>
+			template<copy_constructible<T> U, size_t N>
 			dynamic_stack(const U (&array)[N], size_t reserved_size = 0) noexcept : dynamic_stack(array, N, reserved_size) {}
-			template<castable<T> U>
+			template<copy_constructible<T> U>
 			dynamic_stack(const U* array, size_t used_size, size_t reserved_size) noexcept : us(used_size), as(us + reserved_size), a(malloc_t<T>(as)) {
 				copy_array(a, array, us);
 			}
@@ -44,15 +47,15 @@ namespace dte_utils {
 				dyn_array.a = nullptr;
 			}
 
-			template<castable<T> U>
+			template<copy_constructible<T> U>
 			dynamic_stack(const dynamic_stack<U>& dyn_array) noexcept : us(dyn_array.us), as(dyn_array.as), a(as ? malloc_t<T>(as) : nullptr) {
 				copy_array(a, dyn_array.a, us);
 			}
-			template<castable<T> U>
+			template<copy_constructible<T> U>
 			dynamic_stack(dynamic_stack<U>&& dyn_array) noexcept : us(dyn_array.us), as(dyn_array.as), a(as ? malloc_t<T>(as) : nullptr) {
 				copy_array(a, dyn_array.a, us);
 			}
-			
+
 			~dynamic_stack() {
 				destruct_array();
 			}
@@ -89,6 +92,7 @@ namespace dte_utils {
 			}
 			//doesn`t applyable for insert operation
 			void resize_allocated(size_t size) {
+				//TODO
 				if (!size) {
 					destruct_array();
 					us = as = 0;
@@ -97,7 +101,7 @@ namespace dte_utils {
 				}
 				if (us > size) {
 					if constexpr (!std::is_trivially_destructible_v<T>) {
-						destruct_range(a + size, a + us);
+						destruct_range(a + size, end());
 					}
 					us = size;
 				}
@@ -119,37 +123,38 @@ namespace dte_utils {
 			}
 			void clear() {
 				if constexpr (!std::is_trivially_destructible_v<T>) {
-					destruct_range(a, a + us);
+					destruct_range(a, end());
 				}
 				us = 0;
 			}
 			//----------------
-			template<castable<T> U>
+			template<copy_constructible<T> U>
 			void push_back(const U& value) {
 				provide_element_space();
+				std::cout << us << " " << as << std::endl;
 				if constexpr (std::is_trivially_constructible_v<T, const U&>) {
 					a[us] = static_cast<T>(value);
 				}
 				else {
-					new (a + us) T(static_cast<T>(value));
+					new (end()) T(static_cast<T>(value));
 				}
 				++us;
 			}
-			template<castable<T> U>
+			template<move_constructible<T> U>
 			void push_back(U&& value) {
 				provide_element_space();
-				if constexpr (std::is_trivially_constructible_v<T, U&&>) {
-					a[us] = static_cast<T&&>(value);
-				}
-				else {
-					new (a + us) T(static_cast<T&&>(std::move(value)));
-				}
+				//if constexpr (std::is_trivially_constructible_v<T, U&&>) {
+				//	a[us] = static_cast<T&&>(value);
+				//}
+				//else {
+					new (end()) T(static_cast<T&&>(value));
+				//}
 				++us;
 			}
 			template<typename ...Args>
 			void emplace(Args&&... args) requires std::is_constructible_v<T, Args&&...> && !std::is_trivially_constructible_v<T, Args&&...> {
 				provide_element_space();
-				new (a + us) T(std::forward<Args>(args)...);
+				new (end()) T(std::forward<Args>(args)...);
 				++us;
 			}
 			void pop_back() {
@@ -209,13 +214,27 @@ namespace dte_utils {
 
 
 			dynamic_stack operator+(const dynamic_stack& dyn_array) {
-				
-				return dyn_array;
+				dynamic_stack new_array(a, us, dyn_array.us);
+				//new_array += dyn_array; wtf?
+				return new_array;
 			}
-			//dynamic_stack operator+(dynamic_stack&& dyn_array) {
-			//	dynamic_stack new_array((T*)a, us, dyn_array.us);
-			//	new_array += dyn_array;
-			//	return new_array;
-			//}
+			dynamic_stack operator+(dynamic_stack&& dyn_array) {
+				//TODO
+				if (dyn_array.as < dyn_array.us + us) {
+					T* buffer = malloc_t<T>(dyn_array.us + us);
+					copy_array(buffer, a, us);
+					copy_array(buffer + us, dyn_array.a, dyn_array.us);
+					dyn_array.destruct_array();
+					dyn_array.a = buffer;
+					dyn_array.us += us;
+					return dyn_array;
+				}
+				else {
+					copy_array(dyn_array.a + us, dyn_array.a, dyn_array.us);
+					copy_array(dyn_array.a, a, us);
+					dyn_array.us += us;
+					return dyn_array;
+				}
+			}
 	};
 }

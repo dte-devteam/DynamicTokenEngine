@@ -21,19 +21,19 @@ namespace dte_utils {
 		return begin;
 	}
 
-	template<typename U, castable<U> T>
+	template<typename U, copy_constructible<U> T>
 	inline void copy_range(const T* begin, const T* end, U* dest_end) {
 		while (begin != end) {
 			new (--dest_end) U(static_cast<U>(*--end));
 		}
 	}
-	template<typename T>
-	inline void move_range(T* begin, T* end, T* dest_end) {
+	template<typename U, copy_constructible<U> T>
+	inline void move_range(T* begin, T* end, U* dest_end) {
 		while (begin != end) {
-			new (--dest_end) T(std::move(*--end));
+			new (--dest_end) U(static_cast<U&&>(*--end));
 		}
 	}
-	template<typename T>
+	template<typename T> requires std::is_destructible_v<T>
 	inline void destruct_range(T* begin, T* end) {
 		while (begin != end) {
 			(--end)->~T();
@@ -60,7 +60,7 @@ namespace dte_utils {
 		return dest;
 	}
 
-	template<typename U, castable<U> T>
+	template<typename U, copy_constructible<U> T>
 	inline void copy_array(U* dest, const T* src, size_t count) {
 		if constexpr (std::is_trivially_copyable_v<T> && std::is_same_v<T, U>) {
 			copy_memory(dest, src, count * sizeof(T));
