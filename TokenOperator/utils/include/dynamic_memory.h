@@ -1,2 +1,2 @@
 #pragma once
-#include "dynamic_memory/dynamic_stack.h"
+#include "dynamic_memory/dynamic_array.h"

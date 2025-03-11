@@ -4,9 +4,11 @@
 namespace dte_utils {
 	template<typename T>
 	concept dyn_memory_limit = !(
-			std::is_void_v<T> || 
-			std::is_unbounded_array_v<T>
-		);
+			std::is_void_v<T> ||			//can`t return void
+			std::is_unbounded_array_v<T>	//cant manage T[]
+		) &&
+		std::is_destructible_v<T>			//will destruct all data in destructor
+	;
 	/*
 	Operates with non-new array
 	*/
@@ -32,28 +34,31 @@ namespace dte_utils {
 		public:
 			dynamic_stack() noexcept : us(0), as(0), a(nullptr) {}
 			dynamic_stack(size_t alocate_size) noexcept : us(0), as(alocate_size), a(as ? malloc_t<T>(as) : nullptr) {}
-			template<copy_constructible<T> U, size_t N>
+			template<copyable_or_movable<T> U, size_t N>
 			dynamic_stack(const U (&array)[N], size_t reserved_size = 0) noexcept : dynamic_stack(array, N, reserved_size) {}
-			template<copy_constructible<T> U>
+			template<copyable_or_movable<T> U>
 			dynamic_stack(const U* array, size_t used_size, size_t reserved_size) noexcept : us(used_size), as(us + reserved_size), a(malloc_t<T>(as)) {
-				copy_array(a, array, us);
+				array_to_array(a, array, us);
 			}
 
+			template<copyable_or_movable<T> U>
+			dynamic_stack(std::initializer_list<U> il, size_t reserved_size = 0) noexcept : dynamic_stack(il.begin(), il.size(), reserved_size) {}
+
 			dynamic_stack(const dynamic_stack& dyn_array) noexcept : us(dyn_array.us), as(dyn_array.as), a(as ? malloc_t<T>(as) : nullptr) {
-				copy_array(a, dyn_array.a, us);
+				array_to_array(a, dyn_array.a, us);
 			}
 			dynamic_stack(dynamic_stack&& dyn_array) noexcept : us(dyn_array.us), as(dyn_array.as), a(dyn_array.a) {
 				dyn_array.us = 0;
 				dyn_array.a = nullptr;
 			}
 
-			template<copy_constructible<T> U>
+			template<copyable_or_movable<T> U>
 			dynamic_stack(const dynamic_stack<U>& dyn_array) noexcept : us(dyn_array.us), as(dyn_array.as), a(as ? malloc_t<T>(as) : nullptr) {
-				copy_array(a, dyn_array.a, us);
+				array_to_array(a, dyn_array.a, us);
 			}
-			template<copy_constructible<T> U>
+			template<copyable_or_movable<T> U>
 			dynamic_stack(dynamic_stack<U>&& dyn_array) noexcept : us(dyn_array.us), as(dyn_array.as), a(as ? malloc_t<T>(as) : nullptr) {
-				copy_array(a, dyn_array.a, us);
+				array_to_array(a, dyn_array.a, us);
 			}
 
 			~dynamic_stack() {
@@ -92,7 +97,6 @@ namespace dte_utils {
 			}
 			//doesn`t applyable for insert operation
 			void resize_allocated(size_t size) {
-				//TODO
 				if (!size) {
 					destruct_array();
 					us = as = 0;
@@ -111,12 +115,12 @@ namespace dte_utils {
 					}
 					else {
 						T* buffer = malloc_t<T>(size);
-						std::swap(a, buffer);
-						copy_array(a, buffer, us);
+						array_to_array(buffer, a, us);
 						if constexpr (!std::is_trivially_destructible_v<T>) {
-							destruct_range(buffer, buffer + us);
+							destruct_range(begin(), end());
 						}
-						free(buffer);
+						free(a);
+						a = buffer;
 					}
 					as = size;
 				}
@@ -143,12 +147,12 @@ namespace dte_utils {
 			template<move_constructible<T> U>
 			void push_back(U&& value) {
 				provide_element_space();
-				//if constexpr (std::is_trivially_constructible_v<T, U&&>) {
-				//	a[us] = static_cast<T&&>(value);
-				//}
-				//else {
+				if constexpr (std::is_trivially_constructible_v<T, U&&>) {
+					a[us] = static_cast<T&&>(value);
+				}
+				else {
 					new (end()) T(static_cast<T&&>(value));
-				//}
+				}
 				++us;
 			}
 			template<typename ...Args>
@@ -159,7 +163,7 @@ namespace dte_utils {
 			}
 			void pop_back() {
 				if constexpr (!std::is_trivially_destructible_v<T>) {
-					(a + --us)->~T();
+					a[--us].~T();
 				}
 				else {
 					--us;
@@ -173,8 +177,6 @@ namespace dte_utils {
 				return a[index];
 			}
 			//assing operators
-
-
 			dynamic_stack& operator =(const dynamic_stack& dyn_array) {
 				if (this == &dyn_array) {
 					return *this;
@@ -183,7 +185,7 @@ namespace dte_utils {
 				us = dyn_array.us;
 				as = dyn_array.as;
 				a = malloc_t<T>(as);
-				copy_array(a, dyn_array.a, us);
+				array_to_array(a, dyn_array.a, us);
 				return *this;
 			}
 			dynamic_stack& operator =(dynamic_stack&& dyn_array) noexcept {
@@ -200,42 +202,50 @@ namespace dte_utils {
 				if (as < us + dyn_array.us) {
 					resize_allocated(us + dyn_array.us);
 				}
-				copy_array(a + us, dyn_array.a, dyn_array.us);
+				array_to_array(a + us, dyn_array.a, dyn_array.us);
 				us += dyn_array.us;
 				return *this;
 			}
-			//dynamic_stack& operator +=(dynamic_stack&& dyn_array) {
-			//	if (as < us + dyn_array.us) {
-			//		resize_allocated(us + dyn_array.us);
-			//	}
-			//	copy_array(a + us, dyn_array.a, dyn_array.us);
-			//	us += dyn_array.us;
-			//	return *this;
-			//}
+			template<copyable_or_movable<T> U, size_t N>
+			dynamic_stack& operator +=(const U(&array)[N]) {
+				if (as < us + N) {
+					resize_allocated(us + N);
+				}
+				array_to_array(a + us, array, N);
+				us += N;
+				return *this;
+			}
 
-
-			dynamic_stack operator+(const dynamic_stack& dyn_array) {
+			dynamic_stack operator+(const dynamic_stack& dyn_array) const {
 				dynamic_stack new_array(a, us, dyn_array.us);
 				new_array += dyn_array;
 				return new_array;
 			}
-			dynamic_stack operator+(dynamic_stack&& dyn_array) {
-				//TODO
+			dynamic_stack operator+(dynamic_stack&& dyn_array) const {
 				if (dyn_array.as < dyn_array.us + us) {
 					T* buffer = malloc_t<T>(dyn_array.us + us);
-					copy_array(buffer, a, us);
-					copy_array(buffer + us, dyn_array.a, dyn_array.us);
+					array_to_array(buffer, a, us);
+					array_to_array(buffer + us, dyn_array.a, dyn_array.us);
 					dyn_array.destruct_array();
 					dyn_array.a = buffer;
 					dyn_array.us += us;
 					return dyn_array;
 				}
 				else {
-					copy_array(dyn_array.a + us, dyn_array.a, dyn_array.us);
-					copy_array(dyn_array.a, a, us);
+					array_to_array(dyn_array.a + us, dyn_array.a, dyn_array.us);
+					array_to_array(dyn_array.a, a, us);
 					dyn_array.us += us;
 					return dyn_array;
 				}
+			}
+
+			//should be faster than +dynamic_stack&& because of no reallocation
+			template<copyable_or_movable<T> U, size_t N>
+			dynamic_stack operator+(const U(&array)[N]) {
+				dynamic_stack new_array(a, us, N);
+				array_to_array(new_array.a + us, array, N);
+				new_array.us += N;
+				return new_array;
 			}
 	};
 }

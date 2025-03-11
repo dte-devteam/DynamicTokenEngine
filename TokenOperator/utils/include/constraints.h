@@ -7,5 +7,7 @@ namespace dte_utils {
 	template<typename U, typename T>
 	concept move_constructible = std::is_constructible_v<T, U&&>;
 	template<typename U, typename T>
-	concept copyable_movable = copy_constructible<U, T> && move_constructible<U, T>;
+	concept copyable_and_movable = copy_constructible<U, T> && move_constructible<U, T>;
+	template<typename U, typename T>
+	concept copyable_or_movable = copy_constructible<U, T> || move_constructible<U, T>;
 }

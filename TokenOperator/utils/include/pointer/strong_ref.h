@@ -6,25 +6,21 @@ namespace dte_utils {
 		template <typename U> friend struct strong_ref;
 		protected:
 			template<ref_assignable<T> U>
-			strong_ref(ref<U>* r) noexcept : weak_ref(r) {
+			strong_ref(ref<U>* r) noexcept : weak_ref<T>(r) {
 				++this->reference->strong_owners;
 			}
 		public:
 			strong_ref() noexcept : strong_ref(new ref<T>) {}
 			strong_ref(ref_pointer<T> instance) noexcept : strong_ref(new ref<T>(instance)) {}
-			strong_ref(const strong_ref& r) noexcept : weak_ref(r) {
+			strong_ref(const strong_ref& r) noexcept : weak_ref<T>(r) {
 				++this->reference->strong_owners;
 			}
-			strong_ref(strong_ref&& r) noexcept : weak_ref(r) {
+			strong_ref(strong_ref&& r) noexcept : weak_ref<T>(r) {
 				++this->reference->strong_owners;
 			}
 
 			template<ref_assignable<T> U>
-			strong_ref(const weak_ref<U>& r) noexcept : weak_ref(r) {
-				++this->reference->strong_owners;
-			}
-			template<ref_assignable<T> U>
-			strong_ref(weak_ref<U>&& r) noexcept : weak_ref(r) {
+			strong_ref(const weak_ref<U>& r) noexcept : weak_ref<T>(r) {
 				++this->reference->strong_owners;
 			}
 
@@ -60,11 +56,9 @@ namespace dte_utils {
 				if (this == &r) {
 					return *this;
 				}
-				this->strong_decrease();
-				this->weak_decrease();
-				this->reference = pull_weak_ref(r);
-				++this->reference->weak_owners;
-				++this->reference->strong_owners;
+				ref<T>* buffer = pull_weak_ref(r);
+				this->push_weak_ref(r, this->reference);
+				this->reference = buffer;
 				return *this;
 			}
 
@@ -75,20 +69,7 @@ namespace dte_utils {
 				}
 				this->strong_decrease();
 				this->weak_decrease();
-				this->reference = pull_weak_ref(r);
-				++this->reference->weak_owners;
-				++this->reference->strong_owners;
-				return *this;
-			}
-			
-			template<ref_assignable<T> U>
-			strong_ref& operator=(weak_ref<U>&& r) {
-				if (reinterpret_cast<weak_ref<U>*>(this) == &r) {
-					return *this;
-				}
-				this->strong_decrease();
-				this->weak_decrease();
-				this->reference = pull_weak_ref(r);
+				this->reference = this->pull_weak_ref(r);
 				++this->reference->weak_owners;
 				++this->reference->strong_owners;
 				return *this;

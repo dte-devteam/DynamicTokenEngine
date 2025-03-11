@@ -49,8 +49,6 @@ namespace dte_utils {
 
 			template<ref_assignable<T> U>
 			weak_ref(const weak_ref<U>& r) noexcept : weak_ref(r.reference) {}
-			template<ref_assignable<T> U>
-			weak_ref(weak_ref<U>&& r) noexcept : weak_ref(r.reference) {}
 			
 			~weak_ref() {
 				weak_decrease();
@@ -68,15 +66,6 @@ namespace dte_utils {
 			}
 
 			weak_ref& operator=(const weak_ref& r) {
-				if (this == &r) {
-					return *this;
-				}
-				weak_decrease();
-				reference = r.reference;
-				++reference->weak_owners;
-				return *this;
-			}
-			weak_ref& operator=(weak_ref&& r) noexcept {
 				if (this == &r) {
 					return *this;
 				}

@@ -25,15 +25,33 @@ namespace test {
 		float f;
 		A(float f) : f(f) {
 			++ab_visor.A_constructed;
+			std::cout << "A(float)\t" << std::endl;
 		}
-		A(const A&) {
+		A(const A& a) : f(a.f) {
 			++ab_visor.A_constructed;
+			std::cout << "A copied\t" << std::endl;
 		}
-		A() {
+		A(A&& a) noexcept : f(a.f) {
 			++ab_visor.A_constructed;
+			std::cout << "A moved\t" << std::endl;
+		}
+		A() : f(-1.0F) {
+			++ab_visor.A_constructed;
+			std::cout << "A()\t" << std::endl;
 		}
 		virtual ~A() {
 			++ab_visor.A_destructed;
+		}
+
+		A& operator =(const A& a) {
+			std::cout << "A = const A&\t" << std::endl;
+			f = a.f;
+			return *this;
+		}
+		A& operator =(A&& a) noexcept {
+			std::cout << "A = A&&\t" << std::endl;
+			std::swap(f, a.f);
+			return *this;
 		}
 	};
 	struct B : A {
@@ -43,12 +61,6 @@ namespace test {
 		~B() {
 			++ab_visor.B_destructed;
 		}
-	};
-	struct M {
-		//M() = default;
-		//M(const M& m) : i(m.i) {}
-		//M(M&& m) noexcept : i(m.i) {}
-		int i;
 	};
 	struct UM {
 		UM() {}
