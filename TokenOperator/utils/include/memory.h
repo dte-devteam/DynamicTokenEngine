@@ -3,7 +3,6 @@
 //#include <new>	//to do - find out why fixes error C2661 with operator new
 #include "../../target_architecture.h"
 #include "constraints.h"
-#include <iostream>
 namespace dte_utils {
 	template<typename T>
 	inline T* malloc_t(size_t size) {

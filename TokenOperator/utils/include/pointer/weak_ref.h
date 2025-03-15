@@ -74,6 +74,14 @@ namespace dte_utils {
 				++reference->weak_owners;
 				return *this;
 			}
+			template<typename U>
+			weak_ref& operator=(U&& r) requires std::is_same_v<weak_ref, U> {
+				if (this == &r) {
+					return *this;
+				}
+				std::swap(reference, r.reference);
+				return *this;
+			}
 
 			size_t get_weak_owners() const {
 				return reference->weak_owners;

@@ -1,6 +1,5 @@
 #pragma once
 #include "memory.h"
-#include <iostream>
 namespace dte_utils {
 	template<typename T>
 	concept dyn_memory_limit = !(
@@ -15,7 +14,7 @@ namespace dte_utils {
 	template<dyn_memory_limit T>
 	struct dynamic_stack {
 		template<dyn_memory_limit U> friend struct dynamic_stack;
-		//protected:
+		protected:
 			size_t	us;	//used size
 			size_t	as;	//allocated size
 			T*		a;	//array
@@ -66,10 +65,16 @@ namespace dte_utils {
 			}
 
 			//for(T& t : dyn_array)
-			T* begin() const {
+			T* begin() noexcept {
 				return a;
 			}
-			T* end() const {
+			const T* begin() const noexcept {
+				return a;
+			}
+			T* end() noexcept {
+				return a + us;
+			}
+			const T* end() const noexcept {
 				return a + us;
 			}
 			//
@@ -135,7 +140,6 @@ namespace dte_utils {
 			template<copy_constructible<T> U>
 			void push_back(const U& value) {
 				provide_element_space();
-				std::cout << us << " " << as << std::endl;
 				if constexpr (std::is_trivially_constructible_v<T, const U&>) {
 					a[us] = static_cast<T>(value);
 				}
@@ -156,7 +160,7 @@ namespace dte_utils {
 				++us;
 			}
 			template<typename ...Args>
-			void emplace(Args&&... args) requires std::is_constructible_v<T, Args&&...> && !std::is_trivially_constructible_v<T, Args&&...> {
+			void emplace_back(Args&&... args) requires std::is_constructible_v<T, Args&&...> {
 				provide_element_space();
 				new (end()) T(std::forward<Args>(args)...);
 				++us;

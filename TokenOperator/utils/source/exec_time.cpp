@@ -12,7 +12,7 @@ namespace dte_utils {
 	clock_t lpet::get_ms_dt_weak() {
 		return clock() - start_time;
 	}
-	clock_t lpet::get_ms_dt_strong() {
+	clock_t lpet::get_ms_dt_strong() { 
 		clock_t dt = get_ms_dt_weak();
 		start_time = clock();
 		return dt;
