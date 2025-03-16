@@ -156,8 +156,12 @@
     <ClInclude Include="target_architecture.h" />
     <ClInclude Include="utils\include\constraints.h" />
     <ClInclude Include="utils\include\dynamic_memory.h" />
+    <ClInclude Include="utils\include\dynamic_memory\dynamic_array.ipp" />
+    <ClInclude Include="utils\include\dynamic_memory\dynamic_stack.ipp" />
     <ClInclude Include="utils\include\dynamic_memory\dynamic_array.h" />
     <ClInclude Include="utils\include\dynamic_memory\dynamic_stack.h" />
+    <ClInclude Include="utils\include\dynamic_memory\dynamic_string.h" />
+    <ClInclude Include="utils\include\dynamic_memory\dynamic_string.ipp" />
     <ClInclude Include="utils\include\exec_time.h" />
     <ClInclude Include="utils\include\function.h" />
     <ClInclude Include="utils\include\memory.h" />

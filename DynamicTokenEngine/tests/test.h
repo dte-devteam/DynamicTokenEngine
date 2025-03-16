@@ -1,6 +1,7 @@
 #pragma once
 #include <iostream>
 #include "utils/include/dynamic_memory.h"
+
 #include "utils/include/pointer.h"
 #include "utils/include/exec_time.h"
 #include "data_examples.h"
@@ -160,7 +161,7 @@ void f7() {
 	//dasi.insert(dasi.begin() + 3, dasi.begin(), dasi.begin() + 3);
 	dasi.insert(dasi.begin() + 3, {11, 22, 33});
 
-	//dasi.emplace(dasi.begin() + 3, i);
+	dasi.emplace(dasi.begin() + 3, i);
 	for (const A& i : dasi) {
 		std::cout << i.f << " ";
 	}
@@ -211,8 +212,20 @@ void run_tests() {
 	ab_visor.log();
 
 
-	array_to_array((int*)0, (const int*)0, 0);
-	array_to_array((int*)0, (int*)0, 0);
+	dynamic_string<char> cstr("");
+	cstr += "AB";
+	cstr += L"CD";
+	std::cout << cstr.begin() << std::endl;
 
+	dynamic_string<char> cstr1("");
+
+	cstr1 = cstr1 + L"AB";
+	cstr1 += cstr1; 
+	cstr1 = cstr1 + dynamic_string<wchar_t>(L"CD");
+	std::cout << cstr1.begin() << std::endl;
+	//for (const char c : cstr1) {
+	//	std::cout << c << std::endl;
+	//}
+	std::cout << "*****" << std::endl;
 	std::cout << "***total exec time: " << et.get_ms_dt_weak() << "***" << std::endl;
 } 
