@@ -95,6 +95,8 @@ void f3() {
 		std::cout << i << " ";
 	}
 	std::cout << std::endl;
+	ddd.emplace_back(1);
+	ddd[5];
 }
 void f4() {
 	std::cout << "|||float -> A" << std::endl;
@@ -212,20 +214,30 @@ void run_tests() {
 	ab_visor.log();
 
 
-	dynamic_string<char> cstr("");
+	dynamic_string<char> cstr;// ("");
 	cstr += "AB";
 	cstr += L"CD";
 	std::cout << cstr.begin() << std::endl;
 
-	dynamic_string<char> cstr1("");
+	//dynamic_string<char> cstr1("");
 
-	cstr1 = cstr1 + L"AB";
-	cstr1 += cstr1; 
-	cstr1 = cstr1 + dynamic_string<wchar_t>(L"CD");
-	std::cout << cstr1.begin() << std::endl;
+	//cstr1 = cstr1 + L"AB";
+	//cstr1 += cstr1; 
+	//cstr1 = cstr1 + dynamic_string<wchar_t>(L"CD");
+	//std::cout << cstr1.begin() << std::endl;
 	//for (const char c : cstr1) {
 	//	std::cout << c << std::endl;
 	//}
+
+
+	dynamic_string<char> cstr2("A");
+	dynamic_string<char> cstr3("B");
+	dynamic_string<char> cstr4 = cstr2 + cstr3;
+	std::cout << cstr4.get_used_size() << std::endl;
+	std::cout << cstr4.begin() << std::endl;
 	std::cout << "*****" << std::endl;
+	
+
+	array_to_array((int*)0, (int*)0, 0);
 	std::cout << "***total exec time: " << et.get_ms_dt_weak() << "***" << std::endl;
 } 

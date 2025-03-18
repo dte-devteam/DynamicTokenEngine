@@ -13,7 +13,6 @@ namespace dte_utils {
 	*/
 	template<dyn_memory_limit T>
 	struct dynamic_stack {
-		template<dyn_memory_limit U> friend struct dynamic_stack;
 		protected:
 			size_t	us;	//used size
 			size_t	as;	//allocated size
@@ -21,32 +20,38 @@ namespace dte_utils {
 			//us value MUST be in range of array! 
 			void destruct_array();
 			void provide_element_space();
+			void provide_array_space(size_t required_size);
+
+			template<copy_constructible<T> U>
+			void _push_back(const U& value);
+			template<move_constructible<T> U>
+			void _push_back(U&& value);
+			template<typename ...Args> requires std::is_constructible_v<T, Args&&...>
+			void _emplace_back(Args&&... args);
 		public:
-			dynamic_stack() noexcept;
-			dynamic_stack(size_t alocate_size) noexcept;
+			dynamic_stack();
+			dynamic_stack(size_t alocate_size);
 			template<copyable_or_movable<T> U, size_t N>
-			dynamic_stack(const U(&array)[N], size_t reserved_size = 0) noexcept;
+			dynamic_stack(const U(&array)[N], size_t reserved_size = 0);
 			template<copyable_or_movable<T> U>
-			dynamic_stack(const U* array, size_t used_size, size_t reserved_size) noexcept;
+			dynamic_stack(const U* array, size_t used_size, size_t reserved_size);
 
 			template<copyable_or_movable<T> U>
-			dynamic_stack(std::initializer_list<U> il, size_t reserved_size = 0) noexcept;
+			dynamic_stack(std::initializer_list<U> il, size_t reserved_size = 0);
 
-			dynamic_stack(const dynamic_stack& dyn_array) noexcept;
+			dynamic_stack(const dynamic_stack& dyn_array);
 			dynamic_stack(dynamic_stack&& dyn_array) noexcept;
 
 			template<copyable_or_movable<T> U>
-			dynamic_stack(const dynamic_stack<U>& dyn_array) noexcept;
-			template<copyable_or_movable<T> U>
-			dynamic_stack(dynamic_stack<U>&& dyn_array) noexcept;
+			dynamic_stack(const dynamic_stack<U>& dyn_array);
 
 			~dynamic_stack(); 
 
 			//for(T& t : dyn_array)
-			T* begin() noexcept;
-			const T* begin() const noexcept;
-			T* end() noexcept;
-			const T* end() const noexcept;
+			T* begin();
+			const T* begin() const;
+			T* end();
+			const T* end() const;
 			//
 			template<typename P>
 			T* find(P predicate);
@@ -57,8 +62,8 @@ namespace dte_utils {
 			template<typename P>
 			const T* find_ranged(P predicate, size_t from, size_t to) const;
 			
-			size_t alloc_size() const;
-			size_t used_size() const;
+			size_t get_alloc_size() const;
+			size_t get_used_size() const;
 			
 			//doesn`t applyable for insert operation
 			void resize_allocated(size_t size);
@@ -68,8 +73,8 @@ namespace dte_utils {
 			void push_back(const U& value);
 			template<move_constructible<T> U>
 			void push_back(U&& value);
-			template<typename ...Args>
-			void emplace_back(Args&&... args) requires std::is_constructible_v<T, Args&&...>;
+			template<typename ...Args> requires std::is_constructible_v<T, Args&&...>
+			void emplace_back(Args&&... args);
 			void pop_back();
 			//----------------
 			T& operator[](size_t index) {

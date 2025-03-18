@@ -4,12 +4,12 @@ namespace dte_utils {
 	template<dyn_memory_limit T>
 	T* dynamic_array<T>::new_spased_buffer(size_t new_size, T* gap_pos, size_t gap_size) {
 		T* buffer = malloc_t<T>(new_size);
-		size_t fisrt_section_size = gap_pos - this->a;
-		array_to_array(buffer, this->a, fisrt_section_size);
+		size_t fisrt_section_size = gap_pos - this->begin();
+		array_to_array(buffer, this->begin(), fisrt_section_size);
 		array_to_array(
 			buffer + fisrt_section_size + gap_size,
-			this->a + fisrt_section_size,
-			this->us - fisrt_section_size
+			this->begin() + fisrt_section_size,
+			this->get_used_size() - fisrt_section_size
 		);
 		return buffer;
 	}
@@ -18,13 +18,13 @@ namespace dte_utils {
 	template<copy_constructible<T> U>
 	void dynamic_array<T>::insert(T* pos, const U& value) {
 		//TODO: what if T isn`t move assignable
-		if (this->us == this->as) {
+		if (this->get_used_size() == this->get_alloc_size()) {
 			T* buffer = new_spased_buffer(++this->as, pos, 1);
-			new (buffer + (pos - this->a)) T(value);
+			new (buffer + (pos - this->begin())) T(value);
 			if constexpr (!std::is_trivially_destructible_v<T>) {
 				destruct_range(this->begin(), this->end());
 			}
-			free(this->a);
+			free(this->begin());
 			++this->us;
 			this->a = buffer;
 		}
@@ -41,13 +41,13 @@ namespace dte_utils {
 	template<move_constructible<T> U>
 	void dynamic_array<T>::insert(T* pos, U&& value) {
 		//TODO: what if T isn`t move assignable
-		if (this->us == this->as) {
+		if (this->get_used_size() == this->get_alloc_size()) {
 			T* buffer = new_spased_buffer(++this->as, pos, 1);
-			new (buffer + (pos - this->a)) T(std::move(value));
+			new (buffer + (pos - this->begin())) T(std::move(value));
 			if constexpr (!std::is_trivially_destructible_v<T>) {
 				destruct_range(this->begin(), this->end());
 			}
-			free(this->a);
+			free(this->begin());
 			++this->us;
 			this->a = buffer;
 		}
@@ -64,19 +64,19 @@ namespace dte_utils {
 	template<copy_constructible<T> U>
 	void dynamic_array<T>::insert(T* pos, const U& value, size_t num) {
 		//TODO: what if T isn`t move assignable
-		if (this->as < this->us + num) {
-			T* buffer = new_spased_buffer(this->us + num, pos, num);
+		if (this->get_alloc_size() < this->get_used_size() + num) {
+			T* buffer = new_spased_buffer(this->get_used_size() + num, pos, num);
 			if constexpr (!std::is_trivially_destructible_v<T>) {
 				destruct_range(this->begin(), this->end());
 			}
 			this->us += num;
-			size_t delta = pos - this->a;
+			size_t delta = pos - this->begin();
 			while (num) {
 				new (buffer + delta) T(value);
 				++delta;
 				--num;
 			}
-			free(this->a);
+			free(this->begin());
 			this->a = buffer;
 		}
 		else {
@@ -104,19 +104,19 @@ namespace dte_utils {
 	void dynamic_array<T>::insert(T* pos, const U* first, const U* last) {
 		//TODO: what if T isn`t move assignable
 		size_t num = last - first;
-		if (this->as < this->us + num) {
+		if (this->get_alloc_size() < this->get_used_size() + num) {
 			T* buffer = new_spased_buffer(this->us + num, pos, num);
 			if constexpr (!std::is_trivially_destructible_v<T>) {
 				destruct_range(this->begin(), this->end());
 			}
 			this->us += num;
-			size_t delta = pos - this->a;
+			size_t delta = pos - this->begin();
 			while (first != last) {
 				new (buffer + delta) T(*first);
 				++delta;
 				++first;
 			}
-			free(this->a);
+			free(this->begin());
 			this->a = buffer;
 		}
 		else {
@@ -147,13 +147,13 @@ namespace dte_utils {
 	template<typename ...Args>
 	void dynamic_array<T>::emplace(T* pos, Args&&... args) requires std::is_constructible_v<T, Args&&...> {
 		//TODO: what if T isn`t move assignable
-		if (this->us == this->as) {
+		if (this->get_used_size() == this->get_alloc_size()) {
 			T* buffer = new_spased_buffer(++this->as, pos, 1);
-			new (buffer + (pos - this->a)) T(std::forward<Args>(args)...);
+			new (buffer + (pos - this->begin())) T(std::forward<Args>(args)...);
 			if constexpr (!std::is_trivially_destructible_v<T>) {
 				destruct_range(this->begin(), this->end());
 			}
-			free(this->a);
+			free(this->begin());
 			++this->us;
 			this->a = buffer;
 		}
@@ -212,7 +212,7 @@ namespace dte_utils {
 				*pos = this->a[--this->us];
 			}
 			if constexpr (!std::is_trivially_destructible_v<T>) {
-				this->a[this->us].~T();
+				this->a[this->get_used_size()].~T();
 			}
 		}
 	}

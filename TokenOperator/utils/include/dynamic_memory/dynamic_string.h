@@ -3,9 +3,10 @@
 namespace dte_utils {
 	template<dyn_memory_limit T>
 	struct dynamic_string : public dynamic_array<T> {
-		template<dyn_memory_limit U> friend struct dynamic_string;
-		//TODO: empty string always init with '\0'!!!
 		using dynamic_array<T>::dynamic_array;
+
+		dynamic_string();
+		dynamic_string(size_t alocate_size);
 
 		dynamic_string& operator +=(const dynamic_string& dyn_str);
 		template<copyable_or_movable<T> U, size_t N>

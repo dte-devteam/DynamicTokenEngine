@@ -59,27 +59,6 @@ namespace dte_utils {
 		}
 		return dest;
 	}
-	/*
-	template<typename U, copy_constructible<U> T>
-	inline void copy_array(U* dest, const T* src, size_t count) {
-		if constexpr (std::is_trivially_copyable_v<T> && std::is_same_v<T, U>) {
-			copy_memory(dest, src, count * sizeof(T));
-		}
-		else {
-			copy_range(src, src + count, dest + count);
-		}
-	}
-	template<typename T>
-	inline void move_array(T* dest, T* src, size_t count) {
-		if constexpr (std::is_trivially_move_constructible_v<T>) {
-			copy_memory(dest, src, count * sizeof(T));
-		}
-		else {
-			move_range(src, src + count, dest + count);
-		}
-	}*/
-
-
 
 	template<typename U, copy_constructible<U> T>
 	inline void array_to_array(U* dest, const T* src, size_t count) {
