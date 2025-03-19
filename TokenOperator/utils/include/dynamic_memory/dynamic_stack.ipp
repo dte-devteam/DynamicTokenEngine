@@ -162,6 +162,10 @@ namespace dte_utils {
 	size_t dynamic_stack<T>::get_used_size() const {
 		return us;
 	}
+	template<dyn_memory_limit T>
+	bool dynamic_stack<T>::empty() const {
+		return !get_used_size();
+	}
 
 	template<dyn_memory_limit T>
 	void dynamic_stack<T>::resize_allocated(size_t size) {

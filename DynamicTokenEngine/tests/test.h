@@ -2,11 +2,14 @@
 #include <iostream>
 #include "utils/include/dynamic_memory.h"
 
+#include "token/include/token.h"
+
 #include "utils/include/pointer.h"
 #include "utils/include/exec_time.h"
 #include "data_examples.h"
 using namespace test;
 using namespace dte_utils;
+using namespace dte_token;
 constexpr int len = 10;
 void a0() {
 	weak_ref<B> wrb;

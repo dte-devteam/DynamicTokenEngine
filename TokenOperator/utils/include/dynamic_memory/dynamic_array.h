@@ -1,5 +1,5 @@
 #pragma once
-#include "dynamic_stack.ipp"
+#include "dynamic_stack.h"
 namespace dte_utils {
 	template<dyn_memory_limit T>
 	struct dynamic_array : dynamic_stack<T> {

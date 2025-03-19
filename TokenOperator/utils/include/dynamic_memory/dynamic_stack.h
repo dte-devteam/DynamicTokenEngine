@@ -64,6 +64,7 @@ namespace dte_utils {
 			
 			size_t get_alloc_size() const;
 			size_t get_used_size() const;
+			bool empty() const;
 			
 			//doesn`t applyable for insert operation
 			void resize_allocated(size_t size);

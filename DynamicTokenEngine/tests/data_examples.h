@@ -41,6 +41,7 @@ namespace test {
 		}
 		virtual ~A() {
 			++ab_visor.A_destructed;
+			std::cout << "~A\t" << std::endl;
 		}
 
 		A& operator =(const A& a) {

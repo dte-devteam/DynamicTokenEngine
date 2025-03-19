@@ -10,6 +10,11 @@ namespace dte_utils {
 	}
 
 	template<dyn_memory_limit T>
+	bool dynamic_string<T>::empty_str() const {
+		return !(this->get_used_size() - 1);
+	}
+
+	template<dyn_memory_limit T>
 	dynamic_string<T>& dynamic_string<T>::operator +=(const dynamic_string& dyn_str) {
 		this->provide_array_space(this->get_used_size() + dyn_str.get_used_size() - 1);
 		this->pop_back();
