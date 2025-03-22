@@ -1,5 +1,7 @@
 #pragma once
 #include "memory.h"
+#include <initializer_list>
+#include <new>	//to do - find out why fixes error C2661 with operator new
 namespace dte_utils {
 	template<typename T>
 	concept dyn_memory_limit = !(
@@ -52,6 +54,11 @@ namespace dte_utils {
 			const T* begin() const;
 			T* end();
 			const T* end() const;
+
+			T& front();
+			const T& front() const;
+			T& back();
+			const T& back() const;
 			//
 			template<typename P>
 			T* find(P predicate);

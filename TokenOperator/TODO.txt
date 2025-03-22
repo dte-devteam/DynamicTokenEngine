@@ -1,0 +1,3 @@
+TODO:
+stack/array/string - out of range
+#include <new>	//to do - find out why fixes error C2661 with operator new

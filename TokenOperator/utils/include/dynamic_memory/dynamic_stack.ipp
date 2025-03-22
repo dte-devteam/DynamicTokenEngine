@@ -104,6 +104,23 @@ namespace dte_utils {
 	const T* dynamic_stack<T>::end() const {
 		return a + us;
 	}
+
+	template<dyn_memory_limit T>
+	T& dynamic_stack<T>::front() {
+		return *begin();
+	}
+	template<dyn_memory_limit T>
+	const T& dynamic_stack<T>::front() const {
+		return *begin();
+	}
+	template<dyn_memory_limit T>
+	T& dynamic_stack<T>::back() {
+		return *(end() - 1);
+	}
+	template<dyn_memory_limit T>
+	const T& dynamic_stack<T>::back() const {
+		return *(end() - 1);
+	}
 	
 	template<dyn_memory_limit T>
 	template<typename P>

@@ -2,14 +2,21 @@
 #include <iostream>
 #include "utils/include/dynamic_memory.h"
 
-#include "token/include/token.h"
+
 
 #include "utils/include/pointer.h"
 #include "utils/include/exec_time.h"
 #include "data_examples.h"
 using namespace test;
 using namespace dte_utils;
-using namespace dte_token;
+
+
+
+struct unit_info {
+	void* begin;
+	void* end;
+};
+
 constexpr int len = 10;
 void a0() {
 	weak_ref<B> wrb;
@@ -231,7 +238,8 @@ void run_tests() {
 	//for (const char c : cstr1) {
 	//	std::cout << c << std::endl;
 	//}
-
+	dte_utils::dynamic_stack<unit_info> units;
+	units.emplace_back(nullptr, nullptr);
 
 	dynamic_string<char> cstr2("A");
 	dynamic_string<char> cstr3("B");
