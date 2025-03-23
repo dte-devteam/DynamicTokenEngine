@@ -1,7 +1,8 @@
-#pragma once
-//#include "ref.h"
+module;
+#include <utility>
+export module unique_ref;
 import ref;
-namespace dte_utils {
+export namespace dte_utils {
 	template<typename T>
 	struct unique_ref {
 		protected:

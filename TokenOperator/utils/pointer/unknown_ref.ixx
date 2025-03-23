@@ -1,8 +1,6 @@
-#pragma once
-#include <iostream>
-//#include "weak_ref.h"
+export module unknown_ref;
 import weak_ref;
-namespace dte_utils {
+export namespace dte_utils {
 	template<typename T>
 	struct unknown_ref : weak_ref<T> {
 		template <typename U> friend struct unknown_ref;
@@ -27,10 +25,10 @@ namespace dte_utils {
 		public:
 			unknown_ref(bool strength = false) noexcept : unknown_ref(new ref<T>(), strength) {}
 			unknown_ref(ref_pointer<T> instance, bool strength = false) noexcept : unknown_ref(new ref<T>(instance), strength) {}
-			
+
 			unknown_ref(const unknown_ref& r, bool strength = false) noexcept : unknown_ref(r.reference, strength) {}
 			unknown_ref(unknown_ref&& r) noexcept : unknown_ref(r.reference, r.is_strong) {}
-			
+
 			template<ref_assignable<T> U>
 			unknown_ref(const weak_ref<U>& r, bool strength = false) noexcept : is_strong(strength), weak_ref<T>(r) {
 				unknown_increase();
@@ -107,5 +105,5 @@ namespace dte_utils {
 				is_strong = strength;
 				unknown_increase();
 			}
-	};
+		};
 }

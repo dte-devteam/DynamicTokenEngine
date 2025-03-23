@@ -1,7 +1,8 @@
-#pragma once
-//#include "ref.h"
+module;
+#include <utility>
+export module weak_ref;
 import ref;
-namespace dte_utils {
+export namespace dte_utils {
 	template<typename T>
 	struct weak_ref {
 		template <typename U> friend struct weak_ref;
@@ -44,13 +45,13 @@ namespace dte_utils {
 		public:
 			weak_ref() noexcept : weak_ref(new ref<T>) {}
 			weak_ref(ref_pointer<T> instance) noexcept : weak_ref(new ref<T>(instance)) {}
-			
+
 			weak_ref(const weak_ref& r) noexcept : weak_ref(r.reference) {}
 			weak_ref(weak_ref&& r) noexcept : weak_ref(r.reference) {}
 
 			template<ref_assignable<T> U>
 			weak_ref(const weak_ref<U>& r) noexcept : weak_ref(r.reference) {}
-			
+
 			~weak_ref() {
 				weak_decrease();
 			}
@@ -110,5 +111,5 @@ namespace dte_utils {
 			U& operator[](size_t index) const {
 				return reference->instance[index];
 			}
-	};
+		};
 }

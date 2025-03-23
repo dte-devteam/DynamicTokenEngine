@@ -73,6 +73,9 @@ namespace test {
 		UC(const UC& m) = delete;
 		UC(UC&&) {}
 	};
+	struct UD {
+		~UD() = delete;
+	};
 	//functions
 	typedef int (*function)();
 	int return_1() {

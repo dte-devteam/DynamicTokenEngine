@@ -1,7 +1,6 @@
-#pragma once
-//#include "weak_ref.h"
+export module strong_ref;
 import weak_ref;
-namespace dte_utils {
+export namespace dte_utils {
 	template<typename T>
 	struct strong_ref : weak_ref<T> {
 		template <typename U> friend struct strong_ref;
@@ -42,7 +41,7 @@ namespace dte_utils {
 				return *this;
 			}
 
-			strong_ref& operator=(const strong_ref& r){
+			strong_ref& operator=(const strong_ref& r) {
 				if (this == &r) {
 					return *this;
 				}

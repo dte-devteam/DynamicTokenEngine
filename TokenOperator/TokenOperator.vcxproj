@@ -99,6 +99,7 @@
       <LanguageStandard>stdcpp20</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <AdditionalIncludeDirectories>./</AdditionalIncludeDirectories>
+      <ScanSourceForModuleDependencies>true</ScanSourceForModuleDependencies>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -116,6 +117,7 @@
       <LanguageStandard>stdcpp20</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <AdditionalIncludeDirectories>./</AdditionalIncludeDirectories>
+      <ScanSourceForModuleDependencies>true</ScanSourceForModuleDependencies>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -133,6 +135,10 @@
       <LanguageStandard>stdcpp20</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <AdditionalIncludeDirectories>./</AdditionalIncludeDirectories>
+      <EnableModules>true</EnableModules>
+      <AdditionalHeaderUnitDependencies>
+      </AdditionalHeaderUnitDependencies>
+      <ScanSourceForModuleDependencies>true</ScanSourceForModuleDependencies>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -150,6 +156,7 @@
       <LanguageStandard>stdcpp20</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <AdditionalIncludeDirectories>./</AdditionalIncludeDirectories>
+      <ScanSourceForModuleDependencies>true</ScanSourceForModuleDependencies>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -182,6 +189,17 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="utils\constraints.ixx" />
+    <ClCompile Include="utils\dynamic_memory\dynamic_array.ixx" />
+    <ClCompile Include="utils\dynamic_memory\dynamic_stack.ixx" />
+    <ClCompile Include="utils\dynamic_memory\dynamic_string.ixx" />
+    <ClCompile Include="utils\function.ixx" />
+    <ClCompile Include="utils\memory.ixx" />
+    <ClCompile Include="utils\pointer\ref.ixx" />
+    <ClCompile Include="utils\pointer\strong_ref.ixx" />
+    <ClCompile Include="utils\pointer\unique_ref.ixx" />
+    <ClCompile Include="utils\pointer\unknown_ref.ixx" />
+    <ClCompile Include="utils\pointer\weak_ref.ixx" />
     <ClCompile Include="utils\source\exec_time.cpp" />
   </ItemGroup>
   <ItemGroup>

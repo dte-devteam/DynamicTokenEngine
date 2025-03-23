@@ -1,11 +1,16 @@
 #pragma once
 #include <iostream>
-#include "utils/include/dynamic_memory.h"
+//#include "utils/include/dynamic_memory.h"
 
-
+//import dynamic_stack;
+//import dynamic_array;
+import memory;
+import dynamic_stack;
+import dynamic_array;
+import dynamic_string;
 
 #include "utils/include/pointer.h"
-#include "utils/include/exec_time.h"
+//#include "utils/include/exec_time.h"
 #include "data_examples.h"
 using namespace test;
 using namespace dte_utils;
@@ -45,6 +50,11 @@ void f1() {
 	std::cout << "|||const unknown_ref& (strong) = unknown_ref&& (weak)" << std::endl;
 	unknown_ref<A> ur(new A, true);
 	ur = unknown_ref<A>(false);
+}
+
+void uf0() {
+	std::cout << "|||const unknown_ref& (strong) = unknown_ref&& (weak)" << std::endl;
+	unique_ref<A> ur(new A);
 }
 
 void f2() {
@@ -183,8 +193,7 @@ void f7() {
 	int f = static_cast<int>(1.0F); 
 }
 void run_tests() {
-	hpet et;
-
+	//hpet et;
 
 
 	ab_visor.reset();
@@ -198,6 +207,10 @@ void run_tests() {
 
 	ab_visor.reset();
 	f1();
+	ab_visor.log();
+
+	ab_visor.reset();
+	uf0();
 	ab_visor.log();
 
 	ab_visor.reset();
@@ -248,7 +261,31 @@ void run_tests() {
 	std::cout << cstr4.begin() << std::endl;
 	std::cout << "*****" << std::endl;
 	
+	array_to_array((int*)0, (const int*)0, 0);
+	dynamic_stack<int> aaa;
+	aaa.push_back(1);
+	aaa.push_back(2);
+	aaa.push_back(3);
+	for (const int& c : aaa) {
+		std::cout << c << std::endl;
+	}
+
+	dynamic_array<int> AAA;
+	AAA.push_back(1);
+	AAA.push_back(2);
+	AAA.push_back(3);
+	AAA.insert(AAA.begin(), 10, 2);
+	AAA.insert(AAA.begin() + 2, { 20, 20 });
+	AAA.remove(AAA.begin());
+	for (const int& c : AAA) {
+		std::cout << c << std::endl;
+	}
+
+	dynamic_cstring dcs;
+	dcs = "ABC";
+	dcs += L"ABC";
+	std::cout << dcs.begin() << std::endl;
 
 	array_to_array((int*)0, (int*)0, 0);
-	std::cout << "***total exec time: " << et.get_ms_dt_weak() << "***" << std::endl;
+	//std::cout << "***total exec time: " << et.get_ms_dt_weak() << "***" << std::endl;
 } 
