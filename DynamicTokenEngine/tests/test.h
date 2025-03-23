@@ -2,14 +2,16 @@
 #include <iostream>
 //#include "utils/include/dynamic_memory.h"
 
-//import dynamic_stack;
-//import dynamic_array;
+import weak_ref;
+import strong_ref;
+import unknown_ref;
+import unique_ref; 
+
 import memory;
 import dynamic_stack;
 import dynamic_array;
 import dynamic_string;
 
-#include "utils/include/pointer.h"
 //#include "utils/include/exec_time.h"
 #include "data_examples.h"
 using namespace test;

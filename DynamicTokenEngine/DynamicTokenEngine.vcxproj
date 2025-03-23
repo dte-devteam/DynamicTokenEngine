@@ -104,7 +104,8 @@
       <LanguageStandard>stdcpp20</LanguageStandard>
       <AdditionalIncludeDirectories>$(SolutionDir)TokenOperator;./</AdditionalIncludeDirectories>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
-      <AdditionalModuleDependencies>$(SolutionDir)TokenOperator\$(IntDir)constraints.ixx.ifc;$(SolutionDir)TokenOperator\$(IntDir)function.ixx.ifc;$(SolutionDir)TokenOperator\$(IntDir)memory.ixx.ifc;$(SolutionDir)TokenOperator\$(IntDir)dynamic_stack.ixx.ifc;$(SolutionDir)TokenOperator\$(IntDir)dynamic_array.ixx.ifc;$(SolutionDir)TokenOperator\$(IntDir)dynamic_string.ixx.ifc;$(SolutionDir)TokenOperator\$(IntDir)ref.ixx.ifc;$(SolutionDir)TokenOperator\$(IntDir)weak_ref.ixx.ifc;$(SolutionDir)TokenOperator\$(IntDir)strong_ref.ixx.ifc;$(SolutionDir)TokenOperator\$(IntDir)unknown_ref.ixx.ifc;$(SolutionDir)TokenOperator\$(IntDir)unique_ref.ixx.ifc</AdditionalModuleDependencies>
+      <AdditionalModuleDependencies>
+      </AdditionalModuleDependencies>
       <ScanSourceForModuleDependencies>false</ScanSourceForModuleDependencies>
     </ClCompile>
     <Link>
@@ -126,7 +127,8 @@
       <AdditionalIncludeDirectories>$(SolutionDir)TokenOperator;./</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
-      <AdditionalModuleDependencies>$(SolutionDir)TokenOperator\$(IntDir)constraints.ixx.ifc;$(SolutionDir)TokenOperator\$(IntDir)function.ixx.ifc;$(SolutionDir)TokenOperator\$(IntDir)memory.ixx.ifc;$(SolutionDir)TokenOperator\$(IntDir)dynamic_stack.ixx.ifc;$(SolutionDir)TokenOperator\$(IntDir)dynamic_array.ixx.ifc;$(SolutionDir)TokenOperator\$(IntDir)dynamic_string.ixx.ifc;$(SolutionDir)TokenOperator\$(IntDir)ref.ixx.ifc;$(SolutionDir)TokenOperator\$(IntDir)weak_ref.ixx.ifc;$(SolutionDir)TokenOperator\$(IntDir)strong_ref.ixx.ifc;$(SolutionDir)TokenOperator\$(IntDir)unknown_ref.ixx.ifc;$(SolutionDir)TokenOperator\$(IntDir)unique_ref.ixx.ifc</AdditionalModuleDependencies>
+      <AdditionalModuleDependencies>
+      </AdditionalModuleDependencies>
       <ScanSourceForModuleDependencies>false</ScanSourceForModuleDependencies>
     </ClCompile>
     <Link>
@@ -155,7 +157,8 @@
       <InlineFunctionExpansion>Disabled</InlineFunctionExpansion>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <EnableModules>true</EnableModules>
-      <AdditionalModuleDependencies>$(SolutionDir)TokenOperator\$(IntDir)constraints.ixx.ifc;$(SolutionDir)TokenOperator\$(IntDir)function.ixx.ifc;$(SolutionDir)TokenOperator\$(IntDir)memory.ixx.ifc;$(SolutionDir)TokenOperator\$(IntDir)dynamic_stack.ixx.ifc;$(SolutionDir)TokenOperator\$(IntDir)dynamic_array.ixx.ifc;$(SolutionDir)TokenOperator\$(IntDir)dynamic_string.ixx.ifc;$(SolutionDir)TokenOperator\$(IntDir)ref.ixx.ifc;$(SolutionDir)TokenOperator\$(IntDir)weak_ref.ixx.ifc;$(SolutionDir)TokenOperator\$(IntDir)strong_ref.ixx.ifc;$(SolutionDir)TokenOperator\$(IntDir)unknown_ref.ixx.ifc;$(SolutionDir)TokenOperator\$(IntDir)unique_ref.ixx.ifc</AdditionalModuleDependencies>
+      <AdditionalModuleDependencies>
+      </AdditionalModuleDependencies>
       <ScanSourceForModuleDependencies>false</ScanSourceForModuleDependencies>
     </ClCompile>
     <Link>
@@ -183,7 +186,8 @@
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
       <DebugInformationFormat>None</DebugInformationFormat>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
-      <AdditionalModuleDependencies>$(SolutionDir)TokenOperator\$(IntDir)constraints.ixx.ifc;$(SolutionDir)TokenOperator\$(IntDir)function.ixx.ifc;$(SolutionDir)TokenOperator\$(IntDir)memory.ixx.ifc;$(SolutionDir)TokenOperator\$(IntDir)dynamic_stack.ixx.ifc;$(SolutionDir)TokenOperator\$(IntDir)dynamic_array.ixx.ifc;$(SolutionDir)TokenOperator\$(IntDir)dynamic_string.ixx.ifc;$(SolutionDir)TokenOperator\$(IntDir)ref.ixx.ifc;$(SolutionDir)TokenOperator\$(IntDir)weak_ref.ixx.ifc;$(SolutionDir)TokenOperator\$(IntDir)strong_ref.ixx.ifc;$(SolutionDir)TokenOperator\$(IntDir)unknown_ref.ixx.ifc;$(SolutionDir)TokenOperator\$(IntDir)unique_ref.ixx.ifc</AdditionalModuleDependencies>
+      <AdditionalModuleDependencies>
+      </AdditionalModuleDependencies>
       <ScanSourceForModuleDependencies>false</ScanSourceForModuleDependencies>
     </ClCompile>
     <Link>
@@ -216,6 +220,11 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\TokenOperator\TokenOperator.vcxproj">
+      <Project>{27c78b09-828c-417b-b8f3-3ee8ed628c09}</Project>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

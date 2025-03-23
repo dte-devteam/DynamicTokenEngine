@@ -167,23 +167,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="target_architecture.h" />
-    <ClInclude Include="utils\include\constraints.h" />
-    <ClInclude Include="utils\include\dynamic_memory.h" />
-    <ClInclude Include="utils\include\dynamic_memory\dynamic_array.ipp" />
-    <ClInclude Include="utils\include\dynamic_memory\dynamic_stack.ipp" />
-    <ClInclude Include="utils\include\dynamic_memory\dynamic_array.h" />
-    <ClInclude Include="utils\include\dynamic_memory\dynamic_stack.h" />
-    <ClInclude Include="utils\include\dynamic_memory\dynamic_string.h" />
-    <ClInclude Include="utils\include\dynamic_memory\dynamic_string.ipp" />
     <ClInclude Include="utils\include\exec_time.h" />
-    <ClInclude Include="utils\include\function.h" />
-    <ClInclude Include="utils\include\memory.h" />
-    <ClInclude Include="utils\include\pointer.h" />
-    <ClInclude Include="utils\include\pointer\ref.h" />
-    <ClInclude Include="utils\include\pointer\strong_ref.h" />
-    <ClInclude Include="utils\include\pointer\unique_ref.h" />
-    <ClInclude Include="utils\include\pointer\unknown_ref.h" />
-    <ClInclude Include="utils\include\pointer\weak_ref.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
