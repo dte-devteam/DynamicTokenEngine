@@ -1,7 +1,7 @@
 module;
 #include <utility>
-export module weak_ref;
-import ref;
+export module utils.pointer.weak_ref;
+import utils.pointer.ref;
 export namespace dte_utils {
 	template<typename T>
 	struct weak_ref {
@@ -89,7 +89,7 @@ export namespace dte_utils {
 				return reference->weak_owners;
 			}
 			size_t get_strong_owners() const {
-				return reference->weak_owners;
+				return reference->strong_owners;
 			}
 			ref_pointer<T> get_pointer() const {
 				return reference->instance;

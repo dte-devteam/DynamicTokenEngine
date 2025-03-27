@@ -1,5 +1,5 @@
-export module unknown_ref;
-import weak_ref;
+export module utils.pointer.unknown_ref;
+import utils.pointer.weak_ref;
 export namespace dte_utils {
 	template<typename T>
 	struct unknown_ref : weak_ref<T> {

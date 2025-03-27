@@ -1,7 +1,7 @@
 module;
 #include <initializer_list>
 #include <new>	//to do - find out why fixes error C2661 with operator new
-export module dynamic_stack;
+export module utils.dynamic_memory.dynamic_stack;
 import constraints; 
 import memory;
 export namespace dte_utils {
@@ -110,15 +110,19 @@ export namespace dte_utils {
 			}
 
 			T& front() {
+				//TODO: if fize < 1 (error - out of range)
 				return *begin();
 			}
 			const T& front() const {
+				//TODO: if fize < 1 (error - out of range)
 				return *begin();
 			}
 			T& back() {
+				//TODO: if fize < 1 (error - out of range)
 				return *(end() - 1);
 			}
 			const T& back() const {
+				//TODO: if fize < 1 (error - out of range)
 				return *(end() - 1);
 			}
 			//
@@ -144,7 +148,8 @@ export namespace dte_utils {
 			}
 			template<typename P>
 			T* find_ranged(P predicate, size_t from, size_t to) {
-				//TODO: range can be outside of array (error)
+				//TODO: if from > to (error - invalid range)
+				//TODO: if to > us (error - out of range)
 				T* i = a + to;
 				T* s = a + from;
 				while (i != s) {
@@ -156,7 +161,8 @@ export namespace dte_utils {
 			}
 			template<typename P>
 			const T* find_ranged(P predicate, size_t from, size_t to) const {
-				//TODO: range can be outside of array (error)
+				//TODO: if from > to (error - invalid range)
+				//TODO: if to > us (error - out of range)
 				T* i = a + to;
 				T* s = a + from;
 				while (i != s) {
@@ -235,6 +241,15 @@ export namespace dte_utils {
 				}
 				else {
 					--us;
+				}
+			}
+			void pop_back(size_t num) {
+				//TODO: num > us (error out of range)
+				if constexpr (!std::is_trivially_destructible_v<T>) {
+					destruct_range(end() - num, end());
+				}
+				else {
+					us -= num;
 				}
 			}
 			//----------------

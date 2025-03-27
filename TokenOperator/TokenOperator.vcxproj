@@ -167,12 +167,17 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="target_architecture.h" />
+    <ClInclude Include="token\include\dynamic_function.h" />
+    <ClInclude Include="token\include\function_stack.h" />
+    <ClInclude Include="token\include\token.h" />
     <ClInclude Include="utils\include\exec_time.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="token\source\dynamic_function.cpp" />
+    <ClCompile Include="token\source\function_stack.cpp" />
     <ClCompile Include="utils\constraints.ixx" />
     <ClCompile Include="utils\dynamic_memory\dynamic_array.ixx" />
     <ClCompile Include="utils\dynamic_memory\dynamic_stack.ixx" />

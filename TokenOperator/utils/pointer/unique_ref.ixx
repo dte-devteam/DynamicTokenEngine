@@ -1,7 +1,7 @@
 module;
 #include <utility>
-export module unique_ref;
-import ref;
+export module utils.pointer.unique_ref;
+import utils.pointer.ref;
 export namespace dte_utils {
 	template<typename T>
 	struct unique_ref {

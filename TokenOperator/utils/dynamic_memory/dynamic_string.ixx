@@ -1,8 +1,8 @@
-export module dynamic_string;
+export module utils.dynamic_memory.dynamic_string;
 import constraints;
 import memory;
-import dynamic_stack;
-import dynamic_array;
+import utils.dynamic_memory.dynamic_stack;
+import utils.dynamic_memory.dynamic_array;
 export namespace dte_utils {
 	template<dyn_memory_limit T> 
 	struct dynamic_string : dynamic_array<T> {

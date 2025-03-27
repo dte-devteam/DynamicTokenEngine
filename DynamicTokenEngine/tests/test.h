@@ -2,21 +2,24 @@
 #include <iostream>
 //#include "utils/include/dynamic_memory.h"
 
-import weak_ref;
-import strong_ref;
-import unknown_ref;
-import unique_ref; 
+import utils.pointer.weak_ref;
+import utils.pointer.strong_ref;
+import utils.pointer.unknown_ref;
+import utils.pointer.unique_ref; 
 
 import memory;
-import dynamic_stack;
-import dynamic_array;
-import dynamic_string;
+import utils.dynamic_memory.dynamic_stack;
+import utils.dynamic_memory.dynamic_array;
+import utils.dynamic_memory.dynamic_string;
 
-//#include "utils/include/exec_time.h"
+#include "utils/include/exec_time.h"
 #include "data_examples.h"
+
+
+#include "token/include/dynamic_function.h"
 using namespace test;
 using namespace dte_utils;
-
+using namespace dte_token;
 
 
 struct unit_info {
@@ -194,10 +197,35 @@ void f7() {
 
 	int f = static_cast<int>(1.0F); 
 }
+
+void f8() {
+	int* i = new int(30);
+	function_stack fs(100);
+	std::cout << "BS" << fs.blocks.get_used_size() << std::endl;
+	*(int*)fs.blocks.back() = 10;
+	fs.push_real(sizeof(int));
+	std::cout << "BS" << fs.blocks.get_used_size() << std::endl;
+	*(int*)fs.blocks.back() = 20;
+	fs.push_virt((char*)i);
+	std::cout << *(int*)fs.blocks.back() << std::endl;
+	std::cout << "BS" << fs.blocks.get_used_size() << std::endl;
+	fs.pop(2);
+	std::cout << "BS" << fs.blocks.get_used_size() << std::endl;
+	
+	char* ii = reinterpret_cast<char*>(new int(11));
+	token* t1 = new token(ii, ii + sizeof(int));
+	
+	dynamic_function df;
+
+	df.steps.emplace_back(0,1, strong_ref<token>(t1), weak_ref<cfunc>());
+	std::cout << "FS" << df.steps[0].f.get_strong_owners() << std::endl;
+	df.execute(fs, 0);
+	std::cout << *(int*)fs.blocks.back() << std::endl;
+}
 void run_tests() {
-	//hpet et;
+	hpet et;
 
-
+	/*
 	ab_visor.reset();
 	a0();
 	ab_visor.log();
@@ -289,5 +317,9 @@ void run_tests() {
 	std::cout << dcs.begin() << std::endl;
 
 	array_to_array((int*)0, (int*)0, 0);
-	//std::cout << "***total exec time: " << et.get_ms_dt_weak() << "***" << std::endl;
+	*/
+
+
+	f8();
+	std::cout << "***total exec time: " << et.get_ms_dt_weak() << "***" << std::endl;
 } 

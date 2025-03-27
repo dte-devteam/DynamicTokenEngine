@@ -1,6 +1,6 @@
 module;
 #include <type_traits>
-export module ref;
+export module utils.pointer.ref;
 import function;
 export namespace dte_utils {
 	template<typename T>

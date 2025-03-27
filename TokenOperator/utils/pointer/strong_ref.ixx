@@ -1,5 +1,5 @@
-export module strong_ref;
-import weak_ref;
+export module utils.pointer.strong_ref;
+import utils.pointer.weak_ref;
 export namespace dte_utils {
 	template<typename T>
 	struct strong_ref : weak_ref<T> {

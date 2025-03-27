@@ -1,10 +1,10 @@
 module;
 #include <malloc.h>
 #include <type_traits>
-export module dynamic_array;
+export module utils.dynamic_memory.dynamic_array;
 import constraints;
 import memory;
-import dynamic_stack;
+import utils.dynamic_memory.dynamic_stack;
 export namespace dte_utils {
 	template<dyn_memory_limit T>
 	struct dynamic_array : dynamic_stack<T> {
