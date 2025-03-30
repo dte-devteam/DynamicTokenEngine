@@ -29,10 +29,10 @@ export namespace dte_utils {
 				}
 				free(a);
 			}
-			void provide_element_space() {
-				if (as == us) {
-					resize_allocated(as * 2 + 1);
-				}
+			T* provide_buffer(size_t size) {
+				T* buffer = malloc_t<T>(size);
+				array_to_array(buffer, begin(), get_used_size());
+				return buffer;
 			}
 			void provide_array_space(size_t required_size) {
 				if (get_alloc_size() < required_size) {
@@ -222,18 +222,45 @@ export namespace dte_utils {
 			//----------------
 			template<copy_constructible<T> U>
 			void push_back(const U& value) {
-				provide_element_space();
-				_push_back(value);
+				if (us == as) {
+					//push reallocated
+					T* old = a;
+					a = provide_buffer(as * 2 + 1);
+					_push_back(value);
+					free(old);
+				}
+				else {
+					//push unused
+					_push_back(value);
+				}
 			}
 			template<move_constructible<T> U>
 			void push_back(U&& value) {
-				provide_element_space();
-				_push_back(value);
+				if (us == as) {
+					//push reallocated
+					T* old = a;
+					a = provide_buffer(as * 2 + 1);
+					_push_back(value);
+					free(old);
+				}
+				else {
+					//push unused
+					_push_back(value);
+				}
 			}
 			template<typename ...Args> requires std::is_constructible_v<T, Args&&...>
 			void emplace_back(Args&&... args) {
-				provide_element_space();
-				_emplace_back(args...);
+				if (us == as) {
+					//emplace reallocated
+					T* old = a;
+					a = provide_buffer(as * 2 + 1);
+					_emplace_back(std::forward<Args>(args)...);
+					free(old);
+				}
+				else {
+					//emplace unused
+					_emplace_back(std::forward<Args>(args)...);
+				}	
 			}
 			void pop_back() {
 				if constexpr (!std::is_trivially_destructible_v<T>) {

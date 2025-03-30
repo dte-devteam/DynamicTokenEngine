@@ -197,31 +197,6 @@ void f7() {
 
 	int f = static_cast<int>(1.0F); 
 }
-
-void f8() {
-	int* i = new int(30);
-	function_stack fs(100);
-	std::cout << "BS" << fs.blocks.get_used_size() << std::endl;
-	*(int*)fs.blocks.back() = 10;
-	fs.push_real(sizeof(int));
-	std::cout << "BS" << fs.blocks.get_used_size() << std::endl;
-	*(int*)fs.blocks.back() = 20;
-	fs.push_virt((char*)i);
-	std::cout << *(int*)fs.blocks.back() << std::endl;
-	std::cout << "BS" << fs.blocks.get_used_size() << std::endl;
-	fs.pop(2);
-	std::cout << "BS" << fs.blocks.get_used_size() << std::endl;
-	
-	char* ii = reinterpret_cast<char*>(new int(11));
-	token* t1 = new token(ii, ii + sizeof(int));
-	
-	dynamic_function df;
-
-	df.steps.emplace_back(0,1, strong_ref<token>(t1), weak_ref<cfunc>());
-	std::cout << "FS" << df.steps[0].f.get_strong_owners() << std::endl;
-	df.execute(fs, 0);
-	std::cout << *(int*)fs.blocks.back() << std::endl;
-}
 void run_tests() {
 	hpet et;
 
@@ -319,7 +294,16 @@ void run_tests() {
 	array_to_array((int*)0, (int*)0, 0);
 	*/
 
+	dynamic_stack<int> ddd{ 1,2,3 };
+	ddd.emplace_back(ddd.back());
+	ddd.push_back(ddd.back());
+	ddd.push_back(std::move(ddd.back()));
+	for (const int& c : ddd) {
+		std::cout << c << std::endl;
+	}
 
-	f8();
+	dynamic_array<int> aaa{ 1,2,3 };
+	aaa.insert(aaa.begin(), aaa.back());
+
 	std::cout << "***total exec time: " << et.get_ms_dt_weak() << "***" << std::endl;
 } 
