@@ -225,7 +225,8 @@ export namespace dte_utils {
 				if (us == as) {
 					//push reallocated
 					T* old = a;
-					a = provide_buffer(as * 2 + 1);
+					as = as * 2 + 1;
+					a = provide_buffer(as);
 					_push_back(value);
 					free(old);
 				}
@@ -239,7 +240,8 @@ export namespace dte_utils {
 				if (us == as) {
 					//push reallocated
 					T* old = a;
-					a = provide_buffer(as * 2 + 1);
+					as = as * 2 + 1;
+					a = provide_buffer(as);
 					_push_back(value);
 					free(old);
 				}
@@ -253,7 +255,8 @@ export namespace dte_utils {
 				if (us == as) {
 					//emplace reallocated
 					T* old = a;
-					a = provide_buffer(as * 2 + 1);
+					as = as * 2 + 1;
+					a = provide_buffer(as);
 					_emplace_back(std::forward<Args>(args)...);
 					free(old);
 				}

@@ -5,6 +5,8 @@
 
 import utils.pointer.weak_ref;
 import utils.pointer.strong_ref;
+
+import utils.dynamic_memory.dynamic_array;
 namespace dte_token {
 	typedef bool (*cfunc)(function_stack& stack, const size_t frame_offset);
 	struct dynamic_function {

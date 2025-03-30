@@ -1,14 +1,15 @@
 #pragma once
 import memory;
-import utils.dynamic_memory.dynamic_array;
+import utils.dynamic_memory.dynamic_stack;
 namespace dte_token {
 	struct function_stack {
 		struct block {
-			char* end;
+			char* virtual_begin;
+			char* physical_end;
 		};
 		function_stack(size_t stack_size);
 		~function_stack();
-		dte_utils::dynamic_array<char*> blocks;
+		dte_utils::dynamic_stack<block> blocks;
 		char* stack_end;
 
 		void push_real(size_t block_size);

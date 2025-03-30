@@ -197,6 +197,12 @@ void f7() {
 
 	int f = static_cast<int>(1.0F); 
 }
+void dfunc_test() {
+	function_stack fs(100);
+	fs.push_real(sizeof(int));
+	fs.push_virt((char*)new int(11));
+	fs.pop(2);
+}
 void run_tests() {
 	hpet et;
 
@@ -296,7 +302,7 @@ void run_tests() {
 
 	dynamic_stack<int> ddd{ 1,2,3 };
 	ddd.emplace_back(ddd.back());
-	ddd.push_back(ddd.back());
+	ddd.push_back(ddd.back() + ddd.back());
 	ddd.push_back(std::move(ddd.back()));
 	for (const int& c : ddd) {
 		std::cout << c << std::endl;
@@ -304,6 +310,8 @@ void run_tests() {
 
 	dynamic_array<int> aaa{ 1,2,3 };
 	aaa.insert(aaa.begin(), aaa.back());
+
+	dfunc_test();
 
 	std::cout << "***total exec time: " << et.get_ms_dt_weak() << "***" << std::endl;
 } 
