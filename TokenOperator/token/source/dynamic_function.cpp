@@ -13,10 +13,9 @@ bool dynamic_function::execute(function_stack& stack, const size_t frame_offset)
 				//PUSH_REAL(const T& copy)
 				std::cout << "AAA";
 				stack.push_real(steps[i].literal->data_end - data_start);
-				stack.push_virt(data_start);			//provide pointer to real value
-				steps[i].f(stack, 0);	//no need for offset if func do static *(end()-2)=back()
-				stack.pop();											//remove virtual address
-				i = steps[i].jump_index;
+				stack.push_virt(data_start);	//provide pointer to real value
+				i = steps[i].f(stack, frame_offset + steps[i].block_offset) ? steps[i].jump_index : i + 1;
+				stack.pop();					//remove virtual address
 			}
 			else {
 				//PUSH_VIRT(T& sharing)
@@ -29,8 +28,8 @@ bool dynamic_function::execute(function_stack& stack, const size_t frame_offset)
 			if (func_alive) {
 				//EXECUTE
 				std::cout << "CCC";
-				//i = steps[i].f(stack, frame_offset + steps[i].block_offset) ? steps[i].jump_index : i + 1;
-				steps[i].f(stack, frame_offset + steps[i].block_offset);
+				i = steps[i].f(stack, frame_offset + steps[i].block_offset) ? steps[i].jump_index : i + 1;
+				//steps[i].f(stack, frame_offset + steps[i].block_offset);
 			}
 			else {
 				//POP

@@ -197,11 +197,31 @@ void f7() {
 
 	int f = static_cast<int>(1.0F); 
 }
-void dfunc_test() {
+void function_stack_test() {
 	function_stack fs(100);
 	fs.push_real(sizeof(int));
 	fs.push_virt((char*)new int(11));
+	fs.push_real(sizeof(int));
+	std::cout << fs.blocks.get_alloc_size() << std::endl;
+	std::cout << fs.blocks.get_used_size() << std::endl;
+	for (const function_stack::block& b : fs.blocks) {
+		std::cout << (size_t*)b.virtual_begin << std::endl;
+	}
 	fs.pop(2);
+}
+void dfunction_test() {
+	int a = 10;
+	int b = 20;
+	function_stack fs(100);
+	fs.push_real(sizeof(int));
+	fs.push_virt((char*)&a);
+	fs.push_virt((char*)&b);
+	*(int*)fs.blocks[1].virtual_begin = 5;
+	for (const function_stack::block& b : fs.blocks) {
+		std::cout << "VB: " << (int*)b.virtual_begin << std::endl;
+		std::cout << "PE: " << (int*)b.physical_end << std::endl;
+		std::cout << "V: " << *(int*)b.virtual_begin << std::endl;
+	}
 }
 void run_tests() {
 	hpet et;
@@ -311,7 +331,8 @@ void run_tests() {
 	dynamic_array<int> aaa{ 1,2,3 };
 	aaa.insert(aaa.begin(), aaa.back());
 
-	dfunc_test();
+	function_stack_test();
+	dfunction_test();
 
 	std::cout << "***total exec time: " << et.get_ms_dt_weak() << "***" << std::endl;
 } 

@@ -12,10 +12,8 @@ function_stack::~function_stack() {
 }
 void function_stack::push_real(size_t block_size) {
 	blocks.emplace_back(
-		block(
-			blocks.back().physical_end, 
-			blocks.back().physical_end + block_size
-		)
+		blocks.back().physical_end, 
+		blocks.back().physical_end + block_size
 	);
 }
 void function_stack::push_virt(char* virt_block) {
