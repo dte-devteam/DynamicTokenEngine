@@ -182,6 +182,7 @@
     <ClCompile Include="utils\dynamic_memory\dynamic_array.ixx" />
     <ClCompile Include="utils\dynamic_memory\dynamic_stack.ixx" />
     <ClCompile Include="utils\dynamic_memory\dynamic_string.ixx" />
+    <ClCompile Include="utils\exception\exception.ixx" />
     <ClCompile Include="utils\function.ixx" />
     <ClCompile Include="utils\memory.ixx" />
     <ClCompile Include="utils\pointer\ref.ixx" />

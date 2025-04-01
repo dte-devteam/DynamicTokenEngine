@@ -1,4 +1,5 @@
 TODO:
 stack/array/string - out of range
 #include <new>	//to do - find out why fixes error C2661 with operator new
-constraints, function, memory - set module name
+constraints, function, memory, exception - set module name
+function_stack - out of memory

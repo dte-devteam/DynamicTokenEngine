@@ -10,7 +10,7 @@ bool dynamic_function::execute(function_stack& stack, const size_t frame_offset)
 			char*& data_start = steps[i].literal->data_begin;
 			if (func_alive) {
 				//PUSH_REAL(const T& copy)
-				std::cout << "AAA\n";
+				std::cout << "REAL" << std::endl;
 				if (!steps[i].function.get_strong_owners()) {
 					throw 1;
 				}
@@ -21,7 +21,7 @@ bool dynamic_function::execute(function_stack& stack, const size_t frame_offset)
 			}
 			else {
 				//PUSH_VIRT(T& sharing)
-				std::cout << "BBB\n";
+				std::cout << "VIRT" << std::endl;
 				stack.push_virt(data_start);
 				i = steps[i].jump_index;
 			}
@@ -29,7 +29,7 @@ bool dynamic_function::execute(function_stack& stack, const size_t frame_offset)
 		else {
 			if (func_alive) {
 				//EXECUTE
-				std::cout << "CCC\n";
+				std::cout << "EXEC" << std::endl;
 				if (!steps[i].function.get_strong_owners()) {
 					throw 1;
 				}
@@ -38,7 +38,7 @@ bool dynamic_function::execute(function_stack& stack, const size_t frame_offset)
 			}
 			else {
 				//POP
-				std::cout << "DDD\n";
+				std::cout << "POP" << std::endl;
 				stack.pop(steps[i].block_offset);
 				i = steps[i].jump_index;
 			}

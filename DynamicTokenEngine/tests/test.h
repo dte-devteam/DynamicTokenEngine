@@ -8,6 +8,9 @@ import utils.pointer.unknown_ref;
 import utils.pointer.unique_ref; 
 
 import memory;
+
+import exception;
+
 import utils.dynamic_memory.dynamic_stack;
 import utils.dynamic_memory.dynamic_array;
 import utils.dynamic_memory.dynamic_string;
@@ -197,36 +200,30 @@ void f7() {
 
 	int f = static_cast<int>(1.0F); 
 }
-void function_stack_test() {
-	function_stack fs(100);
-	fs.push_real(sizeof(int));
-	fs.push_virt((char*)new int(11));
-	fs.push_real(sizeof(int));
-	std::cout << fs.blocks.get_alloc_size() << std::endl;
-	std::cout << fs.blocks.get_used_size() << std::endl;
-	for (const function_stack::block& b : fs.blocks) {
-		std::cout << (size_t*)b.virtual_begin << std::endl;
-	}
-	fs.pop(2);
-}
 bool copy_int(function_stack& stack, const size_t frame_offset) {
-	*(int*)stack.blocks[stack.blocks.get_used_size() - 2].virtual_begin = *(int*)stack.blocks.back().virtual_begin;
+	//*(int*)stack.blocks[stack.blocks.get_used_size() - 2].virtual_begin = *(int*)stack.blocks.back().virtual_begin;
+	*(int*)stack[stack.get_size() - 2] = *(int*)stack[stack.get_size() - 1];
 	return false;
 }
 bool add_int(function_stack& stack, const size_t frame_offset) {
 	stack.push_real(sizeof(int));
-	*(int*)stack.blocks.back().virtual_begin =
-	*(int*)stack.blocks[stack.blocks.get_used_size() - 3].virtual_begin + 
-	*(int*)stack.blocks[stack.blocks.get_used_size() - 2].virtual_begin;
+	//*(int*)stack.blocks.back().virtual_begin =
+	//*(int*)stack.blocks[stack.blocks.get_used_size() - 3].virtual_begin + 
+	//*(int*)stack.blocks[stack.blocks.get_used_size() - 2].virtual_begin;
+	*(int*)stack[stack.get_size() - 1] = 
+	*(int*)stack[stack.get_size() - 3] + 
+	*(int*)stack[stack.get_size() - 2];
 	return false;
 }
 void dfunction_test() {
 	int a = 10;
 	int b = 20;
 	function_stack fs(100);
+	//no longer valid, because moved to protected
+	/*
 	fs.push_real(sizeof(int));
-	fs.push_virt((char*)&a);
-	fs.push_virt((char*)&b);
+	fs.push_virt(&a);
+	fs.push_virt(&b);
 	*(int*)fs.blocks[1].virtual_begin = 5;
 	for (const function_stack::block& b : fs.blocks) {
 		std::cout << "VB: " << (int*)b.virtual_begin << std::endl;
@@ -236,7 +233,7 @@ void dfunction_test() {
 	fs.pop(fs.blocks.get_used_size() - 1);
 	std::cout << "---***---" << std::endl;
 	fs.push_real(sizeof(int));
-	fs.push_virt((char*)&a);
+	fs.push_virt(&a);
 	*(int*)fs.blocks[1].virtual_begin = *(int*)fs.blocks[2].virtual_begin;
 	fs.pop();
 	for (const function_stack::block& b : fs.blocks) {
@@ -246,6 +243,9 @@ void dfunction_test() {
 	}
 	std::cout << "---***---" << std::endl;
 	fs.pop(fs.blocks.get_used_size() - 1);
+	*/
+
+
 	token* t1 = new token((char*)new int(100), sizeof(int));
 	token* t2 = new token((char*)new int(200), sizeof(int));
 	strong_ref<cfunc> ci(copy_int);
@@ -257,10 +257,9 @@ void dfunction_test() {
 		dynamic_function::step(0,1, {}, ai)
 	};
 	df.execute(fs, 0);
-	for (const function_stack::block& b : fs.blocks) {
-		std::cout << "VB: " << (int*)b.virtual_begin << std::endl;
-		std::cout << "PE: " << (int*)b.physical_end << std::endl;
-		std::cout << "V: " << *(int*)b.virtual_begin << std::endl;
+	for (size_t i = 0; i < fs.get_size(); ++i) {
+		std::cout << "VB: " << fs[i] << std::endl;
+		std::cout << "V: " << *(int*)fs[i] << std::endl;
 	}
 }
 void run_tests() {
@@ -371,7 +370,6 @@ void run_tests() {
 	dynamic_array<int> aaa{ 1,2,3 };
 	aaa.insert(aaa.begin(), aaa.back());
 
-	function_stack_test();
 	dfunction_test();
 
 	std::cout << "***total exec time: " << et.get_ms_dt_weak() << "***" << std::endl;
