@@ -209,6 +209,17 @@ void function_stack_test() {
 	}
 	fs.pop(2);
 }
+bool copy_int(function_stack& stack, const size_t frame_offset) {
+	*(int*)stack.blocks[stack.blocks.get_used_size() - 2].virtual_begin = *(int*)stack.blocks.back().virtual_begin;
+	return false;
+}
+bool add_int(function_stack& stack, const size_t frame_offset) {
+	stack.push_real(sizeof(int));
+	*(int*)stack.blocks.back().virtual_begin =
+	*(int*)stack.blocks[stack.blocks.get_used_size() - 3].virtual_begin + 
+	*(int*)stack.blocks[stack.blocks.get_used_size() - 2].virtual_begin;
+	return false;
+}
 void dfunction_test() {
 	int a = 10;
 	int b = 20;
@@ -217,6 +228,35 @@ void dfunction_test() {
 	fs.push_virt((char*)&a);
 	fs.push_virt((char*)&b);
 	*(int*)fs.blocks[1].virtual_begin = 5;
+	for (const function_stack::block& b : fs.blocks) {
+		std::cout << "VB: " << (int*)b.virtual_begin << std::endl;
+		std::cout << "PE: " << (int*)b.physical_end << std::endl;
+		std::cout << "V: " << *(int*)b.virtual_begin << std::endl;
+	}
+	fs.pop(fs.blocks.get_used_size() - 1);
+	std::cout << "---***---" << std::endl;
+	fs.push_real(sizeof(int));
+	fs.push_virt((char*)&a);
+	*(int*)fs.blocks[1].virtual_begin = *(int*)fs.blocks[2].virtual_begin;
+	fs.pop();
+	for (const function_stack::block& b : fs.blocks) {
+		std::cout << "VB: " << (int*)b.virtual_begin << std::endl;
+		std::cout << "PE: " << (int*)b.physical_end << std::endl;
+		std::cout << "V: " << *(int*)b.virtual_begin << std::endl;
+	}
+	std::cout << "---***---" << std::endl;
+	fs.pop(fs.blocks.get_used_size() - 1);
+	token* t1 = new token((char*)new int(100), sizeof(int));
+	token* t2 = new token((char*)new int(200), sizeof(int));
+	strong_ref<cfunc> ci(copy_int);
+	strong_ref<cfunc> ai(add_int);
+	dynamic_function df;
+	df.steps = {
+		dynamic_function::step(0,1, t1, ci),
+		dynamic_function::step(0,1, t2, ci),
+		dynamic_function::step(0,1, {}, ai)
+	};
+	df.execute(fs, 0);
 	for (const function_stack::block& b : fs.blocks) {
 		std::cout << "VB: " << (int*)b.virtual_begin << std::endl;
 		std::cout << "PE: " << (int*)b.physical_end << std::endl;
